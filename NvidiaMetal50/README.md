@@ -29,7 +29,7 @@ Output: `build/NvidiaMetal50.kext`
 
 ## Load
 
-Hackintosh: inject with OpenCore (`Kernel > Add`) and block Kepler NVIDIA kexts (`Kernel > Block`). SIP / AMFI must allow unsigned kexts. Full steps: [docs/INSTALL.md](docs/INSTALL.md).
+Hackintosh: inject with OpenCore (`Kernel > Add`), **Force** `IOGraphicsFamily` (`Kernel > Force` — required on Big Sur+, or injection fails with `IOGraphicsFamily was not found`), and block Kepler NVIDIA kexts (`Kernel > Block`). SIP / AMFI must allow unsigned kexts. Full steps: [docs/INSTALL.md](docs/INSTALL.md).
 
 ## Boot-args
 

@@ -11,6 +11,9 @@
 		},
 		{
 			"path": "../../../System/Library/Frameworks"
+		},
+		{
+			"path": "../../EFI"
 		}
 	],
 	"settings": {}

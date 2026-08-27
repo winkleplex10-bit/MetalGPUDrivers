@@ -105,7 +105,7 @@ Copy `build/NvidiaMetal30.kext` to `EFI/OC/Kexts/` and add:
 
 Put it **after** Lilu (if present) and **before** WhateverGreen is fine. It does not depend on Lilu.
 
-`IOGraphicsFamily` is already in the kernel collection; do not Force-inject it unless OpenCore docs say you must (same note as MacHyperVFramebuffer).
+**Required:** `Kernel > Force` `com.apple.iokit.IOGraphicsFamily` from `System/Library/Extensions/IOGraphicsFamily.kext` (`ExecutablePath` `Contents/MacOS/IOGraphicsFamily`). On Big Sur+ it is in the System KC, not the Boot KC OpenCore injects into. Without Force, injection fails with `IOGraphicsFamily was not found` / `Invalid Parameter` and the kext never loads. See NvidiaMetal50 `docs/INSTALL.md` for the full plist fragment.
 
 ## 3. Firmware GOP
 

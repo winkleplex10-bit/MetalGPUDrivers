@@ -76,9 +76,9 @@ Example `config.plist` fragment:
 </array>
 ```
 
-**Optional on an installed volume:** `sudo tools/disable-legacy-nv.sh` moves those kexts out of `/Library/Extensions` (does not touch SLE). OpenCore Block is still required for the installer.
+`Exclude` only removes kexts that are already in the kernel cache. On Monterey+ Apple's NVIDIA kexts are not in the Boot KC, so OpenCore will log `Failed to pk find com.apple.nvidia.* - Not Found` — that is expected and does **not** block copies in `/Library/Extensions`. Use `Strategy` `Disable` if you need OpenCore to suppress those bundle IDs, and still run `tools/disable-legacy-nv.sh` on an installed volume so `/L/E` cannot attach.
 
-This kext also uses probe score **500000** vs NVDAStartup's **100000**, so it should win even if Block is incomplete. Do not rely on that alone.
+This kext also uses probe score **500000** vs NVDAStartup's **100000**, so it should win even if Block is incomplete — **only if NvidiaMetal50 itself injected**. Do not rely on that alone.
 
 ## 2. Inject NvidiaMetal50.kext
 
@@ -105,7 +105,41 @@ Copy `build/NvidiaMetal50.kext` to `EFI/OC/Kexts/` and add:
 
 Put it **after** Lilu (if present) and **before** WhateverGreen is fine. It does not depend on Lilu.
 
-`IOGraphicsFamily` is already in the kernel collection; do not Force-inject it unless OpenCore docs say you must (same note as MacHyperVFramebuffer).
+**Required:** `Kernel > Force` `IOGraphicsFamily`. This kext subclasses `IOFramebuffer`, so `Info.plist` lists `com.apple.iokit.IOGraphicsFamily`. On Big Sur and newer that kext lives in the **System** kernel collection, not the Boot KC OpenCore injects into. Without Force, OpenCore logs:
+
+```
+OCAK: Dependency com.apple.iokit.IOGraphicsFamily was not found for kext com.metalgpudrivers.NvidiaMetal50
+OC: Prelinked injection NvidiaMetal50.kext - Invalid Parameter
+```
+
+The cache still reports `Prelinked status - Success`; that is the rest of the KC, not this kext. The kext never loads.
+
+Add this under `Kernel > Force` (OpenCore processes Force before Add):
+
+```xml
+<dict>
+	<key>Arch</key>
+	<string>x86_64</string>
+	<key>BundlePath</key>
+	<string>System/Library/Extensions/IOGraphicsFamily.kext</string>
+	<key>Comment</key>
+	<string>Needed so NvidiaMetal50 can link IOFramebuffer</string>
+	<key>Enabled</key>
+	<true/>
+	<key>ExecutablePath</key>
+	<string>Contents/MacOS/IOGraphicsFamily</string>
+	<key>Identifier</key>
+	<string>com.apple.iokit.IOGraphicsFamily</string>
+	<key>MaxKernel</key>
+	<string></string>
+	<key>MinKernel</key>
+	<string></string>
+	<key>PlistPath</key>
+	<string>Contents/Info.plist</string>
+</dict>
+```
+
+If Force itself fails (same `Invalid Parameter` on `IOGraphicsFamily`), OpenCore still cannot see the System KC. Then install `NvidiaMetal50.kext` to `/Library/Extensions` on the target volume (SIP already relaxed) so `kextd` loads it after `IOGraphicsFamily` is present, and keep the OpenCore `Add` entry disabled for that test.
 
 ## 3. Firmware GOP
 

@@ -1,2 +1,24 @@
+# macOS
 .DS_Store
 **/.DS_Store
+
+# Build outputs
+build/
+*.kext/
+*.dSYM/
+*.o
+*.a
+
+# Xcode
+DerivedData/
+*.xcuserstate
+*.xcworkspace/xcuserdata/
+
+# Firmware blobs (never commit unless license explicitly grants macOS redistribution)
+**/*.bin
+**/firmware/**/*.fw
+**/gsp/*.bin
+
+# Secrets and local config
+.env
+*.local

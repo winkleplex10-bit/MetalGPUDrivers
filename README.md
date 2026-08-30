@@ -33,6 +33,7 @@ docs/                 Architecture specs and phased plans
 |---|---|
 | [docs/CURSOR-START-AMD.md](docs/CURSOR-START-AMD.md) | AMD RDNA3/RDNA4/RDNA 3.5 starter — **first implementation target** |
 | [docs/CURSOR-START-NVIDIA.md](docs/CURSOR-START-NVIDIA.md) | Nvidia Ampere+ GSP-era starter |
+| [docs/NVIDIA-IMPLEMENTATION-PLAN.md](docs/NVIDIA-IMPLEMENTATION-PLAN.md) | Nvidia phased execution plan (operationalizes CURSOR-START-NVIDIA) |
 | [docs/CURSOR-START-INTEL.md](docs/CURSOR-START-INTEL.md) | Intel Arc + modern iGPU starter (Phase 7 slot) |
 
 **Pending:** `CURSOR-IHV-DRIVER-SPEC.md` (host contract), research corpus (`01-metal-userspace.md`, `02-kernel-boot-display.md`, `03-nvidia-prior-art.md`, `FINDINGS.md`).

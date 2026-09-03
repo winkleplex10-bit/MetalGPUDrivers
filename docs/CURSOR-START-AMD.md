@@ -22,7 +22,7 @@ Three backends share the same host contracts (`CURSOR-IHV-DRIVER-SPEC` §5):
 | **RDNA3 dGPU** | RX 7000 / Navi 3x | GFX11 (`gfx1100`–`gfx1102`) | **First AMD target** | `ihv/amd-rdna3/` |
 | **RDNA4 dGPU** | RX 9000 / Navi 4x | GFX12 (`gfx1200`/`gfx1201`) | Second — colder ISA | `ihv/amd-rdna4/` |
 | **RDNA 3.5 iGPU** | Radeon 800M / 8000S on APUs | GFX11.5 (`gfx1150`+) | Third — UMA, display *is* the APU | `ihv/amd-rdna35-igpu/` |
-| **RDNA2 iGPU** | Raphael / Rembrandt APUs (NootedRed gap) | GFX10.3 (`gfx1036` / `gfx1035`) | Parallel APU track — see sibling doc | `ihv/amd-rdna2-igpu/` |
+| **RDNA2 iGPU** | Raphael / Rembrandt APUs (NootedRed gap) | GFX10.3 (`gfx1036` / `gfx1035`) | Parallel APU track — WEG + dGPU coexistence, connector-driven primary | `ihv/amd-rdna2-igpu/` |
 
 **Done** is the same as the host spec (`CURSOR-IHV-DRIVER-SPEC` §3): WindowServer desktop on our `IOFramebuffer`, and `MTLCopyAllDevices()` returns our GPU running a stock `.metallib`. TinyGPU HIP compute, a triangle in a private harness, and spoofing an RX 6800 ID so `AMDRadeonX6000` attaches are **not-done**.
 

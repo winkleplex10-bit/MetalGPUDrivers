@@ -33,7 +33,7 @@ docs/                 Architecture specs and phased plans
 | Document | Purpose |
 |---|---|
 | [docs/CURSOR-START-AMD.md](docs/CURSOR-START-AMD.md) | AMD RDNA3/RDNA4/RDNA 3.5 starter — **first implementation target** |
-| [docs/CURSOR-START-AMD-RDNA2-IGPU.md](docs/CURSOR-START-AMD-RDNA2-IGPU.md) | Raphael RDNA2 iGPU (7950X3D) — NootedRed-unsupported APU plan |
+| [docs/CURSOR-START-AMD-RDNA2-IGPU.md](docs/CURSOR-START-AMD-RDNA2-IGPU.md) | Raphael RDNA2 iGPU (7950X3D) — NootedRed gap; WEG + dGPU coexistence |
 | [docs/CURSOR-START-NVIDIA.md](docs/CURSOR-START-NVIDIA.md) | Nvidia Ampere+ GSP-era starter |
 | [docs/CURSOR-START-INTEL.md](docs/CURSOR-START-INTEL.md) | Intel Arc + modern iGPU starter (Phase 7 slot) |
 

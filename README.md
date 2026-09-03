@@ -21,6 +21,7 @@ host/                 Vendor-agnostic macOS integration (IOFramebuffer shell, IO
 ihv/nvidia/           Ampere+ GSP-era Nvidia (Phase 1 IHV after AMD proof, or parallel track)
 ihv/amd-rdna3/        RDNA3 / RX 7000 — first AMD target
 ihv/amd-rdna4/        RDNA4 / RX 9000
+ihv/amd-rdna2-igpu/   RDNA2 APU (Raphael / Rembrandt) — NootedRed gap
 ihv/amd-rdna35-igpu/  RDNA 3.5 APU (Strix Point 800M)
 ihv/arc/              Intel Arc discrete (Xe-HPG / Xe2)
 ihv/intel-igpu/       Modern Intel iGPU (Xe-LPG / Xe2-LPG)
@@ -32,6 +33,7 @@ docs/                 Architecture specs and phased plans
 | Document | Purpose |
 |---|---|
 | [docs/CURSOR-START-AMD.md](docs/CURSOR-START-AMD.md) | AMD RDNA3/RDNA4/RDNA 3.5 starter — **first implementation target** |
+| [docs/CURSOR-START-AMD-RDNA2-IGPU.md](docs/CURSOR-START-AMD-RDNA2-IGPU.md) | Raphael RDNA2 iGPU (7950X3D) — NootedRed-unsupported APU plan |
 | [docs/CURSOR-START-NVIDIA.md](docs/CURSOR-START-NVIDIA.md) | Nvidia Ampere+ GSP-era starter |
 | [docs/CURSOR-START-INTEL.md](docs/CURSOR-START-INTEL.md) | Intel Arc + modern iGPU starter (Phase 7 slot) |
 

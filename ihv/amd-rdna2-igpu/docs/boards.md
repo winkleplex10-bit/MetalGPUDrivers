@@ -1,31 +1,42 @@
-# boards.md — Phase R0 board freeze (fill in)
+# boards.md — Phase R0 board freeze
 
-**Status:** template — replace UNKNOWN with measured values before R1.
+**Status:** partial — lab evidence recorded; remaining UNKNOWNs before R1.
 
 | Field | Value |
 |---|---|
-| Host platform | AMD AM5 Hackintosh (fill motherboard) |
-| CPU | Ryzen 9 7950X3D (or other Raphael SKU) |
+| Host platform | AMD AM5 Hackintosh (motherboard TBD) |
+| CPU | Ryzen 9 7950X3D (Raphael iGPU) — assumed from product target; confirm SKU on box |
 | iGPU code name | Raphael |
 | LLVM `-mcpu` | `gfx1036` |
-| PCI VID:DID | `1002:164E` |
+| PCI VID:DID | `1002:164E` (confirm in IORegistry / System Information) |
 | PCI revision | UNKNOWN — measure |
-| ACPI / IOKit nub path | UNKNOWN — measure with iGPU enabled |
-| APU connectors in use | UNKNOWN — list HDMI/DP heads on motherboard |
-| Discrete GPU present? | **Yes preferred** for coexistence acceptance |
-| Discrete GPU VID:DID | UNKNOWN |
+| ACPI / IOKit nub path | UNKNOWN — dump IORegistry on next boot |
+| APU connectors in use | UNKNOWN — list HDMI/DP heads that drove the Monterey desktop |
+| Discrete GPU present? | **Yes** |
+| Discrete GPU | **Nvidia RTX 5080** (Blackwell; no macOS Metal stack) |
+| Discrete GPU VID:DID | UNKNOWN — measure (`10de:????`) |
 | Discrete connectors | UNKNOWN — list ports on the card |
-| WhateverGreen | **Required loaded** for dual-GPU acceptance (version UNKNOWN) |
+| WhateverGreen | UNKNOWN version — note if loaded on the Monterey boot |
 | `-wegnoegpu` / iGPU disable | **Must not** be required for product |
 | Primary display policy | **Connector-driven** |
-| macOS build | Tahoe (pin exact build) |
-| X6000 oracle | On-box dGPU preferred (same Tahoe build) |
+| Lab OS (evidence) | **macOS Monterey** — iGPU booted **without acceleration** |
+| Product OS pin | macOS 26 Tahoe (bring-up target; re-verify on Tahoe) |
+| X6000 oracle | Still needed on Tahoe (AMD dGPU machine or add RX 6000 later) |
 | Firmware license check | UNKNOWN — list `gc_10_3_6_*`, `dcn_3_1_5_*`, `psp_13_0_5_*` (confirm names) |
+
+## Lab evidence (reporter)
+
+- Booted **Monterey** with the **Raphael iGPU** driving display **without acceleration** (GOP / basic FB path).
+- **System Information → Graphics** listed the **iGPU** (recognized) **and** the **RTX 5080**.
+- RTX 5080 appearing there is expected PCI/display enumeration without a Metal driver — not evidence of Nvidia acceleration.
+- This is a **pre-G1/G2** signal: the iGPU nub is visible to macOS and an unaccelerated desktop on APU outputs is achievable; our kext still must attach for real FB/Metal.
 
 ## Acceptance (R0)
 
-- [ ] This file filled (no critical UNKNOWN left for match identity)
-- [ ] `coexistence.md` filled for WEG + dGPU baseline
-- [ ] X6000 IORegistry snapshot referenced or attached under `docs/traces/`
-- [ ] `unknowns.md` started from CURSOR-START-AMD-RDNA2-IGPU §10
-- [ ] Written: NootedRed out of scope; WEG + dGPU coexistence in scope
+- [x] Discrete companion identified (RTX 5080)
+- [x] Unaccelerated iGPU boot observed (Monterey)
+- [ ] Exact DID/rev + IORegistry path captured under `docs/traces/`
+- [ ] `coexistence.md` filled for WEG (if used) + Nvidia companion
+- [ ] X6000 IORegistry snapshot on **Tahoe** (ABI oracle — may be second machine)
+- [ ] `unknowns.md` updated from this evidence
+- [x] Written: NootedRed out of scope; WEG + dGPU coexistence in scope

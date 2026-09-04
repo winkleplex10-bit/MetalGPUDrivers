@@ -20,6 +20,7 @@ UMA APU backend for AMD RDNA2 integrated GPUs that **NootedRed does not support*
 - **Named first SKU:** Ryzen 9 7950X3D (same Raphael iGPU as 7950X / 7900X / …)
 - **Later sibling:** Rembrandt (Ryzen 6000 mobile RDNA2, `gfx1035`) — same backend shape, separate Phase 0 freeze
 - **Coexistence (required):** stock **WhateverGreen** may stay loaded; **discrete GPUs** may stay enabled. Primary display is **connector-driven** (cable on APU ports → our FB; cable on dGPU → dGPU FB). See [docs/coexistence.md](docs/coexistence.md) and plan §2.1.
+- **Lab evidence:** Monterey unaccelerated iGPU boot; System Information listed iGPU + **RTX 5080** (PCI coexistence; no Nvidia Metal). Details in [docs/boards.md](docs/boards.md).
 - **Not:** Vega Raven / Cezanne / 7x30 (use NootedRed or leave alone)
 - **Not:** Hawk Point 700M / Phoenix (`gfx1103` RDNA3) — closer to `ihv/amd-rdna3*` / future `amd-rdna3-igpu`
 - **Not:** Strix Point 800M RDNA 3.5 — `ihv/amd-rdna35-igpu/`

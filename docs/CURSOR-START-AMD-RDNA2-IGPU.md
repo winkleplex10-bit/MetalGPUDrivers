@@ -60,7 +60,20 @@ NootedRed’s published install rules **reject** this product shape: remove What
 5. **Multi-device Metal** — after R5, `MTLCopyAllDevices()` may list both GPUs. Apps pick a device; we do not steal `CGDirectDisplayCopyCurrentMetalDevice` from a display we do not drive.  
 6. **Do not require** `-wegnoegpu`, `-wegnoigpu`, or removing `WhateverGreen.kext`. Document that WEG’s dGPU flags remain the user’s responsibility for *their* discrete card — we neither depend on nor forbid them beyond “do not disable the iGPU if you want this backend.”
 
-**Reference dual-GPU board for acceptance:** 7950X3D + Apple-supported AMD discrete (RX 6000-class) with stock WhateverGreen, monitors exercisable on either set of connectors. Unsupported companions (e.g. Nvidia) must **not** break iGPU attach; their own acceleration stays out of this slot’s scope.
+**Reference dual-GPU board for acceptance:** Lab evidence already includes **7950X3D-class Raphael + RTX 5080** (Nvidia, no Metal) with unaccelerated Monterey iGPU boot — see [boards.md](../ihv/amd-rdna2-igpu/docs/boards.md). For WEG + dual-`MTLDevice` acceptance, add or borrow an **Apple-supported AMD discrete (RX 6000-class)** with stock WhateverGreen. Unsupported companions (RTX 5080) must **not** break iGPU attach; their own acceleration stays out of this slot’s scope.
+
+### 2.2 Lab evidence (Monterey, unaccelerated)
+
+Reporter: Raphael iGPU booted **macOS Monterey without acceleration**; **System Information → Graphics** listed the **iGPU and an RTX 5080**.
+
+| What it proves | What it does not prove |
+|---|---|
+| iGPU PCI/IOKit identity is visible to macOS | Acceleration / Metal / our kext |
+| Unaccelerated desktop on APU path is achievable (GOP/basic FB) | DCN 3.1.5 programmed by a proper `IOFramebuffer` |
+| Nvidia dGPU can coexist at enumeration (partial §10.10) | Dual `MTLCopyAllDevices` (5080 has no Metal plugin) |
+| G1/G2 risk is lower than “iGPU invisible” | Tahoe behavior — re-verify on product OS pin |
+
+**Why the 5080 shows up:** System Information enumerates GPUs from PCI/IORegistry even with no vendor Metal driver. That is expected, not a sign of Nvidia acceleration.
 
 ```mermaid
 flowchart LR
@@ -153,7 +166,7 @@ Ryzen 6000 mobile RDNA2 (`gfx1035`). Same backend directories; freeze a separate
 
 | Area | Why hard | Attack / OK |
 |---|---|---|
-| **APU match ≠ dGPU** | No Mac-Pro `IOPCIDevice`+TB personality. Exact Hackintosh nub for Raphael = **UNKNOWN** until measured. | Phase 0: dump IORegistry with iGPU enabled; write `match/` from observation. **OK:** our `IOClass` on the real nub. |
+| **APU match ≠ dGPU** | No Mac-Pro `IOPCIDevice`+TB personality. Exact Hackintosh nub for Raphael still needs IORegistry dump, but Monterey already **recognizes** the iGPU in System Information alongside RTX 5080. | Phase 0: dump IORegistry; write `match/` from observation. **OK:** our `IOClass` on the real nub. |
 | **UMA / 2 CU** | No VRAM BAR; Metal storage modes must be honest `Shared`; 2 CU is tiny vs Navi 21. | `uma/` + under-claim `supportsFamily`. **OK:** compute buffer round-trip on UMA. |
 | **DCN 3.1.5 vs X6000 FB** | X6000 discrete FB ≠ Raphael APU display IP. GOP already owns boot FB. | Dumb linear FB first (P2), then modeset on APU connectors. **OK:** login window on HDMI/DP from the board. |
 | **PSP / SMU 13.0.5** | Signed firmware; macOS redistrib license **UNKNOWN**. | Boot PSP → SMU ready → GC firmware → doorbell no-op. No unsigned flash. **OK:** P1 heartbeat. |
@@ -271,7 +284,7 @@ Resolve from public headers, pinned Tahoe KDK, AMD docs, and traces. Do not gues
 7. Rembrandt DID list and whether one `match/` table can share code with Raphael without SKU bugs.  
 8. **RESOLVED (product policy):** primary display = **connector-driven** (§2.1). Remaining measure: boot-GOP handoff when both GPUs have cables at cold boot.  
 9. Does any stock WEG AMD patch site fire on DID `0x164E` today, and if so does it no-op harmlessly? Measure with WEG DEBUG on the R0 board.  
-10. Unsupported dGPU companion (Nvidia): confirm our attach is unaffected when that card has no Metal stack.
+10. Nvidia/unsupported dGPU companion (RTX 5080): **PARTIAL** — Monterey unaccelerated iGPU boot with 5080 present and both in Graphics. Still measure: our kext never claims `10de:*`; re-check on Tahoe.
 
 ---
 

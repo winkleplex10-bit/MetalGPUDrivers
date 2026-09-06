@@ -30,6 +30,7 @@
 | Product OS pin | macOS 26 Tahoe (re-verify; Sequoia is valid bring-up OS) |
 | X6000 oracle | **Still needed** — 5080 cannot provide AMD Metal ABI |
 | Firmware license | UNKNOWN — `gc_10_3_6_*` / `dcn_3_1_5_*` / `psp_13_0_5_*` (confirm names) |
+| First kext | `dev.metalgpudrivers.RaphaelIGPU` — GOP wrap + ATOM enum; see [BUILD.md](BUILD.md) |
 
 ## Match personality (from dump)
 

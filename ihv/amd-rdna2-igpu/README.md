@@ -30,14 +30,27 @@ UMA APU backend for AMD RDNA2 integrated GPUs that **NootedRed does not support*
 ## Layout
 
 ```
-firmware/     PSP/MP0 13.0.5, GC 10.3.6, DCN 3.1.5 (blobs not in git unless licensed)
-match/        APU/platform match — Raphael DID 0x164E only; not a Navi 21 / dGPU table
-display/      APU DCN 3.1.5; connector-driven primary vs dGPU
-submit/       PM4 / GFX10.3 compute classes (trace X6000 for IOGPU shape)
-isa/          AIR → gfx1036 (and later gfx1035); closest Oracle = live X6000 RDNA2
-uma/          Shared-memory / IOSurface rules for 2 CU UMA
-docs/         boards.md, unknowns.md, coexistence.md, traces
+kext/         Info.plist + kmod start/stop — bundle ID dev.metalgpudrivers.RaphaelIGPU
+match/        RaphaelController — DID 0x164E only; category RaphaelHW (beside AMDSupport)
+display/      ATOM parser, GOP-wrap IOFramebuffer, extra connector nubs
+submit/       RaphaelAccelerator stub (no IOAccel user clients; Metal plugin off by default)
+metal/        RaphaelMTLDriver.bundle plist stub — do not enable raphael_metal=1
+firmware/     PSP/GC/DCN names; blobs not in git
+docs/         boards, coexistence, unknowns, BUILD.md, traces
 ```
+
+Build / load notes (no OpenCore or SIP recipes): [docs/BUILD.md](docs/BUILD.md).
+
+## Phase status
+
+| Phase | Status |
+|---|---|
+| R0 board freeze | Done (Sequoia dump) |
+| R1 enumerate | In tree — BAR map + ATOM/fallback connectors; no PSP firmware (license UNKNOWN) |
+| R2 dumb FB | In tree — GOP linear wrap, probe 100000 vs IONDRV 20000; extra HDMI/DP nubs offline |
+| R3–R6 compute / Metal / present | Not started |
+
+**Honest Sequoia outcome for this drop:** if the kext matches at boot, WindowServer can own our `IOFramebuffer` on the GOP head (HDMI or DP, whichever firmware already programmed). That is **not** video acceleration. Metal/QE needs IOGPU user clients + DCN 3.1.5 modeset + AIR→gfx1036.
 
 ## Relation to NootedRed (style vs method)
 
@@ -46,7 +59,3 @@ docs/         boards.md, unknowns.md, coexistence.md, traces
 **Method (do not copy):** Lilu-style patching of Apple AMD kexts, DID spoof onto `AMDRadeonX6000*`, WhateverGreen-class blob enablement, or NootedRed’s “remove WEG / disable dGPU” install rules. This repo’s product path is a **new IHV backend** behind `host/` that **coexists** with WEG and discrete cards.
 
 **Oracle advantage:** Apple *did* ship RDNA2 discrete Metal. Trace `AMDRadeonX6000` on Tahoe for IOGPU / `MetalPluginName` ABI. Still implement **our** match, UMA, DCN 3.1.5, and 2 CU limits — do not attach Apple’s Navi personality to Raphael, and do not hijack the discrete card’s stack.
-
-## Phase status
-
-Not started. See [CURSOR-START-AMD-RDNA2-IGPU.md](../../docs/CURSOR-START-AMD-RDNA2-IGPU.md) §7 for R0–R6 acceptance criteria. Preferred after RDNA3 dGPU P0–P2 prove `host/` FB/accel shells, but may start Phase 0 in parallel (ABI oracle + board freeze only).

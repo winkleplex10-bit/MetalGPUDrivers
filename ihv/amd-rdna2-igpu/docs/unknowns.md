@@ -11,8 +11,8 @@
 | 7 | Rembrandt DID table vs shared match code | OPEN | deferred until R7 |
 | 8 | Primary display policy | **RESOLVED** | Connector-driven. Lab currently APU-main (4K). |
 | 9 | Does stock/fork WEG patch DID `0x164E`? | OPEN | WEG **1.7.1d7 laobamac** is loaded; no WEG property obvious on iGPU node in excerpt — confirm with WEG DEBUG |
-| 10 | Nvidia companion attach isolation | **PARTIAL → mostly RESOLVED for enum** | Sequoia: iGPU main display + RTX 5080 `GFX0` present, no Metal on either. Still need: our kext never matches `10de:2c02`. |
-| 11 | Interaction with Apple `AMDSupport` on Raphael | OPEN | AMDSupport already attaches (vendor-wide AMD VGA). Decide: coexist as sibling vs claim FB match category and supersede NDRV. Measure probe scores before coding G2. |
+| 10 | Nvidia companion attach isolation | **RESOLVED in kext match; confirm on box** | Personality is DID-only `0x164E1002`. No class-match, no `IONameMatch=display`. Still measure `GFX0` untouched after load. |
+| 11 | Interaction with Apple `AMDSupport` on Raphael | **RESOLVED (design)** | AMDSupport stays on category `AMDSupport` (vendor-wide VGA). Our controller uses `RaphaelHW`; our FB uses `IOFramebuffer` at probe **100000** vs NDRV **20000**. Hardware confirm still needed. |
 | 12 | Physical motherboard port for 4K main display | OPEN | User: which HDMI/DP jack? |
 | 13 | Bring-up OS: Sequoia vs Tahoe product pin | OPEN | Dump is **15.7.8**. Product docs say Tahoe. Prefer develop on Sequoia now; re-validate on Tahoe before ship. |
 

@@ -6,7 +6,7 @@ This repository implements **IHV (Independent Hardware Vendor) backends** behind
 
 ## Status
 
-**Setup phase.** No driver code is implemented yet. Architecture, phased plans, and directory layout are defined in the docs below.
+**Raphael iGPU kext started.** `RaphaelIGPU.kext` (`dev.metalgpudrivers.RaphaelIGPU`) is a GOP-wrap framebuffer + ATOM HDMI/DP/USB-C enum for `1002:164E`. It is **not** Sequoia QE/Metal yet (no GFX ring, no AIR→gfx1036). Other IHV slots remain plan-only.
 
 ## Target platform
 

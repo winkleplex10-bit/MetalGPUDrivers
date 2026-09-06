@@ -3,7 +3,7 @@
 **Audience:** Cursor coding agents filling `ihv/amd-rdna2-igpu/`.  
 **Product:** display scanout + Metal on AMD **RDNA2 iGPUs** that NootedRed does not support — first board **Ryzen 7000 Raphael** (7950X3D / 7950X / siblings).  
 **This file:** RDNA2-iGPU-only starter. Shares host contracts with [CURSOR-START-AMD.md](CURSOR-START-AMD.md). Do not rewrite `host/`.  
-**Date:** 3 Sep 2026.
+**Date:** 3 Sep 2026. **Code status (6 Sep 2026):** R0 freeze + first `RaphaelIGPU.kext` GOP wrap in `ihv/amd-rdna2-igpu/` (not R5 Metal).
 
 **Hard rules.** Architecture and implementation plan only. No SIP / OpenCore / AuxKC / unsigned-kext recipes. No Lilu / NootedRed / WhateverGreen *patch recipes* (coexistence with a stock WhateverGreen install is **required** — §2.1). No X6000 personality spoof onto Raphael DID `0x164E`. If a selector, entitlement, bundle ID, IOGPU method, PM4 opcode, or firmware RPC is not in the research corpus, a public header you have opened, or a URL cited here, write **UNKNOWN** and stop that branch.
 

@@ -20,7 +20,7 @@
 | Current FB | **`IONDRVFramebuffer`** (`.display_boot`) — unaccelerated NDRV/GOP path |
 | Also attached | **`AMDSupport`** (Apple, probe 65050, vendor-wide AMD VGA match) — not a Metal stack |
 | APU display | **Main display** 3840×2160@HiDPI; System Information: VRAM 31 MB, **No Kext Loaded** (acceleration) |
-| Discrete GPU | **Nvidia RTX 5080** `10de:2c02` rev `0xA1`, subsystem `1462:5315` (MSI), nub **`GFX0@0`**, BDF `1:0:0`, Slot-1 |
+| Discrete GPU | **Nvidia RTX 5080** `10de:2c02` rev `0xA1`, subsystem `1462:5315` (MSI), nub **`GFX0@0`**, BDF `1:0:0`, Slot-1 — also filed under [`ihv/nvidia/docs/boards.md`](../../nvidia/docs/boards.md) |
 | dGPU ACPI | `_SB.PCI0.GPP0.VGA` |
 | Lilu | **1.7.2** (`as.vit9696.Lilu`) |
 | WhateverGreen | **1.7.1d7** (`as.vit9696.laobamac.WhateverGreen` — laobamac fork) |

@@ -10,7 +10,7 @@
 |---|---|
 | Lilu | 1.7.2 |
 | WhateverGreen | **1.7.1d7** (`as.vit9696.laobamac.WhateverGreen`) |
-| Discrete GPU | **RTX 5080** `10de:2c02` (MSI `1462:5315`) — PCI only, no Metal |
+| Discrete GPU | **RTX 5080** `10de:2c02` (MSI `1462:5315`) — PCI only, no Metal. Nvidia-slot notes: [`ihv/nvidia/docs/boards.md`](../../nvidia/docs/boards.md) |
 | iGPU | Raphael `1002:164E` rev C9 — **main display**, IONDRVFramebuffer |
 | `-wegnoegpu` | Not used (iGPU is main) |
 | WEG removed? | No — WEG is loaded |

@@ -46,7 +46,7 @@ kext:
 	SDK=$$(xcrun --sdk macosx --show-sdk-path); \
 	KERN=$$SDK/System/Library/Frameworks/Kernel.framework/Headers; \
 	xcrun --sdk macosx clang++ -mkernel -std=gnu++17 -fapple-kext \
-		-fno-builtin -fno-exceptions -fno-rtti -msoft-float \
+		-fno-builtin -fno-exceptions -fno-rtti \
 		-DKERNEL -DKERNEL_PRIVATE -DDRIVER_PRIVATE \
 		-isystem $$KERN $(INC) \
 		-nostdlib -Wl,-kext -lkmodc++ -lkmod -lcc_kext \

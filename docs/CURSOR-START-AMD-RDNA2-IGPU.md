@@ -62,18 +62,29 @@ NootedRed’s published install rules **reject** this product shape: remove What
 
 **Reference dual-GPU board for acceptance:** Lab evidence already includes **7950X3D-class Raphael + RTX 5080** (Nvidia, no Metal) with unaccelerated Monterey iGPU boot — see [boards.md](../ihv/amd-rdna2-igpu/docs/boards.md). For WEG + dual-`MTLDevice` acceptance, add or borrow an **Apple-supported AMD discrete (RX 6000-class)** with stock WhateverGreen. Unsupported companions (RTX 5080) must **not** break iGPU attach; their own acceleration stays out of this slot’s scope.
 
-### 2.2 Lab evidence (Monterey, unaccelerated)
+### 2.2 Lab evidence (Monterey + Sequoia dumps)
 
-Reporter: Raphael iGPU booted **macOS Monterey without acceleration**; **System Information → Graphics** listed the **iGPU and an RTX 5080**.
+**Sequoia 15.7.8 (24G824)** dump in [`ihv/amd-rdna2-igpu/docs/traces/sequoia-7950x3d/`](../ihv/amd-rdna2-igpu/docs/traces/sequoia-7950x3d/):
+
+| Field | Measured |
+|---|---|
+| CPU | Ryzen 9 **7950X3D**, SMBIOS MacPro7,1 |
+| iGPU | `1002:164E` rev **C9**, BDF `12:0:0`, nub **`IGPU@0`**, ACPI **`_SB.PCI0.GP17.VGA`**, subsys `1043:8877` |
+| FB today | `IONDRVFramebuffer` (`.display_boot`), main display 3840×2160 |
+| Also on iGPU | Apple **`AMDSupport`** (vendor-wide AMD VGA match) |
+| dGPU | RTX 5080 `10de:2c02` rev A1, nub `GFX0@0`, MSI `1462:5315` |
+| WEG | Lilu 1.7.2 + WhateverGreen **1.7.1d7** (laobamac) |
+
+Earlier Monterey report: same dual listing, unaccelerated iGPU boot.
 
 | What it proves | What it does not prove |
 |---|---|
-| iGPU PCI/IOKit identity is visible to macOS | Acceleration / Metal / our kext |
-| Unaccelerated desktop on APU path is achievable (GOP/basic FB) | DCN 3.1.5 programmed by a proper `IOFramebuffer` |
-| Nvidia dGPU can coexist at enumeration (partial §10.10) | Dual `MTLCopyAllDevices` (5080 has no Metal plugin) |
-| G1/G2 risk is lower than “iGPU invisible” | Tahoe behavior — re-verify on product OS pin |
+| Exact match identity for G1 | Acceleration / Metal / our kext |
+| Unaccelerated 4K desktop on APU path (GOP/NDRV) | DCN 3.1.5 programmed by our `IOFramebuffer` |
+| Nvidia dGPU PCI coexistence with WEG loaded | Dual `MTLCopyAllDevices` (5080 has no Metal) |
+| G1/G2 risk much lower than “iGPU invisible” | Tahoe bit-identical behavior — re-verify before ship |
 
-**Why the 5080 shows up:** System Information enumerates GPUs from PCI/IORegistry even with no vendor Metal driver. That is expected, not a sign of Nvidia acceleration.
+**Why the 5080 shows up:** System Information enumerates GPUs from PCI/IORegistry even with no vendor Metal driver. Expected.
 
 ```mermaid
 flowchart LR

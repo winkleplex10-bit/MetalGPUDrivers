@@ -1,0 +1,52 @@
+Graphics/Displays:
+
+    Display:
+
+      Type: GPU
+      Bus: PCIe
+      PCIe Lane Width: x16
+      VRAM (Total): 31 MB
+      Vendor: AMD (0x1002)
+      Device ID: 0x164e
+      Revision ID: 0x00c9
+      Kernel Extension Info: No Kext Loaded
+      Displays:
+        Display:
+          Resolution: 3840 x 2160 (2160p/4K UHD 1 - Ultra High Definition)
+          UI Looks like: 1920 x 1080
+          Framebuffer Depth: 24-Bit Color (ARGB8888)
+          Main Display: Yes
+          Mirror: Off
+          Online: Yes
+
+    Display:
+
+      Type: GPU
+      Bus: PCIe
+      Slot: Slot-1
+      PCIe Lane Width: x16
+      Vendor: NVIDIA (0x10de)
+      Device ID: 0x2c02
+      Revision ID: 0x00a1
+      Kernel Extension Info: No Kext Loaded
+
+Hardware:
+
+    Hardware Overview:
+
+      Model Name: Mac Pro
+      Model Identifier: MacPro7,1
+      Processor Name: AMD Ryzen™ 9 7950X3D
+      Processor Speed: 4.2 GHz
+      Number of Processors: 1
+      Total Number of Cores: 16
+      L2 Cache (per Core): 1 MB
+      L3 Cache: 192 MB
+      Hyper-Threading Technology: Enabled
+      Memory: 32 GB
+      System Firmware Version: 2094.80.5.0.0
+      OS Loader Version: 583~2317
+      Serial Number (system): F5KYHMZAP7QM
+      Hardware UUID: 988367E9-F586-5D3B-9F78-FD4ACAAF2C4D
+      Provisioning UDID: 988367E9-F586-5D3B-9F78-FD4ACAAF2C4D
+

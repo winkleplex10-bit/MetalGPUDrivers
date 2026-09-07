@@ -13,9 +13,11 @@
 | 9 | Does stock/fork WEG patch DID `0x164E`? | OPEN | WEG **1.7.1d7 laobamac** is loaded; no WEG property obvious on iGPU node in excerpt — confirm with WEG DEBUG |
 | 10 | Nvidia companion attach isolation | **RESOLVED in kext match; confirm on box** | Personality is DID-only `0x164E1002`. No class-match, no `IONameMatch=display`. Still measure `GFX0` untouched after load. |
 | 11 | Interaction with Apple `AMDSupport` on Raphael | **RESOLVED (design)** | AMDSupport stays on category `AMDSupport` (vendor-wide VGA). Our controller uses `RaphaelHW`; our FB uses `IOFramebuffer` at probe **100000** vs NDRV **20000**. Hardware confirm still needed. |
-| 12 | Physical motherboard port for 4K main display | OPEN | User: which HDMI/DP jack? |
+| 12 | Physical motherboard port for 4K main display | OPEN | VFCT ATOM has HDMI-A **and** DP. User: which jack is cabled? |
 | 13 | Bring-up OS: Sequoia vs Tahoe product pin | **PARTIAL** | Dump is **15.7.8**. Develop on Sequoia; re-validate Tahoe before ship |
 | 14 | Patch Raphael into Apple X6000 as Navi 2 | **REJECTED** | Match-level spoof ≠ DCN 3.1.5 / UMA / gfx1036. `AMDSupport` on the iGPU is not Metal. See plan §0.2 |
+| 15 | OpenCore prelink of GOP-wrap kext | **RESOLVED (cause)** | 7 Sep 2026: `IOGraphicsFamily` not in Boot KC → `Invalid Parameter`. Not a PCI miss. Controller kext no longer lists that family. FB kext still needs it in the same KC. Trace: `docs/traces/sequoia-7950x3d/opencore-inject-2026-09-07.txt`. No load recipe in this repo. |
+| 16 | Raphael ATOM connectors on lab VBIOS | **PARTIAL** | VFCT parsed HDMI-A `0x320C` + DP `0x3113`. USB-C/eDP not in that table. PCI ROM map on macOS still unproven. Blob not in git. |
 
 ## Lab notes
 

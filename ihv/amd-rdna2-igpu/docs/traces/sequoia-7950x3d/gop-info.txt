@@ -1,0 +1,10 @@
+OpenCore SysReport GOP/ (2026-09-07). AMD GOP X64 Rel Driver Rev.3.8.17 (Aug 1 2025) is listed in Drivers/DriverImageNames.txt.
+
+```
+GOP INFO 3840(3840)x2160 fmt 1
+GOP FB 0x1FC20000000[0x1FA4000]
+GOP BPP 4 - Success
+GOP FBS 0x1FA4000 - Success
+```
+
+0x1FA4000 = 33177600 = 3840 × 2160 × 4. Matches IOFBMemorySize on the Sequoia NDRV desktop and RaphaelFB default mode.

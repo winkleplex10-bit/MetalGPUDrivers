@@ -117,6 +117,18 @@ static uint16_t ReadU16(const uint8_t *p)
 	return (uint16_t)p[0] | ((uint16_t)p[1] << 8);
 }
 
+static uint32_t ReadU32(const uint8_t *p)
+{
+	return (uint32_t)p[0] | ((uint32_t)p[1] << 8) | ((uint32_t)p[2] << 16) |
+	       ((uint32_t)p[3] << 24);
+}
+
+enum {
+	kVfctPrefixSize = 76, /* ACPI header + UUID + two offsets + reserved[4] */
+	kVfctImageHeaderSize = 28,
+	kVfctVbiosOffsetField = 52,
+};
+
 static RaphaelConnectorKind KindFromObjectId(uint16_t objectId)
 {
 	const uint16_t type = (objectId & kObjectTypeMask) >> kObjectTypeShift;
@@ -244,4 +256,89 @@ bool AtomParseConnectors(const uint8_t *rom, size_t romLen, AtomParseResult *out
 
 	ApplyPriority(out);
 	return out->connectorCount > 0;
+}
+
+bool AtomExtractVbiosFromVfct(const uint8_t *vfct, size_t vfctLen, uint32_t imageOffset,
+			      const uint8_t **vbios, size_t *vbiosLen, uint16_t *vendorId,
+			      uint16_t *deviceId)
+{
+	if (!vfct || !vbios || !vbiosLen)
+		return false;
+	if (!InRange(imageOffset, kVfctImageHeaderSize, vfctLen))
+		return false;
+	const uint8_t *hdr = vfct + imageOffset;
+	const uint16_t vendor = ReadU16(hdr + 12);
+	const uint16_t device = ReadU16(hdr + 14);
+	const uint32_t imageLength = ReadU32(hdr + 24);
+	if (imageLength < 0x50 || !InRange(imageOffset + kVfctImageHeaderSize, imageLength, vfctLen))
+		return false;
+	if (vendorId)
+		*vendorId = vendor;
+	if (deviceId)
+		*deviceId = device;
+	*vbios = vfct + imageOffset + kVfctImageHeaderSize;
+	*vbiosLen = imageLength;
+	return true;
+}
+
+bool AtomParseConnectorsFromVfct(const uint8_t *vfct, size_t vfctLen, AtomParseResult *out)
+{
+	if (!vfct || !out || vfctLen < kVfctPrefixSize)
+		return false;
+	if (vfct[0] != 'V' || vfct[1] != 'F' || vfct[2] != 'C' || vfct[3] != 'T')
+		return false;
+
+	uint32_t tableLen = ReadU32(vfct + 4);
+	if (tableLen == 0 || tableLen > vfctLen)
+		tableLen = (uint32_t)vfctLen;
+
+	uint32_t off = ReadU32(vfct + kVfctVbiosOffsetField);
+	if (off == 0)
+		off = kVfctPrefixSize;
+
+	AtomParseResult raphael = {};
+	AtomParseResult any = {};
+	bool haveRaphael = false;
+	bool haveAny = false;
+
+	while (InRange(off, kVfctImageHeaderSize, tableLen)) {
+		const uint8_t *vbios = nullptr;
+		size_t vbiosLen = 0;
+		uint16_t vendor = 0;
+		uint16_t device = 0;
+		if (!AtomExtractVbiosFromVfct(vfct, tableLen, off, &vbios, &vbiosLen, &vendor,
+					      &device))
+			break;
+
+		AtomParseResult parsed = {};
+		if (AtomParseConnectors(vbios, vbiosLen, &parsed)) {
+			if (vendor == kRaphaelVendorId && device == kRaphaelDeviceId) {
+				raphael = parsed;
+				haveRaphael = true;
+				break;
+			}
+			if (!haveAny) {
+				any = parsed;
+				haveAny = true;
+			}
+		}
+
+		const uint32_t imageLength = ReadU32(vfct + off + 24);
+		if (imageLength == 0)
+			break;
+		if (off > tableLen - kVfctImageHeaderSize - imageLength)
+			break;
+		off += kVfctImageHeaderSize + imageLength;
+	}
+
+	if (haveRaphael) {
+		*out = raphael;
+		return true;
+	}
+	if (haveAny) {
+		*out = any;
+		return true;
+	}
+	memset(out, 0, sizeof(*out));
+	return false;
 }

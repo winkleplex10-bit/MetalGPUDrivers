@@ -6,7 +6,7 @@ This repository implements **IHV (Independent Hardware Vendor) backends** behind
 
 ## Status
 
-**Raphael iGPU kext started.** `RaphaelIGPU.kext` (`dev.metalgpudrivers.RaphaelIGPU`) is a GOP-wrap framebuffer + ATOM HDMI/DP/USB-C enum for `1002:164E`. It is **not** Sequoia QE/Metal yet (no GFX ring, no AIR→gfx1036). Other IHV slots remain plan-only.
+**Raphael iGPU kext started.** `RaphaelIGPU.kext` enumerates `1002:164E` (ATOM/VFCT HDMI+DP). GOP wrap is a second kext (`RaphaelFB`) that still needs `IOGraphicsFamily` in the same kernel collection. **Not** Sequoia QE/Metal (no GFX ring, no AIR→gfx1036). Other IHV slots remain plan-only.
 
 ## Target platform
 
@@ -21,7 +21,7 @@ host/                 Vendor-agnostic macOS integration (IOFramebuffer shell, IO
 ihv/nvidia/           Ampere+ GSP-era Nvidia (Phase 1 IHV after AMD proof, or parallel track)
 ihv/amd-rdna3/        RDNA3 / RX 7000 — plan-only
 ihv/amd-rdna4/        RDNA4 / RX 9000
-ihv/amd-rdna2-igpu/   RDNA2 APU (Raphael) — kext started (GOP wrap)
+ihv/amd-rdna2-igpu/   RDNA2 APU (Raphael) — controller kext started; GOP wrap split
 ihv/amd-rdna35-igpu/  RDNA 3.5 APU (Strix Point 800M)
 ihv/arc/              Intel Arc discrete (Xe-HPG / Xe2)
 ihv/intel-igpu/       Modern Intel iGPU (Xe-LPG / Xe2-LPG)

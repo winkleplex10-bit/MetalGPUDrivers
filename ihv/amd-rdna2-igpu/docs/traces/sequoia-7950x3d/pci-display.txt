@@ -1,0 +1,17 @@
+OpenCore SysReport PCI/PCIInfo.txt (2026-09-07). Display functions only.
+
+```
+04. Display controller - VGA-compatible controller
+    Vendor ID: 0x10DE, Device ID: 0x2C02, RevisionID: 0xA1, ClassCode: 0x030000, SubsystemVendorID: 0x1462, SubsystemID: 0x5315
+    DevicePath: PciRoot(0x0)/Pci(0x1,0x1)/Pci(0x0,0x0)
+
+27. Display controller - VGA-compatible controller
+    Vendor ID: 0x1002, Device ID: 0x164E, RevisionID: 0xC9, ClassCode: 0x030000, SubsystemVendorID: 0x1043, SubsystemID: 0x8877
+    DevicePath: PciRoot(0x0)/Pci(0x8,0x1)/Pci(0x0,0x0)
+
+28. Multimedia controller - High definition audio device
+    Vendor ID: 0x1002, Device ID: 0x1640, RevisionID: 0x00, ClassCode: 0x040300, SubsystemVendorID: 0x1043, SubsystemID: 0x8877
+    DevicePath: PciRoot(0x0)/Pci(0x8,0x1)/Pci(0x0,0x1)
+```
+
+iGPU path `Pci(0x8,0x1)/Pci(0x0,0x0)` matches ACPI GP17 / IOKit `IGPU@0`. dGPU is still RTX 5080 at GPP `Pci(0x1,0x1)`. Subsystem `1043:8877` is an ASUS family id used on more than one AM5 board — exact SKU still UNKNOWN.

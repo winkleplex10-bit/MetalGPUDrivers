@@ -2,9 +2,10 @@
 
 **Audience:** Cursor coding agents filling the AMD IHV slots defined by `CURSOR-IHV-DRIVER-SPEC.md`.  
 **Product:** display scanout + Metal on GPUs Apple never shipped as Metal devices.  
-**This file:** AMD-only starter. Three backends, **one host slot**. Do not rewrite `host/`.  
+**This file:** AMD-only starter for **discrete RDNA3/4 + RDNA 3.5 iGPU**. Three backends here, **one host slot**. Do not rewrite `host/`.  
+**Sibling slot (NootedRed gap):** RDNA2 APU / Raphael (7950X3D) lives in [`ihv/amd-rdna2-igpu/`](../ihv/amd-rdna2-igpu/) — living plan [`CURSOR-START-AMD-RDNA2-IGPU.md`](CURSOR-START-AMD-RDNA2-IGPU.md). **Kext started (GOP wrap, 7 Sep 2026); not Metal.** Same host contracts and do-nots; do not spoof X6000 onto `0x164E`.  
 **Binding research (cite; do not invent APIs):** `CURSOR-IHV-DRIVER-SPEC.md`, `01-metal-userspace.md`, `02-kernel-boot-display.md`, `03-nvidia-prior-art.md`, `FINDINGS.md`.  
-**Date:** 29 Aug 2026. Research corpus: 27 Aug 2026.
+**Date:** 29 Aug 2026 (RDNA2-iGPU sibling linked 3 Sep 2026; Raphael kext noted 7 Sep 2026). Research corpus: 27 Aug 2026.
 
 **Hard rules.** Architecture and implementation plan only. No SIP / OpenCore / AuxKC / unsigned-kext recipes. No kext-patch recipes. No RX 6000 personality spoof onto 7000 / 9000 / 800M. If a selector, entitlement, bundle ID, IOGPU method, PM4 opcode, or firmware RPC is not in the research files or a public header you have actually opened, write **UNKNOWN** and stop that branch.
 
@@ -18,9 +19,10 @@ Three backends share the same host contracts (`CURSOR-IHV-DRIVER-SPEC` §5):
 
 | Backend | Marketing | Arch | First-fill order | Repo |
 |---|---|---|---|---|
-| **RDNA3 dGPU** | RX 7000 / Navi 3x | GFX11 (`gfx1100`–`gfx1102`) | **First AMD target** | `ihv/amd-rdna3/` |
+| **RDNA3 dGPU** | RX 7000 / Navi 3x | GFX11 (`gfx1100`–`gfx1102`) | Plan-first AMD discrete; **not started in-tree** | `ihv/amd-rdna3/` |
 | **RDNA4 dGPU** | RX 9000 / Navi 4x | GFX12 (`gfx1200`/`gfx1201`) | Second — colder ISA | `ihv/amd-rdna4/` |
-| **RDNA 3.5 iGPU** | Radeon 800M / 8000S on APUs | GFX11.5 (`gfx1150`+) | Third — UMA, display *is* the APU | `ihv/amd-rdna35-igpu/` |
+| **RDNA 3.5 iGPU** | Radeon 800M / 8000S on APUs | GFX11.5 (`gfx1150`+) | Third — UMA | `ihv/amd-rdna35-igpu/` |
+| **RDNA2 iGPU** | Raphael / Rembrandt APUs (NootedRed gap) | GFX10.3 (`gfx1036` / `gfx1035`) | **In progress in this repo** (lab 7950X3D) — GOP wrap, not QE | `ihv/amd-rdna2-igpu/` |
 
 **Done** is the same as the host spec (`CURSOR-IHV-DRIVER-SPEC` §3): WindowServer desktop on our `IOFramebuffer`, and `MTLCopyAllDevices()` returns our GPU running a stock `.metallib`. TinyGPU HIP compute, a triangle in a private harness, and spoofing an RX 6800 ID so `AMDRadeonX6000` attaches are **not-done**.
 
@@ -110,7 +112,9 @@ This is a **Hackintosh-on-AMD-APU** platform. Display is the APU’s DCN. Memory
 
 Sources: AMD Ryzen AI 300 “Radeon 800M Series” ([AMD how-to-sell](https://www.amd.com/content/dam/amd/en/documents/partner-hub/ryzen/amd-ryzen-ai-300-how-to-sell-guide-competitive.pdf); [AMD partner article](https://www.amd.com/en/partner/articles/ryzen-ai-300-series-processors.html)); LLVM product column ([AMDGPUUsage](https://llvm.org/docs/AMDGPUUsage.html)); kernel APU table ([apu-asic-info-table.csv](https://www.kernel.org/doc/Documentation/gpu/amdgpu/apu-asic-info-table.csv)).
 
-**Hawk Point is not 800M and not RDNA 3.5.** Putting it in `ihv/amd-rdna35-igpu/` is a naming error. If a Hawk Point board is used, treat it as an RDNA3 APU (closer to Phoenix) or file it under a later `ihv/amd-rdna3-igpu/` — **UNKNOWN until Phase 0 names the exact APU**. First iGPU target = **Strix Point 890M**.
+**Hawk Point is not 800M and not RDNA 3.5.** Putting it in `ihv/amd-rdna35-igpu/` is a naming error. If a Hawk Point board is used, treat it as an RDNA3 APU (closer to Phoenix) or file it under a later `ihv/amd-rdna3-igpu/` — **UNKNOWN until Phase 0 names the exact APU**. First *RDNA 3.5* iGPU target = **Strix Point 890M**.
+
+**Raphael (Ryzen 7000 AM5 iGPU, e.g. 7950X3D) is RDNA2, not 3.5.** NootedRed does not support it ([discussion #345](https://github.com/ChefKissInc/NootedRed/discussions/345)). Do **not** put Raphael in this 3.5 folder — use [`ihv/amd-rdna2-igpu/`](../ihv/amd-rdna2-igpu/) and [`CURSOR-START-AMD-RDNA2-IGPU.md`](CURSOR-START-AMD-RDNA2-IGPU.md).
 
 No `IOPCIDevice` in the Mac-Pro sense: the GPU is on the APU fabric. Matching is platform/ACPI-shaped, not a Thunderbolt dGPU personality. Exact IOKit nub on a Hackintosh AMD APU = **UNKNOWN** — measure; do not copy `IOPCIPrimaryMatch` from the 7000 Info.plist.
 
@@ -233,9 +237,17 @@ macos-gpu-ihv/
     submit/
     isa/                         # AIR → gfx1150/1151/1152
     uma/                         # Shared-memory / IOSurface rules
+  ihv/amd-rdna2-igpu/            # NootedRed-gap RDNA2 APU (Raphael) — see CURSOR-START-AMD-RDNA2-IGPU.md
+    firmware/                    # PSP 13.0.5 / GC 10.3.6 / DCN 3.1.5
+    match/                       # 0x164E (+ Rembrandt later)
+    display/
+    submit/
+    isa/                         # AIR → gfx1036 / gfx1035
+    uma/
+    docs/                        # boards.md, unknowns.md
 ```
 
-`host/` must compile against a stub IHV. Adding RDNA4 must not edit RDNA3 ISA files. Nvidia stays in `ihv/nvidia/`.
+`host/` must compile against a stub IHV. Adding RDNA4 must not edit RDNA3 ISA files. Nvidia stays in `ihv/nvidia/`. Raphael RDNA2 iGPU must not be folded into `amd-rdna35-igpu/`.
 
 ---
 
@@ -243,6 +255,7 @@ macos-gpu-ihv/
 
 1. **Do not spoof an RX 6000 / X6000 personality onto 7000, 9000, or 800M.** That is WhateverGreen-class blob enablement and cannot create a generation Apple did not ship (`03` §5.1; WhateverRed).
 2. **Do not call Hawk Point “800M” or “RDNA 3.5”.** AMD names it Radeon 700M / RDNA 3.
+2b. **Do not call Raphael / 7950X3D iGPU “RDNA 3.5” or put it under `amd-rdna35-igpu/`.** It is RDNA2 (`gfx1036`); use `ihv/amd-rdna2-igpu/`. Do not Lilu-spoof it onto X6000.
 3. **Do not invent a desktop RX 8000 dGPU backend.** Discrete RDNA4 is RX 9000.
 4. **Do not write SIP, OpenCore, AuxKC, 1TR, or unsigned-kext steps.** If a kext does not attach, collect IORegistry and stop.
 5. **Do not claim `amdgpu.ko` / RADV / TinyGPU HIP will load as Metal.** Hardware notes transfer; OS integration does not (`02` §7).

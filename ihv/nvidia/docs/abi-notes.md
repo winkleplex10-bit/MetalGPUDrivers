@@ -1,8 +1,14 @@
 # Nvidia ABI notes
 
-Observed RPC class IDs, open-gpu-doc headers opened, and Tahoe IORegistry traces.
+Observed RPC class IDs, open-gpu-doc headers opened, and macOS IORegistry traces.
 
-**Status:** Empty — populate during Phase 0–1 bring-up. Cite filenames and build numbers; do not guess selectors or RPC IDs.
+**Status:** Phase 0 inventory started. Ampere ABI fields still empty — populate during Phase 0–1 bring-up. Cite filenames and build numbers; do not guess selectors or RPC IDs.
+
+## Lab IORegistry (Sequoia 15.7.8)
+
+RTX 5080 (`10de:2c02`) on dual-GPU Hackintosh: [`traces/sequoia-rtx5080/`](traces/sequoia-rtx5080/), summary in [`boards.md`](boards.md).
+
+Observed (non-ABI): PCI enum + `IONDRVFramebuffer` child; **no** `NVDAResman` / Metal plugin / GSP user client. Useful as “card visible, stack absent” baseline before GSP work.
 
 ## Open questions (from CURSOR-START-NVIDIA §9)
 

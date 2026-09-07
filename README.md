@@ -6,7 +6,7 @@ This repository implements **IHV (Independent Hardware Vendor) backends** behind
 
 ## Status
 
-**Setup phase.** No driver code is implemented yet. Architecture, phased plans, and directory layout are defined in the docs below.
+**Raphael iGPU kext started.** `RaphaelIGPU.kext` (`dev.metalgpudrivers.RaphaelIGPU`) is a GOP-wrap framebuffer + ATOM HDMI/DP/USB-C enum for `1002:164E`. It is **not** Sequoia QE/Metal yet (no GFX ring, no AIR→gfx1036). Other IHV slots remain plan-only.
 
 ## Target platform
 
@@ -19,8 +19,9 @@ This repository implements **IHV (Independent Hardware Vendor) backends** behind
 ```
 host/                 Vendor-agnostic macOS integration (IOFramebuffer shell, IOGPU glue, MTL plugin skeleton)
 ihv/nvidia/           Ampere+ GSP-era Nvidia (Phase 1 IHV after AMD proof, or parallel track)
-ihv/amd-rdna3/        RDNA3 / RX 7000 — first AMD target
+ihv/amd-rdna3/        RDNA3 / RX 7000 — plan-only
 ihv/amd-rdna4/        RDNA4 / RX 9000
+ihv/amd-rdna2-igpu/   RDNA2 APU (Raphael) — kext started (GOP wrap)
 ihv/amd-rdna35-igpu/  RDNA 3.5 APU (Strix Point 800M)
 ihv/arc/              Intel Arc discrete (Xe-HPG / Xe2)
 ihv/intel-igpu/       Modern Intel iGPU (Xe-LPG / Xe2-LPG)
@@ -31,7 +32,8 @@ docs/                 Architecture specs and phased plans
 
 | Document | Purpose |
 |---|---|
-| [docs/CURSOR-START-AMD.md](docs/CURSOR-START-AMD.md) | AMD RDNA3/RDNA4/RDNA 3.5 starter — **first implementation target** |
+| [docs/CURSOR-START-AMD.md](docs/CURSOR-START-AMD.md) | AMD RDNA3/RDNA4/RDNA 3.5 starter (plan-only in-tree) |
+| [docs/CURSOR-START-AMD-RDNA2-IGPU.md](docs/CURSOR-START-AMD-RDNA2-IGPU.md) | Raphael RDNA2 iGPU — **living plan**; GOP-wrap kext started |
 | [docs/CURSOR-START-NVIDIA.md](docs/CURSOR-START-NVIDIA.md) | Nvidia Ampere+ GSP-era starter |
 | [docs/CURSOR-START-INTEL.md](docs/CURSOR-START-INTEL.md) | Intel Arc + modern iGPU starter (Phase 7 slot) |
 
@@ -41,7 +43,7 @@ docs/                 Architecture specs and phased plans
 
 All vendors follow the same host phases (0–6): freeze board → enumerate + firmware alive → dumb framebuffer → non-Metal compute → AIR→ISA compile → MTLDevice → present. Vendor-specific acceptance criteria are in each CURSOR-START doc.
 
-**Recommended fill order:** AMD RDNA3 (`ihv/amd-rdna3/`) first — a live `AMDRadeonX6000` Metal stack exists on Tahoe Intel macOS to trace. Nvidia and Intel slots plug in without rewriting `host/`.
+**Recommended fill order (original):** AMD RDNA3 first — a live `AMDRadeonX6000` stack exists to trace. **What actually started:** Raphael iGPU (`ihv/amd-rdna2-igpu/`) because the lab board is a 7950X3D. RDNA3 remains plan-only. Nvidia Phase 1 stays Ampere; the lab RTX 5080 is inventory only.
 
 ## Hard rules
 

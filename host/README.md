@@ -6,10 +6,10 @@ The host layer speaks Apple's frameworks and IOKit families. IHV backends (`ihv/
 
 | Path | Role |
 |---|---|
-| `iofb/` | `IOFramebuffer` subclass shell; modes, cursor/VBL stubs, present glue entry |
-| `ioaccel/` | Accelerator kext shell speaking `IOAcceleratorFamily2` / `IOGPUFamily` user clients |
+| `iofb/` | `IOFBLinearShell` — linear `IOFramebuffer` (used by Raphael GOP wrap) |
+| `ioaccel/` | Placeholder — no `IOAccelDevice` until IOGPU selectors are traced |
 | `air/` | Shared AIR ingest helpers (`.metallib` slices, triple validation) |
-| `mtl-plugin/` | `*MTLDriver.bundle` skeleton loaded via `MetalPluginName` |
+| `mtl-plugin/` | Notes; IHV supplies `*MTLDriver.bundle` (Raphael stub is off by default) |
 | `present/` | IOSurface-backed present path to WindowServer |
 | `power/` | Power-helper shape (clocks, thermal, surprise-remove) — no AGPM injector |
 

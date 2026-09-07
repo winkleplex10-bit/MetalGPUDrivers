@@ -1,0 +1,187 @@
+GFX0@0/IONDRVFramebuffer/AGPM"
+    | |   |   | |   "AAPL,gray-value" = <00000000>
+    | |   |   | |   "class-code" = <00000300>
+    | |   |   | |   "IODeviceMemory" = (({"address"=3623878656,"length"=67108864}),({"address"=4060086272,"length"=16}),({"address"=4026531840,"length"=33554432}),"IOSubMemoryDescriptor is not serializable",({"address"=3690987520,"length"=524288}))
+    | |   |   | |   "AAPL,gray-page" = <01000000>
+    | |   |   | |   "IOPowerManagement" = {"CurrentPowerState"=2,"CapabilityFlags"=258,"ChildProxyPowerState"=2,"MaxPowerState"=3}
+    | |   |   | |   "subsystem-vendor-id" = <62140000>
+    | |   |   | |   "built-in" = <00>
+    | |   |   | |   "acpi-device" = "IOACPIPlatformDevice is not serializable"
+    | |   |   | |   "IOBusyInterest" = "IOCommand is not serializable"
+    | |   |   | |   "vendor-id" = <de100000>
+    | |   |   | |   "name" = <"display">
+    | |   |   | |   "device-id" = <022c0000>
+    | |   |   | |   "IOChildIndex" = 1
+    | |   |   | |   "acpi-pmcap-offset" = 64
+    | |   |   | |   "IOPCIResourced" = Yes
+    | |   |   | |   "compatible" = <"pci1462,5315","pci10de,2c02","pciclass,030000","VGA","GFX0">
+    | |   |   | |   "AAPL,ndrv-dev" = Yes
+    | |   |   | |   "IOPCIExpressLinkCapabilities" = 4716805
+    | |   |   | |   "IOServiceDEXTEntitlements" = (("com.apple.developer.driverkit.transport.pci"))
+    | |   |   | |   "acpi-path" = "IOACPIPlane:/_SB/PCI0@0/GPP0@10001/VGA@0"
+    | |   |   | |   "subsystem-id" = <15530000>
+    | |   |   | |   "revision-id" = <a1000000>
+    | |   |   | |   "IOPCIExpressLinkStatus" = 4357
+    | |   |   | |   "IOPCIExpressCapabilities" = 18
+    | |   |   | |   "pcidebug" = "1:0:0"
+    | |   |   | |   "IOName" = "display"
+    | |   |   | |   "AAPL,slot-name" = <"Slot-1">
+    | |   |   | |   "reg" = <0000010000000000000000000000000000000000100001020000000000000000000000000000000418000142000000000000000000000000100000001c0001420000000000000000000000000000000224000101000000000000000000000000800000003000010200000000000000000000000000000800>
+    | |   |   | |   "AAPL,RegEntryID" = <e8a5380000000000175ac7ffffffffff656d6953000000007a6c755200000000>
+    | |   |   | | }
+    | |   |   | | 
+    | |   |   | +-o IONDRVFramebuffer  <class IONDRVFramebuffer, id 0x100000565, registered, matched, active, busy 0 (5 ms), retain 37>
+    | |   |   |   | {
+    | |   |   |   |   "IOClass" = "IONDRVFramebuffer"
+    | |   |   |   |   "CFBundleIdentifier" = "com.apple.iokit.IONDRVSupport"
+    | |   |   |   |   "IOProviderClass" = "IOPCIDevice"
+    | |   |   |   |   "IOPMStrictTreeOrder" = Yes
+    | |   |   |   |   "IONDRVFramebufferGeneration" = <0200000002000000>
+    | |   |   |   |   "IOPowerManagement" = {"CapabilityFlags"=0,"ChildProxyPowerState"=18446744073709551615,"CurrentPowerState"=0}
+    | |   |   |   |   "IOFBUIScale" = <00000000>
+    | |   |   |   |   "IOProbeScore" = 20000
+    | |   |   |   |   "IONameMatch" = "display"
+    | |   |   |   |   "IOMatchCategory" = "IOFramebuffer"
+    | |   |   |   |   "IONameMatched" = "display"
+    | |   |   |   |   "IOPersonalityPublisher" = "com.apple.iokit.IONDRVSupport"
+    | |   |   |   |   "CFBundleIdentifierKernel" = "com.apple.iokit.IONDRVSupport"
+    | |   |   |   | }
+    | |   |   |   | 
+    | |   |   |   +-o AppleMCCSControlModule  <class AppleMCCSControlModule, id 0x100000571, registered, matched, active, busy 0 (1 ms), retain 27>
+    | |   |   |   | | {
+    | |   |   |   | |   "IOProbeScore" = 0
+    | |   |   |   | |   "CFBundleIdentifier" = "com.apple.driver.AppleMCCSControl"
+    | |   |   |   | |   "IOMatchCategory" = "AppleMCCSControlFamily"
+    | |   |   |   | |   "IOClass" = "AppleMCCSControlModule"
+    | |   |   |   | |   "IOPersonalityPublisher" = "com.apple.driver.AppleMCCSControl"
+    | |   |   |   | |   "IOKitDebug" = 0
+    | |   |   |   | |   "IOProviderClass" = "IOFramebuffer"
+    | |   |   |   | |   "CFBundleIdentifierKernel" = "com.apple.driver.AppleMCCSControl"
+    | |   |   |   | |   "IOUserClientClass" = "AppleMCCSUserClient"
+    | |   |   |   | |   "IOResourceMatch" = "IOKit"
+    | |   |   |   | | }
+    | |   |   |   | | 
+    | |   |   |   | +-o AppleMCCSParameterHandler  <class AppleMCCSParameterHandler, id 0x100000575, registered, matched, active, busy 0 (0 ms), retain 25>
+    | |   |   |   |     {
+    | |   |   |   |       "IOProbeScore" = 0
+    | |   |   |   |       "CFBundleIdentifier" = "com.apple.driver.AppleMCCSControl"
+    | |   |   |   |       "IOMatchCategory" = "IODisplayParameters"
+    | |   |   |   |       "IOClass" = "AppleMCCSParameterHandler"
+    | |   |   |   |       "IOPersonalityPublisher" = "com.apple.driver.AppleMCCSControl"
+    | |   |   |   |       "IOKitDebug" = 0
+    | |   |   |   |       "AppleMCCSFeatures" = 1
+    | |   |   |   |       "IOProviderClass" = "AppleMCCSControlFamily"
+    | |   |   |   |       "CFBundleIdentifierKernel" = "com.apple.driver.AppleMCCSControl"
+    | |   |   |   |       "IOResourceMatch" = "IOKit"
+    | |   |   |   |     }
+    | |   |   |   |     
+    | |   |   |   +-o AppleUpstreamUserClientDriver  <class AppleUpstreamUserClientDriver, id 0x100000572, registered, matched, active, busy 0 (0 ms), retain 25>
+    | |   |   |   |   {
+    | |   |   |   |     "IOProbeScore" = 0
+    | |   |   |   |     "CFBundleIdentifier" = "com.apple.driver.AppleUpstreamUserClient"
+    | |   |   |   |     "IOMatchCategory" = "AppleUpstreamUserClientDriver"
+    | |   |   |   |     "IOClass" = "AppleUpstreamUserClientDriver"
+    | |   |   |   |     "IOPersonalityPublisher" = "com.apple.driver.AppleUpstreamUserClient"
+    | |   |   |   |     "IOProviderClass" = "IOFramebuffer"
+    | |   |   |   |     "CFBundleIdentifierKernel" = "com.apple.driver.AppleUpstreamUserClient"
+    | |   |   |   |     "IOUserClientClass" = "AppleUpstreamUserClient"
+    | |   |   |   |     "IOResourceMatch" = "IOKit"
+    | |   |   |   |   }
+    | |   |   |   |   
+    | |   |   |   +-o AGPM  <class AGPM, id 0x100000633, registered, matched, active, busy 0 (0 ms), retain 28>
+    | |   |   |       {
+    | |   |   |         "IOReportLegend" = ({"IOReportChannels"=((5795122739160566084,6442450945,"PlimitNS"),(6008203707511294276,6442450945,"PlimitSampleTimeNS")),"IOReportGroupName"="AGPMStatistics","IOReportChannelInfo"={"IOReportChannelUnit"=0}})
+    | |   |   |         "max-value" = 15
+    | |   |   |         "min-value" = 0
+    | |   |   |         "IOReportLegendPublic" = Yes
+    | |   |   |         "IOPowerManagement" = {"CapabilityFlags"=0,"CurrentPowerState"=0}
+    | |   |   |         "Heuristic-ID" = <ffffffff>
+    | |   |   |       }
+    | |   |   |       
+    | |   |   +-o HDAU@0,1  <class IOPCIDevice, id 0x1000002d7, registered, matched, active, busy 0 (162 ms), retain 28>
+    | |   |       {
+    | |   |         "assigned-addresses" = <1001018200000000000008dc0000000000400000>
+    | |   |         "class-code" = <00030400>
+    | |   |         "IODeviceMemory" = (({"address"=3691511808,"length"=16384}))
+    | |   |         "IOPowerManagement" = {"CurrentPowerState"=2,"CapabilityFlags"=258,"ChildProxyPowerState"=2,"MaxPowerState"=3}
+    | |   |         "subsystem-vendor-id" = <de100000>
+    | |   |         "built-in" = <00>
+    | |   |         "acpi-device" = "IOACPIPlatformDevice is not serializable"
+    | |   |         "IOBusyInterest" = "IOCommand is not serializable"
+    | |   |         "vendor-id" = <de100000>
+    | |   |         "name" = <"pci10de,22e9">
+    | |   |         "device-id" = <e9220000>
+    | |   |         "IOChildIndex" = 2
+    | |   |         "IOPCIResourced" = Yes
+    | |   |         "compatible" = <"pci10de,0","pci10de,22e9","pciclass,040300","HDAU">
+    | |   |         "IOPCIExpressLinkCapabilities" = 4716805
+    | |   |         "IOServiceDEXTEntitlements" = (("com.apple.developer.driverkit.transport.pci"))
+    | |   |         "acpi-path" = "IOACPIPlane:/_SB/PCI0@0/GPP0@10001/HDAU@1"
+    | |   |         "subsystem-id" = <00000000>
+    | |   |         "revision-id" = <a1000000>
+    | |   |         "IOPCIExpressLinkStatus" = 4357
+    | |   |         "IOPCIExpressCapabilities" = 2
+    | |   |         "pcidebug" = "1:0:1"
+    | |   |         "IOName" = "pci10de,22e9"
+    | |   |         "reg" = <00010100000000000000000000000000000000001001010200000000000000000000000000400000>
+    | |   |       }
+    | |   |       
+    | |   +-o GPP1@1,2  <class IOPCIDevice, id 0x1000002c3, registered, matched, active, busy 0 (30 ms), retain 32>
+    | |   | | {
+    | |   | |   "#address-cells" = <03000000>
+    | |   | |   "class-code" = <00040600>
+    | |   | |   "IOPCIExpressSlotStatus" = 64
+    | |   | |   "IOPowerManagement" = {"ChildrenPowerState"=2,"CurrentPowerState"=2,"CapabilityFlags"=258,"ChildProxyPowerState"=2,"MaxPowerState"=3}
+    | |   | |   "built-in" = <00>
+    | |   | |   "acpi-device" = "IOACPIPlatformDevice is not serializable"
+    | |   | |   "IOBusyInterest" = "IOCommand is not serializable"
+    | |   | |   "vendor-id" = <22100000>
+    | |   | |   "name" = <"pci-bridge">
+    | |   | |   "device-id" = <db140000>
+    | |   | |   "acpi-pmcap-offset" = 80
+    | |   | |   "IOPCIResourced" = Yes
+    | |   | |   "IODTPersist" = 0
+    | |   | |   "compatible" = <"pci1022,14db","pciclass,060400","GPP1">
+    | |   | |   "ranges" = <0000008200000000000000dd0000008200000000000000dd0000000000001000000000c20000000000000000000000c2000000000000000000000000000000000000008100000000000000000000008100000000000000000000000000000000>
+    | |   | |   "IOPCIExpressLinkCapabilities" = 7567429
+    | |   | |   "IOServiceDEXTEntitlements" = (("com.apple.developer.driverkit.transport.pci","com.apple.developer.driverkit.transport.pci.bridge"))
+    | |   | |   "acpi-path" = "IOACPIPlane:/_SB/PCI0@0/GPP1@10002"
+    | |   | |   "IOPCIConfigured" = Yes
+    | |   | |   "revision-id" = <00000000>
+    | |   | |   "IOPCIExpressLinkStatus" = 28709
+    | |   | |   "IOPCIExpressCapabilities" = 322
+    | |   | |   "pcidebug" = "0:1:2(2:2)"
+    | |   | |   "IOName" = "pci-bridge"
+    | |   | |   "#size-cells" = <02000000>
+    | |   | |   "reg" = <000a000000000000000000000000000000000000>
+    | |   | |   "IOPCIExpressSlotCapabilities" = 271744
+    | |   | | }
+    | |   | | 
+    | |   | +-o IOPP  <class IOPCI2PCIBridge, id 0x100000310, registered, matched, active, busy 0 (28 ms), retain 29>
+    | |   |   | {
+    | |   |   |   "IOClass" = "IOPCI2PCIBridge"
+    | |   |   |   "CFBundleIdentifier" = "com.apple.iokit.IOPCIFamily"
+    | |   |   |   "IOProviderClass" = "IOPCIDevice"
+    | |   |   |   "IOPCIPowerOnProbe" = Yes
+    | |   |   |   "IOPowerManagement" = {"ChildrenPowerState"=2,"CurrentPowerState"=2,"CapabilityFlags"=258,"MaxPowerState"=3}
+    | |   |   |   "IOProbeScore" = 18446744073709551516
+    | |   |   |   "IONameMatch" = "pci-bridge"
+    | |   |   |   "IOMatchedAtBoot" = Yes
+    | |   |   |   "IOMatchCategory" = "IODefaultMatchCategory"
+    | |   |   |   "IONameMatched" = "pci-bridge"
+    | |   |   |   "IOPersonalityPublisher" = "com.apple.iokit.IOPCIFamily"
+    | |   |   |   "CFBundleIdentifierKernel" = "com.apple.iokit.IOPCIFamily"
+    | |   |   | }
+    | |   |   | 
+    | |   |   +-o pci144d,a80d@0  <class IOPCIDevice, id 0x1000002d8, registered, matched, active, busy 0 (28 ms), retain 32>
+    | |   |     | {
+    | |   |     |   "assigned-addresses" = <1000028200000000000000dd0000000000400000>
+    | |   |     |   "IOInterruptSpecifiers" = (<0400000007000000>,<0000000000000100>)
+    | |   |     |   "class-code" = <02080100>
+    | |   |     |   "IODeviceMemory" = (({"address"=3707764736,"length"=16384}))
+    | |   |     |   "IOReportLegendPublic" = Yes
+    | |   |     |   "IOPowerManagement" = {"ChildrenPowerState"=2,"CurrentPowerState"=2,"CapabilityFlags"=258,"ChildProxyPowerState"=2,"MaxPowerState"=3}
+    | |   |     |   "subsystem-vendor-id" = <4d140000>
+    | |   |     |   "IOBusyInterest" = "IOCommand is not serializable"
+    | |   |     |   "IOPCIMSIMode" = Yes
+    | |   |     |   "IOInterruptControllers" = ("io-apic-1","IOPCIMessagedInterruptController")

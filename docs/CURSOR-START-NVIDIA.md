@@ -38,7 +38,11 @@ Apple owns the host. We fill the Nvidia box behind the doors in `CURSOR-IHV-DRIV
 
 **In (Phase 1 board):** one **Ampere** discrete card (GA10x, GeForce RTX 30 / matching RTX A). GSP host-bootstrap is required. Same floor TinyGPU chose: Pascal-class Option-ROM POST is not how modern cards init (`02` §5.4; `03` §6.3; [TinyGPU](https://docs.tinygrad.org/tinygpu/)). PCI vendor is `0x10de`. Freeze **one** DID from `system_profiler` / IORegistry into `docs/boards.md`. Example Ampere DIDs exist in Nvidia’s open-rm Compatible GPUs table (e.g. RTX 3090 `2204`, RTX 3080 `2206`, RTX 3070 `2484`) — copy from that table, do not invent ([open-gpu-kernel-modules README](https://github.com/NVIDIA/open-gpu-kernel-modules)).
 
-**Same slot, later boards (do not start here):** **Ada Lovelace** (AD10x, RTX 40; open-gpu-doc `ADA_A` / `clc997.h`) and **consumer Blackwell** (GB20x, RTX 50; open-gpu-doc 3D `clcd97`/`clce97`, compute `clcdc0`/`clcec0`). Public facts that make this the same IHV backend, not a new host:
+**Same slot, later boards (do not start here):** **Ada Lovelace** (AD10x, RTX 40; open-gpu-doc `ADA_A` / `clc997.h`) and **consumer Blackwell** (GB20x, RTX 50; open-gpu-doc 3D `clcd97`/`clce97`, compute `clcdc0`/`clcec0`).
+
+**Lab inventory (not Phase 1):** Sequoia Hackintosh dump recorded **RTX 5080** DID **`0x2c02`** rev `0xA1` (MSI `1462:5315`), nub `GFX0@0`, alongside Raphael iGPU — PCI + `IONDRVFramebuffer` only, no Nvidia Metal. See [`ihv/nvidia/docs/boards.md`](../ihv/nvidia/docs/boards.md) and [`ihv/nvidia/pci/did-table.md`](../ihv/nvidia/pci/did-table.md). Do not retarget Phase 1 to Blackwell because this card is present.
+
+Public facts that make Ada/Blackwell the same IHV backend, not a new host:
 
 - GSP was **first introduced in Turing**. Open kernel modules **require** GSP and **cannot** support pre-Turing ([Nvidia kernel_open README](https://download.nvidia.com/XFree86/Linux-x86_64/575.51.02/README/kernel_open.html); [GSP firmware chapter](https://download.nvidia.com/XFree86/Linux-x86_64/575.57.08/README/gsp.html)).
 - Ampere / Ada / Hopper: Nvidia **recommends** open-rm. **Blackwell and later: open-rm only**; proprietary `nvidia.ko` flavor is unsupported ([Nvidia R560 blog](https://developer.nvidia.com/blog/nvidia-transitions-fully-towards-open-source-gpu-kernel-modules/)).

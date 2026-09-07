@@ -40,11 +40,17 @@ On a Mac with the Sequoia SDK / Kernel.framework headers:
 
 ```
 make -C ihv/amd-rdna2-igpu kext
+# or:
+make -C ihv/amd-rdna2-igpu xcodebuild
 ```
 
+Xcode projects (one per kext):
+- `ihv/amd-rdna2-igpu/RaphaelIGPU.xcodeproj`
+- `ihv/amd-rdna2-igpu/RaphaelFB.xcodeproj`
+
 Output:
-- `ihv/amd-rdna2-igpu/build/RaphaelIGPU.kext`
-- `ihv/amd-rdna2-igpu/build/RaphaelFB.kext`
+- Makefile: `ihv/amd-rdna2-igpu/build/RaphaelIGPU.kext`, `RaphaelFB.kext`
+- Xcode: `ihv/amd-rdna2-igpu/build/xcode/Release/*.kext`
 
 Portable check (Linux or macOS, no SDK):
 

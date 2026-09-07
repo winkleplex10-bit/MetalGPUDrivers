@@ -29,13 +29,14 @@ FB_KEXT_SRCS := \
 
 CXXFLAGS ?= -std=c++17 -Wall -Wextra -Werror
 
-.PHONY: all test kext clean help
+.PHONY: all test kext xcodebuild clean help
 
 all: test
 
 help:
-	@echo "make test  — ATOM / VFCT connector parser (portable)"
-	@echo "make kext  — Darwin only; RaphaelIGPU.kext + RaphaelFB.kext"
+	@echo "make test       — ATOM / VFCT connector parser (portable)"
+	@echo "make kext       — Darwin Makefile; RaphaelIGPU.kext + RaphaelFB.kext"
+	@echo "make xcodebuild — xcodebuild Release for both .xcodeproj targets"
 
 test:
 	mkdir -p $(BUILD)
@@ -68,6 +69,17 @@ kext:
 		$(FB_KEXT_SRCS) -o $(FB_KEXT_BUNDLE)/Contents/MacOS/$(FB_KEXT_NAME)
 	cp kext/RaphaelFB-Info.plist $(FB_KEXT_BUNDLE)/Contents/Info.plist
 	@echo "built $(KEXT_BUNDLE) and $(FB_KEXT_BUNDLE)"
+
+xcodebuild:
+	@if [ "$$(uname -s)" != "Darwin" ]; then \
+		echo "xcodebuild requires Darwin"; \
+		exit 1; \
+	fi
+	xcodebuild -project RaphaelIGPU.xcodeproj -scheme RaphaelIGPU -configuration Release \
+		-derivedDataPath "$(CURDIR)/build/DerivedData-IGPU" build
+	xcodebuild -project RaphaelFB.xcodeproj -scheme RaphaelFB -configuration Release \
+		-derivedDataPath "$(CURDIR)/build/DerivedData-FB" build
+	@echo "built build/xcode/Release/RaphaelIGPU.kext and RaphaelFB.kext"
 
 clean:
 	rm -rf $(BUILD)

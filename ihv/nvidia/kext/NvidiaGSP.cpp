@@ -2,12 +2,11 @@
 #include <libkern/libkern.h>
 #include <mach/kmod.h>
 
+// Xcode's kernel-extension product type emits <Product>_info.c with kmod_info.
+// Keep only start/stop here so Xcode and Makefile do not both define kmod_info.
+// Makefile links kext/NvidiaGSP_info.c for the make path.
+
 extern "C" {
-
-kern_return_t NvidiaGSP_start(kmod_info_t *ki, void *d);
-kern_return_t NvidiaGSP_stop(kmod_info_t *ki, void *d);
-
-KMOD_EXPLICIT_DECL(dev.metalgpudrivers.NvidiaGSP, "0.1.0", NvidiaGSP_start, NvidiaGSP_stop)
 
 kern_return_t NvidiaGSP_start(kmod_info_t *ki, void *d)
 {

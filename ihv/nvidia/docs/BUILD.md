@@ -15,18 +15,23 @@
 - Touch HDMI audio function `10de:22e9`
 - Invent RPC IDs or MMIO register pokes
 
-## Build
+## Darwin build
 
 ```bash
 cd ihv/nvidia
 make kext
+# or:
+xcodebuild -project NvidiaGSP.xcodeproj -scheme NvidiaGSP -configuration Release build
 ```
 
-Output: `build/NvidiaGSP.kext`
+Output:
+- `make`: `ihv/nvidia/build/NvidiaGSP.kext`
+- Xcode: `ihv/nvidia/build/xcode/Release/NvidiaGSP.kext`
 
-Requires Xcode macOS SDK (this machine has MacOSX26.x SDK).
+Open `NvidiaGSP.xcodeproj` in Xcode for editing/building. Product type is a kernel extension (`wrapper.kext`).
 
 ## Load (lab)
+
 
 Assumes OpenCore / AuxKC loading is already solved on this host (same path as `RaphaelIGPU.kext`).
 

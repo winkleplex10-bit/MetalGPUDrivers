@@ -303,9 +303,13 @@
 					"-Wno-deprecated-declarations",
 				);
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
+				MODULE_NAME = dev.metalgpudrivers.RaphaelIGPU;
+				MODULE_START = RaphaelIGPU_start;
+				MODULE_STOP = RaphaelIGPU_stop;
+				MODULE_VERSION = 0.2.0;
 				OTHER_LDFLAGS = (
 					-nostdlib,
-					-kext,
+					"-Wl,-kext",
 					"-lkmodc++",
 					-lkmod,
 					"-lcc_kext",
@@ -352,9 +356,13 @@
 					"-Wno-deprecated-declarations",
 				);
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
+				MODULE_NAME = dev.metalgpudrivers.RaphaelIGPU;
+				MODULE_START = RaphaelIGPU_start;
+				MODULE_STOP = RaphaelIGPU_stop;
+				MODULE_VERSION = 0.2.0;
 				OTHER_LDFLAGS = (
 					-nostdlib,
-					-kext,
+					"-Wl,-kext",
 					"-lkmodc++",
 					-lkmod,
 					"-lcc_kext",

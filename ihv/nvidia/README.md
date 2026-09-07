@@ -47,6 +47,7 @@ docs/         boards, BUILD, coexistence, traces, abi-notes
 
 ```bash
 cd ihv/nvidia && make kext
+# or open NvidiaGSP.xcodeproj / xcodebuild -scheme NvidiaGSP
 ```
 
 See [docs/BUILD.md](docs/BUILD.md).

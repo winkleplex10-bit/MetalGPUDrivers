@@ -7,27 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B22000000000000000000001 /* IOFBLinearShell.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B21000000000000000000001 /* IOFBLinearShell.cpp */; };
-		B22000000000000000000002 /* RaphaelFramebuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B21000000000000000000003 /* RaphaelFramebuffer.cpp */; };
-		B22000000000000000000003 /* RaphaelFB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B21000000000000000000005 /* RaphaelFB.cpp */; };
+		B12000000000000000000001 /* NvidiaController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B11000000000000000000001 /* NvidiaController.cpp */; };
+		B12000000000000000000002 /* NvidiaGSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B11000000000000000000003 /* NvidiaGSP.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		B20000000000000000000003 /* RaphaelFB.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RaphaelFB.kext; sourceTree = BUILT_PRODUCTS_DIR; };
-		B21000000000000000000001 /* IOFBLinearShell.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = IOFBLinearShell.cpp; sourceTree = "<group>"; };
-		B21000000000000000000002 /* IOFBLinearShell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IOFBLinearShell.h; sourceTree = "<group>"; };
-		B21000000000000000000003 /* RaphaelFramebuffer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = RaphaelFramebuffer.cpp; sourceTree = "<group>"; };
-		B21000000000000000000004 /* RaphaelFramebuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RaphaelFramebuffer.h; sourceTree = "<group>"; };
-		B21000000000000000000005 /* RaphaelFB.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = RaphaelFB.cpp; sourceTree = "<group>"; };
-		B21000000000000000000006 /* RaphaelFB-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "RaphaelFB-Info.plist"; sourceTree = "<group>"; };
-		B21000000000000000000007 /* RaphaelController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RaphaelController.h; sourceTree = "<group>"; };
-		B21000000000000000000008 /* RaphaelIds.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RaphaelIds.h; sourceTree = "<group>"; };
-		B21000000000000000000009 /* RaphaelConnectorNub.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RaphaelConnectorNub.h; sourceTree = "<group>"; };
-		B2100000000000000000000A /* atom_parse.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = atom_parse.h; sourceTree = "<group>"; };
+		B11000000000000000000001 /* NvidiaController.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = NvidiaController.cpp; sourceTree = "<group>"; };
+		B11000000000000000000002 /* NvidiaController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NvidiaController.h; sourceTree = "<group>"; };
+		B11000000000000000000003 /* NvidiaGSP.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = NvidiaGSP.cpp; sourceTree = "<group>"; };
+		B11000000000000000000004 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B11000000000000000000005 /* NvidiaIds.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NvidiaIds.h; sourceTree = "<group>"; };
+		B10000000000000000000003 /* NvidiaGSP.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.kext; includeInIndex = 0; path = NvidiaGSP.kext; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		B20000000000000000000005 /* Frameworks */ = {
+		B10000000000000000000005 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -37,68 +31,46 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		B20000000000000000000006 = {
+		B10000000000000000000006 = {
 			isa = PBXGroup;
 			children = (
-				B20000000000000000000014 /* include */,
-				B20000000000000000000013 /* match */,
-				B20000000000000000000011 /* display */,
-				B20000000000000000000010 /* iofb */,
-				B20000000000000000000012 /* kext */,
-				B20000000000000000000007 /* Products */,
+				B10000000000000000000014 /* include */,
+				B10000000000000000000010 /* match */,
+				B10000000000000000000013 /* kext */,
+				B10000000000000000000007 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		B20000000000000000000007 /* Products */ = {
+		B10000000000000000000007 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B20000000000000000000003 /* RaphaelFB.kext */,
+				B10000000000000000000003 /* NvidiaGSP.kext */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		B20000000000000000000010 /* iofb */ = {
+		B10000000000000000000010 /* match */ = {
 			isa = PBXGroup;
 			children = (
-				B21000000000000000000001 /* IOFBLinearShell.cpp */,
-				B21000000000000000000002 /* IOFBLinearShell.h */,
-			);
-			name = iofb;
-			path = ../../host/iofb;
-			sourceTree = "<group>";
-		};
-		B20000000000000000000011 /* display */ = {
-			isa = PBXGroup;
-			children = (
-				B21000000000000000000003 /* RaphaelFramebuffer.cpp */,
-				B21000000000000000000004 /* RaphaelFramebuffer.h */,
-				B21000000000000000000009 /* RaphaelConnectorNub.h */,
-				B2100000000000000000000A /* atom_parse.h */,
-			);
-			path = display;
-			sourceTree = "<group>";
-		};
-		B20000000000000000000012 /* kext */ = {
-			isa = PBXGroup;
-			children = (
-				B21000000000000000000005 /* RaphaelFB.cpp */,
-				B21000000000000000000006 /* RaphaelFB-Info.plist */,
-			);
-			path = kext;
-			sourceTree = "<group>";
-		};
-		B20000000000000000000013 /* match */ = {
-			isa = PBXGroup;
-			children = (
-				B21000000000000000000007 /* RaphaelController.h */,
+				B11000000000000000000001 /* NvidiaController.cpp */,
+				B11000000000000000000002 /* NvidiaController.h */,
 			);
 			path = match;
 			sourceTree = "<group>";
 		};
-		B20000000000000000000014 /* include */ = {
+		B10000000000000000000013 /* kext */ = {
 			isa = PBXGroup;
 			children = (
-				B21000000000000000000008 /* RaphaelIds.h */,
+				B11000000000000000000003 /* NvidiaGSP.cpp */,
+				B11000000000000000000004 /* Info.plist */,
+			);
+			path = kext;
+			sourceTree = "<group>";
+		};
+		B10000000000000000000014 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				B11000000000000000000005 /* NvidiaIds.h */,
 			);
 			path = include;
 			sourceTree = "<group>";
@@ -106,32 +78,32 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		B20000000000000000000002 /* RaphaelFB */ = {
+		B10000000000000000000002 /* NvidiaGSP */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B2000000000000000000000D /* Build configuration list for PBXNativeTarget "RaphaelFB" */;
+			buildConfigurationList = B1000000000000000000000D /* Build configuration list for PBXNativeTarget "NvidiaGSP" */;
 			buildPhases = (
-				B20000000000000000000004 /* Sources */,
-				B20000000000000000000005 /* Frameworks */,
+				B10000000000000000000004 /* Sources */,
+				B10000000000000000000005 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = RaphaelFB;
-			productName = RaphaelFB;
-			productReference = B20000000000000000000003 /* RaphaelFB.kext */;
+			name = NvidiaGSP;
+			productName = NvidiaGSP;
+			productReference = B10000000000000000000003 /* NvidiaGSP.kext */;
 			productType = "com.apple.product-type.kernel-extension";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		B20000000000000000000001 /* Project object */ = {
+		B10000000000000000000001 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastUpgradeCheck = 1600;
 			};
-			buildConfigurationList = B2000000000000000000000C /* Build configuration list for PBXProject "RaphaelFB" */;
+			buildConfigurationList = B1000000000000000000000C /* Build configuration list for PBXProject "NvidiaGSP" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -139,31 +111,30 @@
 				en,
 				Base,
 			);
-			mainGroup = B20000000000000000000006;
-			productRefGroup = B20000000000000000000007 /* Products */;
+			mainGroup = B10000000000000000000006;
+			productRefGroup = B10000000000000000000007 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B20000000000000000000002 /* RaphaelFB */,
+				B10000000000000000000002 /* NvidiaGSP */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
-		B20000000000000000000004 /* Sources */ = {
+		B10000000000000000000004 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B22000000000000000000001 /* IOFBLinearShell.cpp in Sources */,
-				B22000000000000000000002 /* RaphaelFramebuffer.cpp in Sources */,
-				B22000000000000000000003 /* RaphaelFB.cpp in Sources */,
+				B12000000000000000000001 /* NvidiaController.cpp in Sources */,
+				B12000000000000000000002 /* NvidiaGSP.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		B20000000000000000000008 /* Debug */ = {
+		B10000000000000000000008 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				AD_HOC_CODE_SIGNING_ALLOWED = YES;
@@ -212,7 +183,7 @@
 			};
 			name = Debug;
 		};
-		B20000000000000000000009 /* Release */ = {
+		B10000000000000000000009 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				AD_HOC_CODE_SIGNING_ALLOWED = YES;
@@ -261,12 +232,11 @@
 			};
 			name = Release;
 		};
-		B2000000000000000000000A /* Debug */ = {
+		B1000000000000000000000A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
-				CURRENT_PROJECT_VERSION = 0.2.0;
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = 28A3FV4XRB;
+				CURRENT_PROJECT_VERSION = 0.1.0;
+				GENERATE_INFOPLIST_FILE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"KERNEL=1",
 					"KERNEL_PRIVATE=1",
@@ -274,23 +244,19 @@
 					"$(inherited)",
 				);
 				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
-				GENERATE_INFOPLIST_FILE = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/include",
-					"$(PROJECT_DIR)/display",
 					"$(PROJECT_DIR)/match",
-					"$(PROJECT_DIR)/submit",
 					"$(PROJECT_DIR)/kext",
-					"$(PROJECT_DIR)/../../host/iofb",
 				);
-				INFOPLIST_FILE = "kext/RaphaelFB-Info.plist";
-				MARKETING_VERSION = 0.2.0;
-				MODULE_NAME = dev.metalgpudrivers.RaphaelFB;
-				MODULE_START = RaphaelFB_start;
-				MODULE_STOP = RaphaelFB_stop;
-				MODULE_VERSION = 0.2.0;
+				INFOPLIST_FILE = kext/Info.plist;
+				MARKETING_VERSION = 0.1.0;
+				MODULE_NAME = dev.metalgpudrivers.NvidiaGSP;
+				MODULE_START = NvidiaGSP_start;
+				MODULE_STOP = NvidiaGSP_stop;
+				MODULE_VERSION = 0.1.0;
 				OTHER_CFLAGS = (
-					"-mkernel",
+					-mkernel,
 					"-fapple-kext",
 					"-fno-builtin",
 					"-fno-exceptions",
@@ -299,31 +265,29 @@
 				);
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
-					"-nostdlib",
+					-nostdlib,
 					"-Wl,-kext",
-					"-Wl,-undefined,dynamic_lookup",
 					"-lkmodc++",
-					"-lkmod",
+					-lkmod,
 					"-lcc_kext",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = dev.metalgpudrivers.RaphaelFB;
-				PRODUCT_NAME = RaphaelFB;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.metalgpudrivers.NvidiaGSP;
+				PRODUCT_NAME = NvidiaGSP;
 				SKIP_INSTALL = YES;
 				SYSTEM_HEADER_SEARCH_PATHS = "$(SDKROOT)/System/Library/Frameworks/Kernel.framework/Headers";
 				WARNING_CFLAGS = (
-					"-Wall",
-					"-Wextra",
+					-Wall,
+					-Wextra,
 				);
 				WRAPPER_EXTENSION = kext;
 			};
 			name = Debug;
 		};
-		B2000000000000000000000B /* Release */ = {
+		B1000000000000000000000B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
-				CURRENT_PROJECT_VERSION = 0.2.0;
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = 28A3FV4XRB;
+				CURRENT_PROJECT_VERSION = 0.1.0;
+				GENERATE_INFOPLIST_FILE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"KERNEL=1",
 					"KERNEL_PRIVATE=1",
@@ -331,23 +295,19 @@
 					"$(inherited)",
 				);
 				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
-				GENERATE_INFOPLIST_FILE = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/include",
-					"$(PROJECT_DIR)/display",
 					"$(PROJECT_DIR)/match",
-					"$(PROJECT_DIR)/submit",
 					"$(PROJECT_DIR)/kext",
-					"$(PROJECT_DIR)/../../host/iofb",
 				);
-				INFOPLIST_FILE = "kext/RaphaelFB-Info.plist";
-				MARKETING_VERSION = 0.2.0;
-				MODULE_NAME = dev.metalgpudrivers.RaphaelFB;
-				MODULE_START = RaphaelFB_start;
-				MODULE_STOP = RaphaelFB_stop;
-				MODULE_VERSION = 0.2.0;
+				INFOPLIST_FILE = kext/Info.plist;
+				MARKETING_VERSION = 0.1.0;
+				MODULE_NAME = dev.metalgpudrivers.NvidiaGSP;
+				MODULE_START = NvidiaGSP_start;
+				MODULE_STOP = NvidiaGSP_stop;
+				MODULE_VERSION = 0.1.0;
 				OTHER_CFLAGS = (
-					"-mkernel",
+					-mkernel,
 					"-fapple-kext",
 					"-fno-builtin",
 					"-fno-exceptions",
@@ -356,20 +316,19 @@
 				);
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
-					"-nostdlib",
+					-nostdlib,
 					"-Wl,-kext",
-					"-Wl,-undefined,dynamic_lookup",
 					"-lkmodc++",
-					"-lkmod",
+					-lkmod,
 					"-lcc_kext",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = dev.metalgpudrivers.RaphaelFB;
-				PRODUCT_NAME = RaphaelFB;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.metalgpudrivers.NvidiaGSP;
+				PRODUCT_NAME = NvidiaGSP;
 				SKIP_INSTALL = YES;
 				SYSTEM_HEADER_SEARCH_PATHS = "$(SDKROOT)/System/Library/Frameworks/Kernel.framework/Headers";
 				WARNING_CFLAGS = (
-					"-Wall",
-					"-Wextra",
+					-Wall,
+					-Wextra,
 				);
 				WRAPPER_EXTENSION = kext;
 			};
@@ -378,25 +337,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		B2000000000000000000000C /* Build configuration list for PBXProject "RaphaelFB" */ = {
+		B1000000000000000000000C /* Build configuration list for PBXProject "NvidiaGSP" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				B20000000000000000000008 /* Debug */,
-				B20000000000000000000009 /* Release */,
+				B10000000000000000000008 /* Debug */,
+				B10000000000000000000009 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B2000000000000000000000D /* Build configuration list for PBXNativeTarget "RaphaelFB" */ = {
+		B1000000000000000000000D /* Build configuration list for PBXNativeTarget "NvidiaGSP" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				B2000000000000000000000A /* Debug */,
-				B2000000000000000000000B /* Release */,
+				B1000000000000000000000A /* Debug */,
+				B1000000000000000000000B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = B20000000000000000000001 /* Project object */;
+	rootObject = B10000000000000000000001 /* Project object */;
 }

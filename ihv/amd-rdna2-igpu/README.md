@@ -30,9 +30,9 @@ UMA APU backend for AMD RDNA2 integrated GPUs that **NootedRed does not support*
 ## Layout
 
 ```
-kext/         Info.plist + kmod start/stop — bundle ID dev.metalgpudrivers.RaphaelIGPU
+kext/         RaphaelIGPU Info.plist + kmod; RaphaelFB-Info.plist (GOP wrap, separate kext)
 match/        RaphaelController — DID 0x164E only; category RaphaelHW (beside AMDSupport)
-display/      ATOM parser, GOP-wrap IOFramebuffer, extra connector nubs
+display/      ATOM/VFCT parser, GOP-wrap IOFramebuffer, extra connector nubs
 submit/       RaphaelAccelerator stub (no IOAccel user clients; Metal plugin off by default)
 metal/        RaphaelMTLDriver.bundle plist stub — do not enable raphael_metal=1
 firmware/     PSP/GC/DCN names; blobs not in git
@@ -45,12 +45,12 @@ Build / load notes (no OpenCore or SIP recipes): [docs/BUILD.md](docs/BUILD.md).
 
 | Phase | Status |
 |---|---|
-| R0 board freeze | Mostly done (Sequoia dump). Open: board SKU, APU jack, X6000 oracle, firmware license |
-| R1 enumerate | In tree — BAR map + ATOM/fallback; no PSP firmware (license UNKNOWN); attach unverified on box |
-| R2 dumb FB | In tree — GOP wrap vs IONDRV; extra HDMI/DP offline; DCN modeset next; unverified on box |
+| R0 board freeze | Mostly done (Sequoia dump + 7 Sep SysReport). Open: board SKU, which APU jack is 4K, X6000 oracle, firmware license |
+| R1 enumerate | In tree — BAR map + ATOM/VFCT parser; Boot KC inject of v0.1.0 **failed** (`IOGraphicsFamily`). Controller-only kext should inject; attach unverified on box |
+| R2 dumb FB | In tree as `RaphaelFB.kext` — GOP wrap vs IONDRV; extra HDMI/DP offline; cannot prelink without IOGraphicsFamily in the same KC |
 | R3–R6 compute / Metal / present | Not started |
 
-**Honest Sequoia outcome for this drop:** if the kext matches at boot, WindowServer can own our `IOFramebuffer` on the GOP head (HDMI or DP, whichever firmware already programmed). That is **not** video acceleration. Metal/QE needs IOGPU user clients + DCN 3.1.5 modeset + AIR→gfx1036.
+**Honest Sequoia outcome for this drop:** `RaphaelIGPU.kext` is meant to attach `RaphaelController` on `IGPU@0` without taking the screen. GOP wrap is `RaphaelFB.kext` and still needs `IOGraphicsFamily` in the same kernel collection. Neither is video acceleration. Metal/QE needs IOGPU user clients + DCN 3.1.5 modeset + AIR→gfx1036.
 
 ## Relation to NootedRed (style vs method)
 

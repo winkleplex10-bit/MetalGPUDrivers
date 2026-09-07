@@ -23,5 +23,16 @@ struct AtomParseResult {
  */
 bool AtomParseConnectors(const uint8_t *rom, size_t romLen, AtomParseResult *out);
 
+/*
+ * ACPI VFCT (VBIOS Fetch Table) as dumped by firmware / OpenCore SysReport.
+ * Layout matches linux amdgpu_acpi.c: header + UUID + VBIOSImageOffset, then
+ * GOP_VBIOS_CONTENT (PCI BDF + IDs + ImageLength + 55 AA ROM).
+ * Does not commit or require a VBIOS blob in git.
+ */
+bool AtomExtractVbiosFromVfct(const uint8_t *vfct, size_t vfctLen, uint32_t imageOffset,
+			      const uint8_t **vbios, size_t *vbiosLen, uint16_t *vendorId,
+			      uint16_t *deviceId);
+bool AtomParseConnectorsFromVfct(const uint8_t *vfct, size_t vfctLen, AtomParseResult *out);
+
 /* HDMI + DP online, USB-C enumerated but not preferred — used when VBIOS is unmapped. */
 void AtomFallbackHdmiDpUsbc(AtomParseResult *out);

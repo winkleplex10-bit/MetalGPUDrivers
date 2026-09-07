@@ -1,7 +1,7 @@
 # RaphaelIGPU.kext — AMD Raphael RDNA2 iGPU
 #
-# Linux / this Cloud Agent: `make test` (ATOM parser only).
-# Darwin + macOS SDK: `make kext` produces RaphaelIGPU.kext.
+# Linux / this Cloud Agent: `make test` (ATOM / VFCT parser only).
+# Darwin + macOS SDK: `make kext` produces RaphaelIGPU.kext and RaphaelFB.kext.
 
 IHV := .
 HOST := ../../host
@@ -14,13 +14,18 @@ ATOM_SRCS := display/atom_parse.cpp display/atom_parse_test.cpp
 KEXT_NAME := RaphaelIGPU
 KEXT_BUNDLE := $(BUILD)/$(KEXT_NAME).kext
 KEXT_SRCS := \
-	$(HOST)/iofb/IOFBLinearShell.cpp \
 	match/RaphaelController.cpp \
 	display/atom_parse.cpp \
 	display/RaphaelConnectorNub.cpp \
-	display/RaphaelFramebuffer.cpp \
 	submit/RaphaelAccelerator.cpp \
 	kext/RaphaelIGPU.cpp
+
+FB_KEXT_NAME := RaphaelFB
+FB_KEXT_BUNDLE := $(BUILD)/$(FB_KEXT_NAME).kext
+FB_KEXT_SRCS := \
+	$(HOST)/iofb/IOFBLinearShell.cpp \
+	display/RaphaelFramebuffer.cpp \
+	kext/RaphaelFB.cpp
 
 CXXFLAGS ?= -std=c++17 -Wall -Wextra -Werror
 
@@ -29,8 +34,8 @@ CXXFLAGS ?= -std=c++17 -Wall -Wextra -Werror
 all: test
 
 help:
-	@echo "make test  — ATOM connector parser (portable)"
-	@echo "make kext  — Darwin only; needs macOS Kernel.framework SDK"
+	@echo "make test  — ATOM / VFCT connector parser (portable)"
+	@echo "make kext  — Darwin only; RaphaelIGPU.kext + RaphaelFB.kext"
 
 test:
 	mkdir -p $(BUILD)
@@ -42,7 +47,7 @@ kext:
 		echo "kext link requires Darwin + macOS SDK; use make test here"; \
 		exit 1; \
 	fi
-	mkdir -p $(KEXT_BUNDLE)/Contents/MacOS
+	mkdir -p $(KEXT_BUNDLE)/Contents/MacOS $(FB_KEXT_BUNDLE)/Contents/MacOS
 	SDK=$$(xcrun --sdk macosx --show-sdk-path); \
 	KERN=$$SDK/System/Library/Frameworks/Kernel.framework/Headers; \
 	xcrun --sdk macosx clang++ -mkernel -std=gnu++17 -fapple-kext \
@@ -52,7 +57,17 @@ kext:
 		-nostdlib -Wl,-kext -lkmodc++ -lkmod -lcc_kext \
 		$(KEXT_SRCS) -o $(KEXT_BUNDLE)/Contents/MacOS/$(KEXT_NAME)
 	cp kext/Info.plist $(KEXT_BUNDLE)/Contents/Info.plist
-	@echo "built $(KEXT_BUNDLE)"
+	SDK=$$(xcrun --sdk macosx --show-sdk-path); \
+	KERN=$$SDK/System/Library/Frameworks/Kernel.framework/Headers; \
+	xcrun --sdk macosx clang++ -mkernel -std=gnu++17 -fapple-kext \
+		-fno-builtin -fno-exceptions -fno-rtti \
+		-DKERNEL -DKERNEL_PRIVATE -DDRIVER_PRIVATE \
+		-isystem $$KERN $(INC) \
+		-nostdlib -Wl,-kext -Wl,-undefined,dynamic_lookup \
+		-lkmodc++ -lkmod -lcc_kext \
+		$(FB_KEXT_SRCS) -o $(FB_KEXT_BUNDLE)/Contents/MacOS/$(FB_KEXT_NAME)
+	cp kext/RaphaelFB-Info.plist $(FB_KEXT_BUNDLE)/Contents/Info.plist
+	@echo "built $(KEXT_BUNDLE) and $(FB_KEXT_BUNDLE)"
 
 clean:
 	rm -rf $(BUILD)

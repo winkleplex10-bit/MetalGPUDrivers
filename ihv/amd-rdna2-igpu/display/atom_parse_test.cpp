@@ -10,6 +10,14 @@ static void WriteU16(std::vector<uint8_t> &rom, size_t off, uint16_t v)
 	rom[off + 1] = (uint8_t)((v >> 8) & 0xFF);
 }
 
+static void WriteU32(std::vector<uint8_t> &buf, size_t off, uint32_t v)
+{
+	buf[off] = (uint8_t)(v & 0xFF);
+	buf[off + 1] = (uint8_t)((v >> 8) & 0xFF);
+	buf[off + 2] = (uint8_t)((v >> 16) & 0xFF);
+	buf[off + 3] = (uint8_t)((v >> 24) & 0xFF);
+}
+
 static uint16_t PackObject(uint16_t type, uint16_t enumId, uint16_t id)
 {
 	return (uint16_t)((type << 12) | (enumId << 8) | id);
@@ -48,6 +56,26 @@ static std::vector<uint8_t> MakeRom(uint8_t contentRevision, uint16_t hdmiId, ui
 	WriteU16(rom, p + 0, usbcId);
 	WriteU16(rom, p + 12, 0x0200);
 	return rom;
+}
+
+static std::vector<uint8_t> MakeVfct(const std::vector<uint8_t> &rom, uint16_t vendor,
+				     uint16_t device)
+{
+	const uint32_t prefix = 76;
+	const uint32_t imgHdr = 28;
+	const uint32_t total = prefix + imgHdr + (uint32_t)rom.size();
+	std::vector<uint8_t> vfct(total, 0);
+	vfct[0] = 'V';
+	vfct[1] = 'F';
+	vfct[2] = 'C';
+	vfct[3] = 'T';
+	WriteU32(vfct, 4, total);
+	WriteU32(vfct, 52, prefix);
+	WriteU16(vfct, prefix + 12, vendor);
+	WriteU16(vfct, prefix + 14, device);
+	WriteU32(vfct, prefix + 24, (uint32_t)rom.size());
+	memcpy(vfct.data() + prefix + imgHdr, rom.data(), rom.size());
+	return vfct;
 }
 
 static bool ExpectHdmiDpUsbc(const AtomParseResult &result)
@@ -95,6 +123,31 @@ int main(void)
 	AtomFallbackHdmiDpUsbc(&result);
 	if (!ExpectHdmiDpUsbc(result)) {
 		fprintf(stderr, "fallback mismatch\n");
+		return 1;
+	}
+
+	std::vector<uint8_t> vfct = MakeVfct(romV14, 0x1002, 0x164E);
+	if (!AtomParseConnectorsFromVfct(vfct.data(), vfct.size(), &result) ||
+	    !ExpectHdmiDpUsbc(result)) {
+		fprintf(stderr, "VFCT wrap parse failed count=%u\n", result.connectorCount);
+		return 1;
+	}
+
+	const uint8_t *vbios = nullptr;
+	size_t vbiosLen = 0;
+	uint16_t vendor = 0;
+	uint16_t device = 0;
+	if (!AtomExtractVbiosFromVfct(vfct.data(), vfct.size(), 76, &vbios, &vbiosLen, &vendor,
+				      &device) ||
+	    vendor != 0x1002 || device != 0x164E || vbiosLen != romV14.size() || !vbios ||
+	    vbios[0] != 0x55) {
+		fprintf(stderr, "VFCT extract failed\n");
+		return 1;
+	}
+
+	std::vector<uint8_t> notVfct(128, 0);
+	if (AtomParseConnectorsFromVfct(notVfct.data(), notVfct.size(), &result)) {
+		fprintf(stderr, "non-VFCT table should fail\n");
 		return 1;
 	}
 

@@ -1,6 +1,6 @@
 # boards.md — Phase R0 board freeze
 
-**Status:** measured from Sequoia dump `docs/traces/sequoia-7950x3d/` (2026-09-06). Kext `dev.metalgpudrivers.RaphaelIGPU` is in-tree (GOP wrap) but **not yet captured loaded on this board**. Remaining gaps listed at bottom. Living plan: [`docs/CURSOR-START-AMD-RDNA2-IGPU.md`](../../../docs/CURSOR-START-AMD-RDNA2-IGPU.md) §0.
+**Status:** measured from Sequoia dump `docs/traces/sequoia-7950x3d/` (2026-09-06) plus OpenCore log + SysReport (2026-09-07). `RaphaelIGPU.kext` v0.1.0 **did not load** on that boot (`IOGraphicsFamily` missing from Boot KC). Controller-only kext is in tree; on-box attach still unproven. Remaining gaps listed at bottom. Living plan: [`docs/CURSOR-START-AMD-RDNA2-IGPU.md`](../../../docs/CURSOR-START-AMD-RDNA2-IGPU.md) §0.
 
 | Field | Value |
 |---|---|
@@ -30,7 +30,7 @@
 | Product OS pin | macOS 26 Tahoe (re-verify; Sequoia is valid bring-up OS) |
 | X6000 oracle | **Still needed** — 5080 cannot provide AMD Metal ABI |
 | Firmware license | UNKNOWN — `gc_10_3_6_*` / `dcn_3_1_5_*` / `psp_13_0_5_*` (confirm names) |
-| First kext | `dev.metalgpudrivers.RaphaelIGPU` — GOP wrap + ATOM enum; see [BUILD.md](BUILD.md) |
+| First kext | `dev.metalgpudrivers.RaphaelIGPU` — enumerate + ATOM; GOP wrap is `RaphaelFB.kext` (needs IOGraphicsFamily in the same KC). See [BUILD.md](BUILD.md) |
 
 ## Match personality (from dump)
 
@@ -55,11 +55,12 @@ IONameMatch        = display      (optional; both GPUs use IOName display — pr
 - [x] Discrete companion identified (RTX 5080)
 - [x] Unaccelerated iGPU desktop observed (Sequoia + prior Monterey)
 - [x] WEG/Lilu versions recorded
-- [ ] Physical APU port label (HDMI vs DP which motherboard connector)
+- [ ] Physical APU port label (HDMI vs DP which motherboard connector) — VFCT has both HDMI-A and DP
+- [ ] On-box `RaphaelController` attach after Boot KC inject (7 Sep 2026 inject failed before match)
 - [ ] OpenCore DeviceProperties snippet for IGPU/GFX0 (redact serials)
 - [ ] X6000 IORegistry on **same OS major** as bring-up (Sequoia or Tahoe)
 - [ ] Firmware redistrib license checked
 
 ## Traces
 
-[`docs/traces/sequoia-7950x3d/`](traces/sequoia-7950x3d/) — `system_profiler.txt`, `kextstat-gpu.txt`, `ioreg-igpu-excerpt.txt`, `ioreg-gfx0-rtx5080-excerpt.txt`
+[`docs/traces/sequoia-7950x3d/`](traces/sequoia-7950x3d/) — `system_profiler.txt`, `kextstat-gpu.txt`, `ioreg-igpu-excerpt.txt`, `ioreg-gfx0-rtx5080-excerpt.txt`, `opencore-inject-2026-09-07.txt`, `gop-info.txt`, `pci-display.txt`, `vfct-atom-connectors.txt`

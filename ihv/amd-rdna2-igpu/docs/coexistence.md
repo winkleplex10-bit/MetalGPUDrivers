@@ -29,6 +29,7 @@
 
 - [x] Unsupported dGPU present; iGPU still enumerates and drives display (Sequoia)
 - [x] WEG loaded with iGPU as main display
+- [x] 7 Sep 2026 OC prelink: WEG inject **Success**; RaphaelIGPU inject **Invalid Parameter** (`IOGraphicsFamily` not in Boot KC) — kext never raced WEG
 - [ ] After our `match/` attaches: confirm we claim only `IGPU@0` / `1002:164E`, not `GFX0` (kext is DID-only `0x164E1002`; measure on box)
 - [ ] After our FB attaches: APU monitor still works; 5080 path undisturbed
 - [ ] Measured: does this WEG build patch DID `0x164E`? (log with WEG DEBUG if needed)

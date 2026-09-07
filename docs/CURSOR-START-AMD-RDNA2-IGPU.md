@@ -3,7 +3,7 @@
 **Audience:** Cursor coding agents filling `ihv/amd-rdna2-igpu/`.  
 **Product:** display scanout + Metal on AMD **RDNA2 iGPUs** that NootedRed does not support — first board **Ryzen 7000 Raphael** (7950X3D / 7950X / siblings).  
 **This file:** living plan for this slot. Shares host contracts with [CURSOR-START-AMD.md](CURSOR-START-AMD.md). Do not rewrite `host/` except vendor-agnostic shells (`iofb/`, later `ioaccel/`).  
-**Updated:** 7 Sep 2026 (code + lab dump). First draft 3 Sep 2026.
+**Updated:** 7 Sep 2026 (OpenCore inject log + SysReport VFCT). First draft 3 Sep 2026.
 
 **Hard rules.** No SIP / OpenCore / AuxKC / unsigned-kext recipes. No Lilu / NootedRed / WhateverGreen *patch recipes* (coexistence with a stock WhateverGreen install is **required** — §2.1). **No X6000 personality spoof or Info.plist injection onto Raphael DID `0x164E`** — match-level fake-id is not a substitute for this IHV (§0.2). If a selector, entitlement, bundle ID, IOGPU method, PM4 opcode, or firmware RPC is not in the research corpus, a public header you have opened, or a URL cited here, write **UNKNOWN** and stop that branch.
 
@@ -15,27 +15,27 @@ Bring-up OS is **Sequoia 15.7.8 (24G824)** on the lab 7950X3D. Product OS pin re
 
 | Phase | Plan intent | Status |
 |---|---|---|
-| **R0** board freeze + oracle | Identity, WEG+dGPU baseline, firmware names | **Mostly done.** Sequoia dump locked DID/ACPI/nubs. **X6000 ABI oracle still missing** (lab dGPU is RTX 5080, no AMD Metal). Firmware redistrib license UNKNOWN. Physical HDMI vs DP jack UNKNOWN. |
-| **R1** enumerate + firmware | Personality, BARs, PSP/SMU heartbeat | **Partial, in tree, not on-box.** `RaphaelController` maps BAR0/1, parses ATOM or falls back HDMI+DP+USB-C. **No PSP/GC/DCN firmware load** (license stop). Portable test: `make test` → `atom_parse_test ok`. Darwin `make kext` not run in this environment. |
-| **R2** dumb framebuffer | WindowServer on APU HDMI/DP | **In tree, not hardware-verified.** GOP/linear wrap via `IOFBLinearShell` + `RaphaelFramebuffer`. Probe **100000** vs IONDRV **20000**. Extra HDMI/DP nubs **offline** (one GOP scanout). Dual independent heads = later DCN. |
+| **R0** board freeze + oracle | Identity, WEG+dGPU baseline, firmware names | **Mostly done.** Sequoia dump locked DID/ACPI/nubs. 7 Sep SysReport: GOP 3840×2160, VFCT ATOM = HDMI-A+DP. **X6000 ABI oracle still missing** (lab dGPU is RTX 5080, no AMD Metal). Firmware redistrib license UNKNOWN. Physical HDMI vs DP jack UNKNOWN. |
+| **R1** enumerate + firmware | Personality, BARs, PSP/SMU heartbeat | **Partial.** `RaphaelController` maps BAR0/1, parses ATOM or falls back HDMI+DP+USB-C. **First OC inject (v0.1.0) failed:** `IOGraphicsFamily` not in Boot KC — kext never loaded. Controller kext now omits that family. VFCT parser is portable; kext still only maps PCI ROM (ACPI VFCT copy in-kernel = UNKNOWN). **No PSP/GC/DCN firmware load** (license stop). `make test` includes VFCT wrap. Darwin `make kext` not run in this environment. |
+| **R2** dumb framebuffer | WindowServer on APU HDMI/DP | **In tree as `RaphaelFB.kext`, not in kernel.** GOP/linear wrap via `IOFBLinearShell` + `RaphaelFramebuffer`. Probe **100000** vs IONDRV **20000**. Same Boot KC dependency as the failed inject. Extra HDMI/DP nubs **offline** (one GOP scanout). Dual independent heads = later DCN. |
 | **R3** non-Metal compute | UMA BO + GFX10.3 PM4 | **Not started.** |
 | **R4** AIR → gfx1036 | Offline compiler | **Not started.** |
 | **R5** MTLDriver.bundle | `MTLCopyAllDevices` | **Stub plist only.** `raphael_metal=1` advertises the name; **leave off**. Not QE/Metal. |
 | **R6** present | `CAMetalLayer` on our heads | **Not started** (needs R2 green + R5). |
 | **R7** Rembrandt | `gfx1035` | **Deferred.** |
 
-**Honest Sequoia outcome of the current kext:** if it matches at boot, IOKit can attach `RaphaelController` + `RaphaelFramebuffer` on `IGPU@0` and wrap the firmware framebuffer. That is **not** video acceleration. Metal/QE still needs DCN 3.1.5 modeset + IOGPU user clients + AIR→`gfx1036`.
+**Honest Sequoia outcome of the current kexts:** `RaphaelIGPU.kext` is the Boot KC piece — if it injects, IOKit can attach `RaphaelController` on `IGPU@0` beside `AMDSupport` while **`IONDRVFramebuffer` keeps the picture**. That is still **not** video acceleration. GOP wrap is `dev.metalgpudrivers.RaphaelFB` and needs `IOGraphicsFamily` in the same kernel collection (the 7 Sep log failed that prelink). Metal/QE still needs DCN 3.1.5 modeset + IOGPU user clients + AIR→`gfx1036`.
 
-Kext bundle: **`dev.metalgpudrivers.RaphaelIGPU`**. Build/load notes: [`ihv/amd-rdna2-igpu/docs/BUILD.md`](../ihv/amd-rdna2-igpu/docs/BUILD.md). Slot README: [`ihv/amd-rdna2-igpu/README.md`](../ihv/amd-rdna2-igpu/README.md).
+Kext bundles: **`dev.metalgpudrivers.RaphaelIGPU`** + **`dev.metalgpudrivers.RaphaelFB`**. Build/load notes: [`ihv/amd-rdna2-igpu/docs/BUILD.md`](../ihv/amd-rdna2-igpu/docs/BUILD.md). Slot README: [`ihv/amd-rdna2-igpu/README.md`](../ihv/amd-rdna2-igpu/README.md).
 
 ### 0.1 What exists in the tree
 
 | Path | Role |
 |---|---|
 | `host/iofb/IOFBLinearShell.*` | Vendor-agnostic linear `IOFramebuffer` (32-bit XRGB, software cursor, timer VBL) |
-| `ihv/amd-rdna2-igpu/kext/` | `Info.plist` + kmod start/stop |
+| `ihv/amd-rdna2-igpu/kext/` | `Info.plist` + kmod (`RaphaelIGPU`); `RaphaelFB-Info.plist` + kmod (`RaphaelFB`) |
 | `match/RaphaelController.*` | DID-only `0x164E1002`, category **`RaphaelHW`** (sibling to Apple `AMDSupport`) |
-| `display/atom_parse.*` | ATOM `displayObjectInfo` v1.4/v1.5; HDMI-A/B `0x0C`/`0x0D`, DP `0x13`, USB-C `0x17`, eDP `0x14` ([ObjectID.h](https://github.com/torvalds/linux/blob/master/drivers/gpu/drm/amd/amdgpu/ObjectID.h), [atomfirmware.h](https://github.com/torvalds/linux/blob/master/drivers/gpu/drm/amd/include/atomfirmware.h)) |
+| `display/atom_parse.*` | ATOM `displayObjectInfo` v1.4/v1.5 + ACPI VFCT VBIOS extract; HDMI-A/B `0x0C`/`0x0D`, DP `0x13`, USB-C `0x17`, eDP `0x14` ([ObjectID.h](https://github.com/torvalds/linux/blob/master/drivers/gpu/drm/amd/amdgpu/ObjectID.h), [atomfirmware.h](https://github.com/torvalds/linux/blob/master/drivers/gpu/drm/amd/include/atomfirmware.h)). Lab VFCT: HDMI-A+DP only |
 | `display/RaphaelFramebuffer.*` | GOP wrap; default mode **3840×2160** from lab IOFBMemorySize; optional `raphael_width`/`raphael_height` |
 | `display/RaphaelConnectorNub.*` | Extra heads as child nubs (not a second PCI `IOFramebuffer`) |
 | `submit/RaphaelAccelerator.*` | Plain `IOService` — **not** `IOAccelDevice` (no IOGPU selectors invented) |
@@ -58,6 +58,7 @@ Kext bundle: **`dev.metalgpudrivers.RaphaelIGPU`**. Build/load notes: [`ihv/amd-
 | Metal plugin | Phase R5 | Stub exists; **`raphael_metal` default off** so Metal.framework does not `dlopen` a fake plugin |
 | Accelerator class | IOGPU-speaking kext | Stub `IOService` until selectors are traced from X6000 |
 | Match hygiene | DID-only | Locked: **`IOPCIPrimaryMatch=0x164E1002`**. Never class-match `0x03000000`, never `IONameMatch=display` (5080 is also `display`) |
+| Boot KC vs System KC | Unspecified | **Split kexts.** `RaphaelIGPU` must not list `IOGraphicsFamily` (7 Sep inject: `Invalid Parameter`). GOP wrap stays in `RaphaelFB`. This repo still does not document how to put `IOGraphicsFamily` in the Boot KC |
 
 Boot-args in the current kext: `raphael_width` / `raphael_height` (GOP mode), `raphael_force_all`, `raphael_metal` (do not use).
 
@@ -133,10 +134,11 @@ Earlier Monterey report: same dual listing, unaccelerated iGPU boot.
 
 | What it proves | What it does not prove |
 |---|---|
-| Exact match identity for our personality | On-box attach of `RaphaelIGPU.kext` (not loaded in the dump) |
-| Unaccelerated 4K desktop on APU GOP/NDRV | DCN 3.1.5 programmed by our `IOFramebuffer` |
-| Nvidia dGPU PCI coexistence with WEG loaded | Dual `MTLCopyAllDevices` (5080 has no Metal) |
+| Exact match identity for our personality | On-box attach of `RaphaelIGPU.kext` (7 Sep 2026 inject **failed** before probe; controller-only rebuild not yet captured) |
+| Unaccelerated 4K desktop on APU GOP/NDRV; firmware GOP 3840×2160 4 BPP | DCN 3.1.5 programmed by our `IOFramebuffer` |
+| Nvidia dGPU PCI coexistence with WEG loaded (WEG inject Success while RaphaelIGPU failed) | Dual `MTLCopyAllDevices` (5080 has no Metal) |
 | X6000 did **not** bind to `0x164E` (only AMDSupport) | Spoofing it would modeset DCN 3.1.5 — it would not |
+| VFCT ATOM HDMI-A + DP on this VBIOS | Which physical jack is the 4K cable |
 
 ```mermaid
 flowchart LR
@@ -320,9 +322,9 @@ host/
   ioaccel/        README only — no IOAccelDevice until X6000 selectors traced
   mtl-plugin/     Notes; Raphael stub lives in the IHV tree
 ihv/amd-rdna2-igpu/
-  kext/           Info.plist, RaphaelIGPU.cpp
+  kext/           RaphaelIGPU + RaphaelFB Info.plist / kmod
   match/          RaphaelController — 0x164E ONLY
-  display/        ATOM parse, GOP FB, connector nubs; DCN 3.1.5 next
+  display/        ATOM/VFCT parse, GOP FB, connector nubs; DCN 3.1.5 next
   submit/         RaphaelAccelerator stub; PM4 later
   metal/          RaphaelMTLDriver plist stub
   firmware/       Names only; no blobs
@@ -375,18 +377,21 @@ Resolve from public headers, traces, and the lab machine. Do not guess.
 | 12 | Which physical APU jack is the 4K desktop | OPEN — ask board owner (HDMI vs DP vs USB-C) |
 | 13 | Sequoia bring-up vs Tahoe ship pin | **PARTIAL** — develop on 15.7.8; re-validate Tahoe |
 | 14 | Patch Raphael into Apple X6000 as Navi 2 | **REJECTED** — §0.2 |
+| 15 | Boot KC inject of IOFramebuffer kext | **RESOLVED (cause)** — `IOGraphicsFamily` not in Boot KC (7 Sep log). Split kexts. No OC recipe. |
+| 16 | Lab VFCT connectors | **PARTIAL** — HDMI-A + DP. USB-C not in that VBIOS. Physical jack OPEN. |
 
 ---
 
 ## 11. Next execution order
 
-1. **Load `RaphaelIGPU.kext` on the lab Sequoia box** (existing kext load path; no new SIP/OC recipes). Capture `kextstat` + `ioreg` of `IGPU@0`. Confirm NDRV gone or still winning; confirm `GFX0` unchanged.  
-2. Record **motherboard SKU** and **which APU jack** is 4K. Set `raphael_width`/`raphael_height` if GOP is not 3840×2160.  
-3. **R2 DCN 3.1.5** — HPD + modeset for HDMI and DP (USB-C after). Do not mark extra nubs online until pipes are real.  
-4. **X6000 oracle** on Sequoia or Tahoe (RX 6000-class, not the 5080). File IOGPU selectors before any `IOAccelDevice` subclass.  
-5. **R1.4** — firmware license; stop if UNKNOWN.  
-6. **R3–R6** after R2 on-box green. Keep WEG + 5080 isolation.  
-7. Keep NootedRed external; never a submodule.
+1. **Rebuild and load `RaphaelIGPU.kext` v0.1.1** (controller only) on the lab Sequoia box using the existing kext load path; no new SIP/OC recipes. Capture `kextstat` + `ioreg` of `IGPU@0`. Expect **NDRV still winning**. Confirm `RaphaelController` attached and `GFX0` unchanged.  
+2. Record **motherboard SKU** and **which APU jack** is 4K (VFCT has both HDMI-A and DP). GOP mode is already 3840×2160.  
+3. `RaphaelFB.kext` remains blocked until `IOGraphicsFamily` is in the same kernel collection as that kext — diagnose only; do not write a load recipe here.  
+4. **R2 DCN 3.1.5** — HPD + modeset for HDMI and DP (USB-C after). Do not mark extra nubs online until pipes are real.  
+5. **X6000 oracle** on Sequoia or Tahoe (RX 6000-class, not the 5080). File IOGPU selectors before any `IOAccelDevice` subclass.  
+6. **R1.4** — firmware license; stop if UNKNOWN.  
+7. **R3–R6** after R2 on-box green. Keep WEG + 5080 isolation.  
+8. Keep NootedRed external; never a submodule.
 
 ---
 

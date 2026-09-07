@@ -5,13 +5,13 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
-	<string>RaphaelIGPU</string>
+	<string>RaphaelFB</string>
 	<key>CFBundleIdentifier</key>
-	<string>dev.metalgpudrivers.RaphaelIGPU</string>
+	<string>dev.metalgpudrivers.RaphaelFB</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>RaphaelIGPU</string>
+	<string>RaphaelFB</string>
 	<key>CFBundlePackageType</key>
 	<string>KEXT</string>
 	<key>CFBundleShortVersionString</key>
@@ -20,26 +20,39 @@
 	<string>0.1.1</string>
 	<key>IOKitPersonalities</key>
 	<dict>
-		<key>RaphaelController</key>
+		<key>RaphaelFramebuffer</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
-			<string>dev.metalgpudrivers.RaphaelIGPU</string>
+			<string>dev.metalgpudrivers.RaphaelFB</string>
 			<key>IOClass</key>
-			<string>RaphaelController</string>
+			<string>RaphaelFramebuffer</string>
 			<key>IOMatchCategory</key>
-			<string>RaphaelHW</string>
+			<string>IOFramebuffer</string>
 			<key>IOProviderClass</key>
 			<string>IOPCIDevice</string>
 			<key>IOPCIPrimaryMatch</key>
 			<string>0x164E1002</string>
 			<key>IOProbeScore</key>
-			<integer>200000</integer>
+			<integer>100000</integer>
+		</dict>
+		<key>RaphaelFramebufferNub</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>dev.metalgpudrivers.RaphaelFB</string>
+			<key>IOClass</key>
+			<string>RaphaelFramebuffer</string>
+			<key>IOMatchCategory</key>
+			<string>IOFramebuffer</string>
+			<key>IOProviderClass</key>
+			<string>RaphaelConnectorNub</string>
+			<key>IOProbeScore</key>
+			<integer>50000</integer>
 		</dict>
 	</dict>
-	<key>OSBundleCompatibleVersion</key>
-	<string>0.1.0</string>
 	<key>OSBundleLibraries</key>
 	<dict>
+		<key>com.apple.iokit.IOGraphicsFamily</key>
+		<string>1.0.0</string>
 		<key>com.apple.iokit.IOPCIFamily</key>
 		<string>1.0.0</string>
 		<key>com.apple.kpi.bsd</key>
@@ -52,6 +65,8 @@
 		<string>23.0.0</string>
 		<key>com.apple.kpi.unsupported</key>
 		<string>23.0.0</string>
+		<key>dev.metalgpudrivers.RaphaelIGPU</key>
+		<string>0.1.0</string>
 	</dict>
 	<key>OSBundleRequired</key>
 	<string>Root</string>

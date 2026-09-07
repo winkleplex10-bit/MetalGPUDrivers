@@ -107,7 +107,7 @@ void RaphaelController::parseConnectors()
 		}
 		IOLog("RaphaelController: ATOM parse failed, using HDMI+DP(+USB-C) fallback\n");
 	} else {
-		IOLog("RaphaelController: no VBIOS map, using HDMI+DP(+USB-C) fallback\n");
+		IOLog("RaphaelController: no PCI VBIOS map, using HDMI+DP(+USB-C) fallback\n");
 	}
 	AtomFallbackHdmiDpUsbc(&fConnectors);
 }
@@ -159,7 +159,7 @@ bool RaphaelController::start(IOService *provider)
 	setProperty("vendor-id", (UInt32)kRaphaelVendorId, 32);
 	setProperty("device-id", (UInt32)kRaphaelDeviceId, 32);
 	setProperty("model", kRaphaelModelName);
-	setProperty("RaphaelPhase", "R2-gop-wrap");
+	setProperty("RaphaelPhase", "R1-enumerate");
 	OSArray *names = OSArray::withCapacity(fConnectors.connectorCount);
 	for (uint32_t i = 0; i < fConnectors.connectorCount; i++) {
 		OSString *s = OSString::withCString(

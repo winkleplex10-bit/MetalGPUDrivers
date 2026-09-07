@@ -3,7 +3,7 @@
 UMA APU backend for AMD RDNA2 integrated GPUs that **NootedRed does not support**. First board: Ryzen 7000 desktop Raphael iGPU (e.g. 7950X3D), LLVM `gfx1036`, PCI DID `0x164E`.
 
 **Binding specs:**
-- [docs/CURSOR-START-AMD-RDNA2-IGPU.md](../../docs/CURSOR-START-AMD-RDNA2-IGPU.md) — this slot’s plan
+- [docs/CURSOR-START-AMD-RDNA2-IGPU.md](../../docs/CURSOR-START-AMD-RDNA2-IGPU.md) — living plan (updated 7 Sep 2026)
 - [docs/CURSOR-START-AMD.md](../../docs/CURSOR-START-AMD.md) — shared AMD host contracts / do-nots
 
 ## Why this slot exists
@@ -45,9 +45,9 @@ Build / load notes (no OpenCore or SIP recipes): [docs/BUILD.md](docs/BUILD.md).
 
 | Phase | Status |
 |---|---|
-| R0 board freeze | Done (Sequoia dump) |
-| R1 enumerate | In tree — BAR map + ATOM/fallback connectors; no PSP firmware (license UNKNOWN) |
-| R2 dumb FB | In tree — GOP linear wrap, probe 100000 vs IONDRV 20000; extra HDMI/DP nubs offline |
+| R0 board freeze | Mostly done (Sequoia dump). Open: board SKU, APU jack, X6000 oracle, firmware license |
+| R1 enumerate | In tree — BAR map + ATOM/fallback; no PSP firmware (license UNKNOWN); attach unverified on box |
+| R2 dumb FB | In tree — GOP wrap vs IONDRV; extra HDMI/DP offline; DCN modeset next; unverified on box |
 | R3–R6 compute / Metal / present | Not started |
 
 **Honest Sequoia outcome for this drop:** if the kext matches at boot, WindowServer can own our `IOFramebuffer` on the GOP head (HDMI or DP, whichever firmware already programmed). That is **not** video acceleration. Metal/QE needs IOGPU user clients + DCN 3.1.5 modeset + AIR→gfx1036.

@@ -39,3 +39,4 @@
 - No Nvidia / RTX 5080 acceleration in this slot
 - No forking WhateverGreen
 - No OpenCore load recipes in this file
+- No X6000 DID spoof / personality injection for `0x164E` (see plan §0.2)

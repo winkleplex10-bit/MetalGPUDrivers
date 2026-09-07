@@ -14,7 +14,8 @@
 | 10 | Nvidia companion attach isolation | **RESOLVED in kext match; confirm on box** | Personality is DID-only `0x164E1002`. No class-match, no `IONameMatch=display`. Still measure `GFX0` untouched after load. |
 | 11 | Interaction with Apple `AMDSupport` on Raphael | **RESOLVED (design)** | AMDSupport stays on category `AMDSupport` (vendor-wide VGA). Our controller uses `RaphaelHW`; our FB uses `IOFramebuffer` at probe **100000** vs NDRV **20000**. Hardware confirm still needed. |
 | 12 | Physical motherboard port for 4K main display | OPEN | User: which HDMI/DP jack? |
-| 13 | Bring-up OS: Sequoia vs Tahoe product pin | OPEN | Dump is **15.7.8**. Product docs say Tahoe. Prefer develop on Sequoia now; re-validate on Tahoe before ship. |
+| 13 | Bring-up OS: Sequoia vs Tahoe product pin | **PARTIAL** | Dump is **15.7.8**. Develop on Sequoia; re-validate Tahoe before ship |
+| 14 | Patch Raphael into Apple X6000 as Navi 2 | **REJECTED** | Match-level spoof ≠ DCN 3.1.5 / UMA / gfx1036. `AMDSupport` on the iGPU is not Metal. See plan §0.2 |
 
 ## Lab notes
 

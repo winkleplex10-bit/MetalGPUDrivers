@@ -3,9 +3,9 @@
 **Audience:** Cursor coding agents filling the AMD IHV slots defined by `CURSOR-IHV-DRIVER-SPEC.md`.  
 **Product:** display scanout + Metal on GPUs Apple never shipped as Metal devices.  
 **This file:** AMD-only starter for **discrete RDNA3/4 + RDNA 3.5 iGPU**. Three backends here, **one host slot**. Do not rewrite `host/`.  
-**Sibling slot (NootedRed gap):** RDNA2 APU / Raphael (7950X3D) lives in [`ihv/amd-rdna2-igpu/`](../ihv/amd-rdna2-igpu/) — plan [`CURSOR-START-AMD-RDNA2-IGPU.md`](CURSOR-START-AMD-RDNA2-IGPU.md). Same host contracts and do-nots; separate Phase 0 board.  
+**Sibling slot (NootedRed gap):** RDNA2 APU / Raphael (7950X3D) lives in [`ihv/amd-rdna2-igpu/`](../ihv/amd-rdna2-igpu/) — living plan [`CURSOR-START-AMD-RDNA2-IGPU.md`](CURSOR-START-AMD-RDNA2-IGPU.md). **Kext started (GOP wrap, 7 Sep 2026); not Metal.** Same host contracts and do-nots; do not spoof X6000 onto `0x164E`.  
 **Binding research (cite; do not invent APIs):** `CURSOR-IHV-DRIVER-SPEC.md`, `01-metal-userspace.md`, `02-kernel-boot-display.md`, `03-nvidia-prior-art.md`, `FINDINGS.md`.  
-**Date:** 29 Aug 2026 (RDNA2-iGPU sibling linked 3 Sep 2026). Research corpus: 27 Aug 2026.
+**Date:** 29 Aug 2026 (RDNA2-iGPU sibling linked 3 Sep 2026; Raphael kext noted 7 Sep 2026). Research corpus: 27 Aug 2026.
 
 **Hard rules.** Architecture and implementation plan only. No SIP / OpenCore / AuxKC / unsigned-kext recipes. No kext-patch recipes. No RX 6000 personality spoof onto 7000 / 9000 / 800M. If a selector, entitlement, bundle ID, IOGPU method, PM4 opcode, or firmware RPC is not in the research files or a public header you have actually opened, write **UNKNOWN** and stop that branch.
 
@@ -19,10 +19,10 @@ Three backends share the same host contracts (`CURSOR-IHV-DRIVER-SPEC` §5):
 
 | Backend | Marketing | Arch | First-fill order | Repo |
 |---|---|---|---|---|
-| **RDNA3 dGPU** | RX 7000 / Navi 3x | GFX11 (`gfx1100`–`gfx1102`) | **First AMD target** | `ihv/amd-rdna3/` |
+| **RDNA3 dGPU** | RX 7000 / Navi 3x | GFX11 (`gfx1100`–`gfx1102`) | Plan-first AMD discrete; **not started in-tree** | `ihv/amd-rdna3/` |
 | **RDNA4 dGPU** | RX 9000 / Navi 4x | GFX12 (`gfx1200`/`gfx1201`) | Second — colder ISA | `ihv/amd-rdna4/` |
-| **RDNA 3.5 iGPU** | Radeon 800M / 8000S on APUs | GFX11.5 (`gfx1150`+) | Third — UMA, display *is* the APU | `ihv/amd-rdna35-igpu/` |
-| **RDNA2 iGPU** | Raphael / Rembrandt APUs (NootedRed gap) | GFX10.3 (`gfx1036` / `gfx1035`) | Parallel APU track — WEG + dGPU coexistence, connector-driven primary | `ihv/amd-rdna2-igpu/` |
+| **RDNA 3.5 iGPU** | Radeon 800M / 8000S on APUs | GFX11.5 (`gfx1150`+) | Third — UMA | `ihv/amd-rdna35-igpu/` |
+| **RDNA2 iGPU** | Raphael / Rembrandt APUs (NootedRed gap) | GFX10.3 (`gfx1036` / `gfx1035`) | **In progress in this repo** (lab 7950X3D) — GOP wrap, not QE | `ihv/amd-rdna2-igpu/` |
 
 **Done** is the same as the host spec (`CURSOR-IHV-DRIVER-SPEC` §3): WindowServer desktop on our `IOFramebuffer`, and `MTLCopyAllDevices()` returns our GPU running a stock `.metallib`. TinyGPU HIP compute, a triangle in a private harness, and spoofing an RX 6800 ID so `AMDRadeonX6000` attaches are **not-done**.
 

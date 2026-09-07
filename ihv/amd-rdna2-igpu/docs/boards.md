@@ -1,6 +1,6 @@
 # boards.md — Phase R0 board freeze
 
-**Status:** measured from Sequoia dump `docs/traces/sequoia-7950x3d/` (2026-09-06). Remaining gaps listed at bottom.
+**Status:** measured from Sequoia dump `docs/traces/sequoia-7950x3d/` (2026-09-06). Kext `dev.metalgpudrivers.RaphaelIGPU` is in-tree (GOP wrap) but **not yet captured loaded on this board**. Remaining gaps listed at bottom. Living plan: [`docs/CURSOR-START-AMD-RDNA2-IGPU.md`](../../../docs/CURSOR-START-AMD-RDNA2-IGPU.md) §0.
 
 | Field | Value |
 |---|---|

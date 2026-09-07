@@ -1,0 +1,394 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A12000000000000000000001 /* RaphaelController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A11000000000000000000001 /* RaphaelController.cpp */; };
+		A12000000000000000000002 /* atom_parse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A11000000000000000000003 /* atom_parse.cpp */; };
+		A12000000000000000000003 /* RaphaelConnectorNub.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A11000000000000000000005 /* RaphaelConnectorNub.cpp */; };
+		A12000000000000000000004 /* RaphaelAccelerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A11000000000000000000007 /* RaphaelAccelerator.cpp */; };
+		A12000000000000000000005 /* RaphaelIGPU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A11000000000000000000009 /* RaphaelIGPU.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		A11000000000000000000001 /* RaphaelController.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RaphaelController.cpp; path = RaphaelController.cpp; sourceTree = "<group>"; };
+		A11000000000000000000002 /* RaphaelController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RaphaelController.h; path = RaphaelController.h; sourceTree = "<group>"; };
+		A11000000000000000000003 /* atom_parse.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = atom_parse.cpp; path = atom_parse.cpp; sourceTree = "<group>"; };
+		A11000000000000000000004 /* atom_parse.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = atom_parse.h; path = atom_parse.h; sourceTree = "<group>"; };
+		A11000000000000000000005 /* RaphaelConnectorNub.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RaphaelConnectorNub.cpp; path = RaphaelConnectorNub.cpp; sourceTree = "<group>"; };
+		A11000000000000000000006 /* RaphaelConnectorNub.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RaphaelConnectorNub.h; path = RaphaelConnectorNub.h; sourceTree = "<group>"; };
+		A11000000000000000000007 /* RaphaelAccelerator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RaphaelAccelerator.cpp; path = RaphaelAccelerator.cpp; sourceTree = "<group>"; };
+		A11000000000000000000008 /* RaphaelAccelerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RaphaelAccelerator.h; path = RaphaelAccelerator.h; sourceTree = "<group>"; };
+		A11000000000000000000009 /* RaphaelIGPU.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RaphaelIGPU.cpp; path = RaphaelIGPU.cpp; sourceTree = "<group>"; };
+		A1100000000000000000000A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = Info.plist; sourceTree = "<group>"; };
+		A1100000000000000000000B /* RaphaelIds.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RaphaelIds.h; path = RaphaelIds.h; sourceTree = "<group>"; };
+		A10000000000000000000003 /* RaphaelIGPU.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.kext; includeInIndex = 0; path = RaphaelIGPU.kext; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A10000000000000000000005 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A10000000000000000000006 = {
+			isa = PBXGroup;
+			children = (
+				A10000000000000000000014 /* include */,
+				A10000000000000000000010 /* match */,
+				A10000000000000000000011 /* display */,
+				A10000000000000000000012 /* submit */,
+				A10000000000000000000013 /* kext */,
+				A10000000000000000000007 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A10000000000000000000007 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A10000000000000000000003 /* RaphaelIGPU.kext */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+
+		A10000000000000000000010 /* match */ = {
+			isa = PBXGroup;
+			children = (
+				A11000000000000000000001 /* RaphaelController.cpp */,
+				A11000000000000000000002 /* RaphaelController.h */,
+			);
+			path = match;
+			sourceTree = "<group>";
+		};
+		A10000000000000000000011 /* display */ = {
+			isa = PBXGroup;
+			children = (
+				A11000000000000000000003 /* atom_parse.cpp */,
+				A11000000000000000000004 /* atom_parse.h */,
+				A11000000000000000000005 /* RaphaelConnectorNub.cpp */,
+				A11000000000000000000006 /* RaphaelConnectorNub.h */,
+			);
+			path = display;
+			sourceTree = "<group>";
+		};
+		A10000000000000000000012 /* submit */ = {
+			isa = PBXGroup;
+			children = (
+				A11000000000000000000007 /* RaphaelAccelerator.cpp */,
+				A11000000000000000000008 /* RaphaelAccelerator.h */,
+			);
+			path = submit;
+			sourceTree = "<group>";
+		};
+		A10000000000000000000013 /* kext */ = {
+			isa = PBXGroup;
+			children = (
+				A11000000000000000000009 /* RaphaelIGPU.cpp */,
+				A1100000000000000000000A /* Info.plist */,
+			);
+			path = kext;
+			sourceTree = "<group>";
+		};
+		A10000000000000000000014 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				A1100000000000000000000B /* RaphaelIds.h */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A10000000000000000000002 /* RaphaelIGPU */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1000000000000000000000D /* Build configuration list for PBXNativeTarget "RaphaelIGPU" */;
+			buildPhases = (
+				A10000000000000000000004 /* Sources */,
+				A10000000000000000000005 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RaphaelIGPU;
+			productName = RaphaelIGPU;
+			productReference = A10000000000000000000003 /* RaphaelIGPU.kext */;
+			productType = "com.apple.product-type.kernel-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A10000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 1600;
+			};
+			buildConfigurationList = A1000000000000000000000C /* Build configuration list for PBXProject "RaphaelIGPU" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A10000000000000000000006;
+			productRefGroup = A10000000000000000000007 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A10000000000000000000002 /* RaphaelIGPU */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A10000000000000000000004 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A12000000000000000000001 /* RaphaelController.cpp in Sources */,
+				A12000000000000000000002 /* atom_parse.cpp in Sources */,
+				A12000000000000000000003 /* RaphaelConnectorNub.cpp in Sources */,
+				A12000000000000000000004 /* RaphaelAccelerator.cpp in Sources */,
+				A12000000000000000000005 /* RaphaelIGPU.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		A10000000000000000000008 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = x86_64;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = macosx;
+				VALID_ARCHS = x86_64;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = NO;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				ENABLE_NS_ASSERTIONS = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				USE_HEADERMAP = NO;
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "";
+				AD_HOC_CODE_SIGNING_ALLOWED = YES;
+				ENABLE_HARDENED_RUNTIME = NO;
+				DEAD_CODE_STRIPPING = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"KERNEL=1",
+					"KERNEL_PRIVATE=1",
+					"DRIVER_PRIVATE=1",
+					"$(inherited)",
+				);
+				SYSTEM_HEADER_SEARCH_PATHS = "$(SDKROOT)/System/Library/Frameworks/Kernel.framework/Headers";
+
+				SYMROOT = "$(PROJECT_DIR)/build/xcode";
+			};
+			name = Debug;
+		};
+		A10000000000000000000009 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = x86_64;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = macosx;
+				VALID_ARCHS = x86_64;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = NO;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				ENABLE_NS_ASSERTIONS = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				USE_HEADERMAP = NO;
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "";
+				AD_HOC_CODE_SIGNING_ALLOWED = YES;
+				ENABLE_HARDENED_RUNTIME = NO;
+				DEAD_CODE_STRIPPING = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"KERNEL=1",
+					"KERNEL_PRIVATE=1",
+					"DRIVER_PRIVATE=1",
+					"$(inherited)",
+				);
+				SYSTEM_HEADER_SEARCH_PATHS = "$(SDKROOT)/System/Library/Frameworks/Kernel.framework/Headers";
+
+				SYMROOT = "$(PROJECT_DIR)/build/xcode";
+			};
+			name = Release;
+		};
+		A1000000000000000000000A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = RaphaelIGPU;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.metalgpudrivers.RaphaelIGPU;
+				INFOPLIST_FILE = kext/Info.plist;
+				GENERATE_INFOPLIST_FILE = NO;
+				WRAPPER_EXTENSION = kext;
+				CURRENT_PROJECT_VERSION = 0.2.0;
+				MARKETING_VERSION = 0.2.0;
+				SKIP_INSTALL = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"KERNEL=1",
+					"KERNEL_PRIVATE=1",
+					"DRIVER_PRIVATE=1",
+					"$(inherited)",
+				);
+				SYSTEM_HEADER_SEARCH_PATHS = "$(SDKROOT)/System/Library/Frameworks/Kernel.framework/Headers";
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/include",
+					"$(PROJECT_DIR)/display",
+					"$(PROJECT_DIR)/match",
+					"$(PROJECT_DIR)/submit",
+					"$(PROJECT_DIR)/kext",
+				);
+				OTHER_CFLAGS = (
+					-mkernel,
+					"-fapple-kext",
+					"-fno-builtin",
+					"-fno-exceptions",
+					"-fno-rtti",
+					"-Wno-deprecated-declarations",
+				);
+				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
+				OTHER_LDFLAGS = (
+					-nostdlib,
+					-kext,
+					"-lkmodc++",
+					-lkmod,
+					"-lcc_kext",
+				);
+				WARNING_CFLAGS = (
+					-Wall,
+					-Wextra,
+				);
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
+			};
+			name = Debug;
+		};
+		A1000000000000000000000B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = RaphaelIGPU;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.metalgpudrivers.RaphaelIGPU;
+				INFOPLIST_FILE = kext/Info.plist;
+				GENERATE_INFOPLIST_FILE = NO;
+				WRAPPER_EXTENSION = kext;
+				CURRENT_PROJECT_VERSION = 0.2.0;
+				MARKETING_VERSION = 0.2.0;
+				SKIP_INSTALL = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"KERNEL=1",
+					"KERNEL_PRIVATE=1",
+					"DRIVER_PRIVATE=1",
+					"$(inherited)",
+				);
+				SYSTEM_HEADER_SEARCH_PATHS = "$(SDKROOT)/System/Library/Frameworks/Kernel.framework/Headers";
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/include",
+					"$(PROJECT_DIR)/display",
+					"$(PROJECT_DIR)/match",
+					"$(PROJECT_DIR)/submit",
+					"$(PROJECT_DIR)/kext",
+				);
+				OTHER_CFLAGS = (
+					-mkernel,
+					"-fapple-kext",
+					"-fno-builtin",
+					"-fno-exceptions",
+					"-fno-rtti",
+					"-Wno-deprecated-declarations",
+				);
+				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
+				OTHER_LDFLAGS = (
+					-nostdlib,
+					-kext,
+					"-lkmodc++",
+					-lkmod,
+					"-lcc_kext",
+				);
+				WARNING_CFLAGS = (
+					-Wall,
+					-Wextra,
+				);
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A1000000000000000000000C /* Build configuration list for PBXProject "RaphaelIGPU" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A10000000000000000000008 /* Debug */,
+				A10000000000000000000009 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A1000000000000000000000D /* Build configuration list for PBXNativeTarget "RaphaelIGPU" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1000000000000000000000A /* Debug */,
+				A1000000000000000000000B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A10000000000000000000001 /* Project object */;
+}

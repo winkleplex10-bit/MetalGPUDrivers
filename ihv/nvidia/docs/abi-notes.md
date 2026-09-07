@@ -2,23 +2,39 @@
 
 Observed RPC class IDs, open-gpu-doc headers opened, and macOS IORegistry traces.
 
-**Status:** Phase 0 inventory started. Ampere ABI fields still empty — populate during Phase 0–1 bring-up. Cite filenames and build numbers; do not guess selectors or RPC IDs.
+**Status:** Phase 0 freeze + N1 enumerate kext. GSP RPC table empty until N1.4.
 
-## Lab IORegistry (Sequoia 15.7.8)
+## Lab IORegistry (Sequoia 15.7.9 / 24G830)
 
-RTX 5080 (`10de:2c02`) on dual-GPU Hackintosh: [`traces/sequoia-rtx5080/`](traces/sequoia-rtx5080/), summary in [`boards.md`](boards.md).
+RTX 5080 (`10de:2c02`) dual-GPU Hackintosh: [`traces/sequoia-rtx5080/`](traces/sequoia-rtx5080/), summary in [`boards.md`](boards.md).
 
-Observed (non-ABI): PCI enum + `IONDRVFramebuffer` child; **no** `NVDAResman` / Metal plugin / GSP user client. Useful as “card visible, stack absent” baseline before GSP work.
+| Observation | Value |
+|---|---|
+| Nub | `GFX0@0` under `GPP0@1,1` |
+| Link | x16 @ 32 GT/s |
+| FB child | `IONDRVFramebuffer` (Apple), probe 20000 |
+| Vendor stack | **absent** (No Kext Loaded) |
+| Co-GPU | `RaphaelController` on `1002:164E` (`RaphaelPhase=R1-enumerate`) |
+| HDAU | `10de:22e9` @ `HDAU@0,1` |
 
-## Open questions (from CURSOR-START-NVIDIA §9)
+## Headers opened
 
-1. macOS GSP firmware redistribution
-2. GSP graphics vs compute feature set on macOS
-3. IOGPU vs IOAccelContext2 on Tahoe Intel
-4. CompilerPluginInterface vs in-bundle compilation
-5. Exact Ampere compute class + QMD for frozen DID
-6. Display-engine class for GA10x
-7. Minimum honest MTLGPUFamily for Ampere
-8. Cross-device IOSurface without CPU
-9. AGDC / GPUWrangler for internal PCIe FB
-10. Blackwell surface-kind / QMD deltas
+| Header / doc | Purpose | Date |
+|---|---|---|
+| open-gpu-kernel-modules README Compatible GPUs | Confirm DID `2C02` = RTX 5080 | 2026-09-07 |
+| Nova GB20x firmware patch notes | `.fwsignature_gb20x` naming | 2026-09-07 |
+
+No Ampere/Blackwell compute class headers opened yet for submit — stop before inventing QMD/RPC IDs.
+
+## UNKNOWN list (active)
+
+1. **macOS GSP firmware redistribution** — blocks N1.4
+2. GSP graphics vs compute feature set reachable from a macOS host RPC client
+3. IOGPU vs IOAccelContext2 selectors on Sequoia/Tahoe Intel (trace AMD X6000 when available)
+4. `CompilerPluginInterface` vs in-bundle AIR→SASS
+5. Exact GB203 compute class + QMD version — open matching open-gpu-doc header before N3
+6. Display-engine / NVDisplay class for GB203 — open header before N2 modeset
+7. Honest minimum `MTLGPUFamily` for Blackwell
+8. Cross-device IOSurface without CPU (5080 VRAM ↔ Raphael UMA)
+9. AGDC / GPUWrangler requirements for secondary PCIe FB while iGPU owns console
+10. Whether Sequoia 15.7 vs Tahoe 26 changes IOFramebuffer KPI for third-party kexts

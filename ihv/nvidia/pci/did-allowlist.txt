@@ -1,0 +1,6 @@
+# Exact DID allow-list (Phase 0 freeze)
+
+# Format: one DID per line as 0xNNNN (vendor is always 0x10de).
+# Matching uses IOPCIPrimaryMatch = (DID << 16) | 0x10de.
+
+0x2c02

@@ -1,57 +1,47 @@
-# boards.md — Nvidia lab / freeze notes
+# boards.md — Nvidia Phase 0 freeze (lab)
 
-**Phase 1 product board remains Ampere** (see [CURSOR-START-NVIDIA.md](../../../docs/CURSOR-START-NVIDIA.md) §3).  
-This file also records **lab-enumerated** GSP-era cards present on the Hackintosh, including Blackwell.
+**Frozen board (this lab):** GeForce RTX 5080 — consumer Blackwell **GB203**, DID **`0x2c02`**.
 
-## Lab board — RTX 5080 (Blackwell, not Phase 1)
+CURSOR-START-NVIDIA §3 prefers Ampere for Phase 1. This lab has no Ampere card. We freeze the **RTX 5080** as the Phase 0/1 board and use **GB20x** generation tables from the start. Same GSP + open-rm IHV slot; open-rm is **mandatory** on Blackwell.
 
-Measured 2026-09-06 from Sequoia dump. Traces: [`traces/sequoia-rtx5080/`](traces/sequoia-rtx5080/).
+## Frozen board — RTX 5080 (Blackwell GB20x)
+
+Measured 2026-09-07 on this host. Traces: [`traces/sequoia-rtx5080/`](traces/sequoia-rtx5080/).
 
 | Field | Value |
 |---|---|
-| Product | **GeForce RTX 5080** (consumer Blackwell / GB20x) |
-| PCI VID:DID | **`10de:2c02`** |
+| Product | **GeForce RTX 5080** (GB203 / GB20x) |
+| PCI VID:DID | **`10de:2c02`** (open-rm Compatible GPUs) |
 | PCI revision | **`0xA1`** |
 | Subsystem | **`1462:5315`** (MSI) |
+| HDAU function | **`10de:22e9`** — do not claim |
 | PCI BDF | **`1:0:0`** (`pcidebug`) |
-| IOKit nub | **`GFX0@0`** (`IOPCIDevice`) |
-| ACPI path | **`_SB.PCI0.GPP0.VGA`** (`IOACPIPlane:/_SB/PCI0@0/GPP0@10001/VGA@0`) |
+| IOKit nub | **`GFX0@0`** |
+| ACPI path | **`_SB.PCI0.GPP0.VGA`** |
 | `compatible` | `pci1462,5315`, `pci10de,2c02`, `pciclass,030000`, `VGA`, `GFX0` |
-| Slot | **Slot-1** (`AAPL,slot-name`) |
-| Link | PCIe x16 (System Information) |
-| FB today | **`IONDRVFramebuffer`** child present; **no** Nvidia Metal / Resman kext |
-| System Information | Vendor NVIDIA `0x10de`, Device ID `0x2c02`, Rev `0xA1`, **No Kext Loaded** |
-| Host OS | macOS Sequoia **15.7.8 (24G824)** |
+| Slot | **Slot-1** |
+| Link | PCIe **x16 @ 32 GT/s** (`IOPCIExpressLinkStatus=0x1105`) |
+| BARs (IODeviceMemory) | `0xd8000000` 64 MiB; `0xf2000000` 16 B; `0xf0000000` 32 MiB; `0xdc000000` 512 KiB |
+| FB today | **`IONDRVFramebuffer`** (probe 20000); System Information: **No Kext Loaded** |
+| Host OS | macOS Sequoia **15.7.9 (24G830)** — not Tahoe yet |
 | SMBIOS | MacPro7,1 |
-| Co-GPU on same host | Raphael iGPU `1002:164E` @ `IGPU@0` (main 4K display) — see `ihv/amd-rdna2-igpu/` |
-| Lilu / WEG | Lilu 1.7.2; WhateverGreen 1.7.1d7 (laobamac) |
+| Co-GPU | Raphael iGPU `1002:164E` — [`ihv/amd-rdna2-igpu/`](../../amd-rdna2-igpu/), see [coexistence.md](coexistence.md) |
+| Our kext (N1) | `dev.metalgpudrivers.NvidiaGSP` / `NvidiaController` |
 
-### What this proves
-
-- Blackwell consumer DID **`0x2c02`** enumerates cleanly on Sequoia Hackintosh PCIe.
-- Card appears in System Information **without** a vendor Metal stack (expected).
-- Dual-GPU with AMD Raphael iGPU: both nubs live; iGPU owns main display; 5080 is secondary/PCI-only.
-- WhateverGreen loaded does not need to be removed for this card to remain visible.
-
-### What this does **not** prove
-
-- GSP boot, modeset, or Metal on Blackwell under macOS
-- That RTX 5080 is the Phase 1 bring-up card (Phase 1 stays **Ampere**)
-- Dual `MTLCopyAllDevices` with Nvidia (no Metal plugin yet)
-
-### Match hygiene (when Blackwell is added to allow-list)
+### Match string (frozen)
 
 ```
 IOPCIPrimaryMatch = 0x2c0210de
 ```
 
-Never use class-only `0x03000000` match — that would collide with the Raphael iGPU and any other VGA.
+### Deviation log
 
-## Phase 1 freeze (Ampere) — still empty
-
-| Field | Value |
+| Spec default | Lab decision |
 |---|---|
-| Frozen Ampere DID | UNKNOWN — pick one GA10x from open-rm table when board exists |
-| Host for Ampere bring-up | UNKNOWN |
+| Ampere first | Blackwell 5080 — only discrete Nvidia present |
+| macOS 26 Tahoe pin | Sequoia 15.7.9 lab OS; Tahoe remains the long-term pin |
+| GSP blobs in-tree | Never — build-time only; macOS redistrib **UNKNOWN** |
 
-Until an Ampere card is frozen, treat the RTX 5080 row as **Blackwell lab inventory only**.
+## Ampère alternate (not available here)
+
+Leave empty until a GA10x board exists. Do not invent DIDs.

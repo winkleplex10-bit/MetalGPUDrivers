@@ -6,7 +6,7 @@ This repository implements **IHV (Independent Hardware Vendor) backends** behind
 
 ## Status
 
-**Raphael iGPU kext started.** `RaphaelIGPU.kext` enumerates `1002:164E` (ATOM/VFCT HDMI+DP). GOP wrap is a second kext (`RaphaelFB`) that still needs `IOGraphicsFamily` in the same kernel collection. **Not** Sequoia QE/Metal (no GFX ring, no AIR→gfx1036). Other IHV slots remain plan-only.
+**Raphael iGPU kext started.** `RaphaelIGPU.kext` enumerates `1002:164E`. **Nvidia N1 enumerate started** on lab RTX 5080 (`10de:2c02`): `NvidiaGSP.kext` / `NvidiaController` (BAR map + identity; no GSP boot yet). Other IHV slots remain plan-only.
 
 ## Target platform
 
@@ -18,7 +18,7 @@ This repository implements **IHV (Independent Hardware Vendor) backends** behind
 
 ```
 host/                 Vendor-agnostic macOS integration (IOFramebuffer shell, IOGPU glue, MTL plugin skeleton)
-ihv/nvidia/           Ampere+ GSP-era Nvidia (Phase 1 IHV after AMD proof, or parallel track)
+ihv/nvidia/           GSP-era Nvidia — N1 enumerate on lab RTX 5080 (10de:2c02)
 ihv/amd-rdna3/        RDNA3 / RX 7000 — plan-only
 ihv/amd-rdna4/        RDNA4 / RX 9000
 ihv/amd-rdna2-igpu/   RDNA2 APU (Raphael) — controller kext started; GOP wrap split
@@ -34,16 +34,18 @@ docs/                 Architecture specs and phased plans
 |---|---|
 | [docs/CURSOR-START-AMD.md](docs/CURSOR-START-AMD.md) | AMD RDNA3/RDNA4/RDNA 3.5 starter (plan-only in-tree) |
 | [docs/CURSOR-START-AMD-RDNA2-IGPU.md](docs/CURSOR-START-AMD-RDNA2-IGPU.md) | Raphael RDNA2 iGPU — **living plan**; GOP-wrap kext started |
-| [docs/CURSOR-START-NVIDIA.md](docs/CURSOR-START-NVIDIA.md) | Nvidia Ampere+ GSP-era starter |
+| [docs/CURSOR-START-NVIDIA.md](docs/CURSOR-START-NVIDIA.md) | Nvidia GSP-era starter (Ampere preferred; lab freezes Blackwell 5080) |
+| [docs/CURSOR-IHV-DRIVER-SPEC.md](docs/CURSOR-IHV-DRIVER-SPEC.md) | Host contract stub |
+| [docs/FINDINGS.md](docs/FINDINGS.md) | Living lab trace log |
 | [docs/CURSOR-START-INTEL.md](docs/CURSOR-START-INTEL.md) | Intel Arc + modern iGPU starter (Phase 7 slot) |
 
-**Pending:** `CURSOR-IHV-DRIVER-SPEC.md` (host contract), research corpus (`01-metal-userspace.md`, `02-kernel-boot-display.md`, `03-nvidia-prior-art.md`, `FINDINGS.md`).
+**Pending:** research corpus (`01-metal-userspace.md`, `02-kernel-boot-display.md`, `03-nvidia-prior-art.md`). Host stub: [CURSOR-IHV-DRIVER-SPEC.md](docs/CURSOR-IHV-DRIVER-SPEC.md).
 
 ## Phased approach
 
 All vendors follow the same host phases (0–6): freeze board → enumerate + firmware alive → dumb framebuffer → non-Metal compute → AIR→ISA compile → MTLDevice → present. Vendor-specific acceptance criteria are in each CURSOR-START doc.
 
-**Recommended fill order (original):** AMD RDNA3 first — a live `AMDRadeonX6000` stack exists to trace. **What actually started:** Raphael iGPU (`ihv/amd-rdna2-igpu/`) because the lab board is a 7950X3D. RDNA3 remains plan-only. Nvidia Phase 1 stays Ampere; the lab RTX 5080 is inventory only.
+**Recommended fill order (original):** AMD RDNA3 first — a live `AMDRadeonX6000` stack exists to trace. **What actually started:** Raphael iGPU (`ihv/amd-rdna2-igpu/`) on the 7950X3D lab board, plus Nvidia N1 enumerate on the lab RTX 5080 (`ihv/nvidia/`). RDNA3 remains plan-only.
 
 ## Hard rules
 

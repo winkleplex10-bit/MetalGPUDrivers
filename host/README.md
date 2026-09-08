@@ -2,6 +2,8 @@
 
 The host layer speaks Apple's frameworks and IOKit families. IHV backends (`ihv/*`) plug in behind stable contracts defined in `CURSOR-IHV-DRIVER-SPEC.md` (pending).
 
+**Project rules:** [docs/BUILD-RULES.md](../docs/BUILD-RULES.md) — **macOS 26**, **WhateverGreen absent**, Apple Silicon track under `ihv/apple-silicon/`.
+
 ## Directories
 
 | Path | Role |
@@ -18,7 +20,8 @@ The host layer speaks Apple's frameworks and IOKit families. IHV backends (`ihv/
 - `host/` must compile against a **stub IHV** until a vendor backend is linked
 - Adding a new IHV directory must **not** require edits to another vendor's ISA or firmware trees
 - Bundle IDs are project-owned, never `com.apple.*` or historical vendor web-driver IDs
+- Darwin builds target the **macOS 26** SDK
 
 ## Reference
 
-Host-wide phases, acceptance tests, and open questions: `CURSOR-IHV-DRIVER-SPEC.md` (to be added).
+Host-wide phases, acceptance tests, and open questions: `CURSOR-IHV-DRIVER-SPEC.md` (to be added). Platform policy: `docs/BUILD-RULES.md`.

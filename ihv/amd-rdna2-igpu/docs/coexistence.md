@@ -1,43 +1,52 @@
-# coexistence.md — WhateverGreen + discrete GPU
+# coexistence.md — discrete GPU + WhateverGreen policy
 
-**Product policy:** coexist with stock/fork WhateverGreen and dedicated GPUs. Do **not** require removing WEG or `-wegnoegpu`.
+**Project rules:** [docs/BUILD-RULES.md](../../../docs/BUILD-RULES.md).
 
-**Primary display:** connector-driven.
+**Product policy (macOS 26):**
 
-## Measured baseline (Sequoia 15.7.8)
+| Item | Rule |
+|---|---|
+| WhateverGreen | **Absent** — not part of the supported product stack |
+| Discrete GPUs | May be present; this IHV never matches their DIDs |
+| Primary display | **Connector-driven** |
 
-| Field | Value |
+Do **not** require WEG, do **not** require `-wegnoegpu`, and do **not** depend on WEG patch sites.
+
+## Historical baseline (Sequoia 15.7.8) — archaeology only
+
+The lab dump that froze Raphael identity had WEG loaded. That is **bring-up evidence**, not the ship config.
+
+| Field | Value (historical) |
 |---|---|
 | Lilu | 1.7.2 |
-| WhateverGreen | **1.7.1d7** (`as.vit9696.laobamac.WhateverGreen`) |
-| Discrete GPU | **RTX 5080** `10de:2c02` (MSI `1462:5315`) — PCI only, no Metal. Nvidia-slot notes: [`ihv/nvidia/docs/boards.md`](../../nvidia/docs/boards.md) |
+| WhateverGreen | **1.7.1d7** (`as.vit9696.laobamac.WhateverGreen`) — **not** required for product |
+| Discrete GPU | **RTX 5080** `10de:2c02` (MSI `1462:5315`) — PCI only, no Metal |
 | iGPU | Raphael `1002:164E` rev C9 — **main display**, IONDRVFramebuffer |
 | `-wegnoegpu` | Not used (iGPU is main) |
-| WEG removed? | No — WEG is loaded |
+
+Re-validate attach and isolation on **macOS 26 with WEG absent**.
 
 ## Implications for the kext
 
 | Fact | Design consequence |
 |---|---|
-| WEG (laobamac build) is loaded | Product must not conflict with WEG patch sites; we are not a Lilu plugin |
-| iGPU is already main display | G2 replaces/augments NDRV path on APU connectors; do not require dGPU-primary |
+| Product has no WEG | No Lilu plugin; no reliance on AGDP/connector spoof helpers |
+| Discrete GPU may still be installed | DID-only match `0x164E1002`; never class-match all VGA |
+| iGPU can be main display without WEG | G2 replaces/augments NDRV on APU connectors |
 | RTX 5080 has no Metal | Dual-`MTLDevice` acceptance needs an AMD dGPU later; 5080 only tests “leave `10de:*` alone” |
-| Apple `AMDSupport` matched iGPU | Our match must be **DID-specific**; expect AMDSupport sibling until we own FB/accel categories carefully |
+| Apple `AMDSupport` matched iGPU | Expect AMDSupport sibling until we own FB/accel categories carefully |
 | Both devices `IOName = display` | **Never** match on `IONameMatch=display` alone |
 
 ## Checklist
 
-- [x] Unsupported dGPU present; iGPU still enumerates and drives display (Sequoia)
-- [x] WEG loaded with iGPU as main display
-- [x] 7 Sep 2026 OC prelink: WEG inject **Success**; RaphaelIGPU inject **Invalid Parameter** (`IOGraphicsFamily` not in Boot KC) — kext never raced WEG
-- [ ] After our `match/` attaches: confirm we claim only `IGPU@0` / `1002:164E`, not `GFX0` (kext is DID-only `0x164E1002`; measure on box)
-- [ ] After our FB attaches: APU monitor still works; 5080 path undisturbed
-- [ ] Measured: does this WEG build patch DID `0x164E`? (log with WEG DEBUG if needed)
+- [x] Unsupported dGPU present; iGPU still enumerates (Sequoia history)
+- [ ] **macOS 26, WEG absent:** controller attaches; `GFX0` undisturbed
+- [ ] After our FB attaches: APU monitor still works; companion dGPU path undisturbed
 - [ ] `MTLCopyAllDevices` dual listing with AMD dGPU (not applicable with 5080 alone)
 
 ## Non-goals
 
 - No Nvidia / RTX 5080 acceleration in this slot
-- No forking WhateverGreen
+- No installing or forking WhateverGreen for product
 - No OpenCore load recipes in this file
 - No X6000 DID spoof / personality injection for `0x164E` (see plan §0.2)

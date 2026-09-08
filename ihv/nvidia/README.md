@@ -2,7 +2,7 @@
 
 Unofficial display + Metal backend for GSP-era Nvidia GPUs (Ampere first; Ada/Blackwell later).
 
-**Binding spec:** [docs/CURSOR-START-NVIDIA.md](../../docs/CURSOR-START-NVIDIA.md)
+**Binding spec:** [docs/CURSOR-START-NVIDIA.md](../../docs/CURSOR-START-NVIDIA.md) · [docs/BUILD-RULES.md](../../docs/BUILD-RULES.md) (macOS 26, WEG absent). Apple Silicon display glue: `ihv/apple-silicon/`.
 
 ## Scope
 

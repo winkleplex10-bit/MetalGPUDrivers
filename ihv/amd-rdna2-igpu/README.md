@@ -19,12 +19,12 @@ UMA APU backend for AMD RDNA2 integrated GPUs that **NootedRed does not support*
 - **First target:** Raphael (Ryzen 7000 AM5) — Radeon Graphics, 2 CU, `gfx1036`, DID `0x164E`
 - **Named first SKU / lab board:** Ryzen 9 **7950X3D**, DID `1002:164E` rev `C9`, nub `IGPU@0`, ACPI `_SB.PCI0.GP17.VGA` (Sequoia dump in `docs/traces/sequoia-7950x3d/`)
 - **Later sibling:** Rembrandt (Ryzen 6000 mobile RDNA2, `gfx1035`) — same backend shape, separate Phase 0 freeze
-- **Coexistence (required):** stock **WhateverGreen** may stay loaded; **discrete GPUs** may stay enabled. Primary display is **connector-driven** (cable on APU ports → our FB; cable on dGPU → dGPU FB). See [docs/coexistence.md](docs/coexistence.md) and plan §2.1.
-- **Lab evidence:** Monterey unaccelerated iGPU boot; System Information listed iGPU + **RTX 5080** (PCI coexistence; no Nvidia Metal). Details in [docs/boards.md](docs/boards.md).
+- **Coexistence (product):** **macOS 26**, **WhateverGreen absent**; **discrete GPUs** may stay enabled. Primary display is **connector-driven**. See [docs/coexistence.md](docs/coexistence.md), plan §2.1, and [docs/BUILD-RULES.md](../../docs/BUILD-RULES.md).
+- **Lab evidence:** Monterey/Sequoia unaccelerated iGPU boot; System Information listed iGPU + **RTX 5080** (PCI coexistence; no Nvidia Metal). Details in [docs/boards.md](docs/boards.md). Sequoia dumps that show WEG are historical only.
 - **Not:** Vega Raven / Cezanne / 7x30 (use NootedRed or leave alone)
 - **Not:** Hawk Point 700M / Phoenix (`gfx1103` RDNA3) — closer to `ihv/amd-rdna3*` / future `amd-rdna3-igpu`
 - **Not:** Strix Point 800M RDNA 3.5 — `ihv/amd-rdna35-igpu/`
-- **Not:** requiring `-wegnoegpu` or removal of WhateverGreen (NootedRed’s install model)
+- **Not:** installing WhateverGreen or requiring `-wegnoegpu` for this product
 - Matching is platform/ACPI-shaped UMA APU, **Raphael DID only** — never claim discrete Navi/RX DIDs
 
 ## Layout
@@ -56,6 +56,6 @@ Build / load notes (no OpenCore or SIP recipes): [docs/BUILD.md](docs/BUILD.md).
 
 **Style (keep):** single-purpose AMD iGPU enablement kext stack; Hackintosh-on-AMD-APU platform; FB then acceleration; honest device identity.
 
-**Method (do not copy):** Lilu-style patching of Apple AMD kexts, DID spoof onto `AMDRadeonX6000*`, WhateverGreen-class blob enablement, or NootedRed’s “remove WEG / disable dGPU” install rules. This repo’s product path is a **new IHV backend** behind `host/` that **coexists** with WEG and discrete cards.
+**Method (do not copy):** Lilu-style patching of Apple AMD kexts, DID spoof onto `AMDRadeonX6000*`, WhateverGreen-class blob enablement, or NootedRed’s “remove WEG / disable dGPU” install rules. This repo’s product path is a **new IHV backend** behind `host/` that runs on **macOS 26 without WEG** and leaves discrete cards alone.
 
 **Oracle advantage:** Apple *did* ship RDNA2 discrete Metal. Trace `AMDRadeonX6000` on Tahoe for IOGPU / `MetalPluginName` ABI. Still implement **our** match, UMA, DCN 3.1.5, and 2 CU limits — do not attach Apple’s Navi personality to Raphael, and do not hijack the discrete card’s stack.

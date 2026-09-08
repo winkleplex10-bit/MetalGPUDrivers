@@ -3,8 +3,8 @@
 **Audience:** Cursor coding agents filling the Intel IHV slot.  
 **Host contract (binding; do not rewrite):** `CURSOR-IHV-DRIVER-SPEC.md`. This file is the **vendor appendix** for Intel. Implement `ihv/arc/` and `ihv/intel-igpu/` behind the same host doors. Do **not** invent a second Metal stack.  
 **Research corpus (cite; do not invent APIs):** `01-metal-userspace.md`, `02-kernel-boot-display.md`, `03-nvidia-prior-art.md`, `FINDINGS.md`.  
-**Date:** 29 Aug 2026. Corpus date: 27 Aug 2026.  
-**Hard rule:** architecture and implementation plan only. No SIP/OpenCore/unsigned-kext recipes, no kext-patch how-tos, no exploits. Loading is **assumed solved** on Intel x86 Hackintosh / Intel Mac. If attach fails: collect IORegistry and stop.
+**Date:** 29 Aug 2026; **policy update:** 8 Sep 2026 ([BUILD-RULES.md](BUILD-RULES.md)). Corpus date: 27 Aug 2026.  
+**Hard rule:** architecture and implementation plan only. No SIP/OpenCore/unsigned-kext recipes, no kext-patch how-tos, no exploits, no WhateverGreen. Loading is **assumed solved** on the lab host. If attach fails: collect IORegistry and stop.
 
 If a string, selector, entitlement, bundle ID, IOGPU method, GuC CTB opcode, or Xe ISA encoding is not in the host spec, the three research files, or a **public** Apple/Intel/kernel header you have actually opened, write **UNKNOWN** and stop that branch.
 
@@ -20,7 +20,7 @@ This is the host’s **Phase 7** slot (`CURSOR-IHV` §9.2, §11 Phase 7): Nvidia
 
 **Stance:** ridiculously difficult — private host contracts + signed GuC/HuC + a new AIR→Xe compiler + two different display/memory models. **Not impossible.** Do not say impossible. Do not treat WhateverGreen / OCLP “Intel is dead after Ice Lake” as a product rule; those projects **enable old AppleIntel\* blobs**. We write a **new IHV backend**. Apple’s policy that aftermarket GPU drivers are “not compatible with macOS” is a **product rule**, not a missing header ([102363](https://support.apple.com/en-us/102363)).
 
-TinyGPU proves Apple will talk to foreign GPUs as **compute** coprocessors. It is **not** this product (no `MTLDevice`, no WindowServer). Apple Silicon is **irrelevant** here: AS iGPU is **AGX**, not Xe. Do not confuse them (`02` §1.2; `FINDINGS` §3).
+TinyGPU proves Apple will talk to foreign GPUs as **compute** coprocessors. It is **not** this product (no `MTLDevice`, no WindowServer). **Do not confuse Intel Xe with Apple Silicon AGX** (`02` §1.2; `FINDINGS` §3). Apple Silicon **display acceleration** is a separate open track: [`CURSOR-START-APPLE-SILICON.md`](CURSOR-START-APPLE-SILICON.md).
 
 ---
 
@@ -46,7 +46,7 @@ Apple owns the API, compositor, AIR front-end, and IOGPU *framework*. We own fir
 
 **Kext vs dext:** FB + Metal are **kexts**. No Graphics DriverKit family (`02` §3; [WWDC19-702](https://developer.apple.com/videos/play/wwdc2019/702/)). PCIDriverKit is a Phase 1 **BAR/firmware probe only**, then retire it.
 
-**Platform:** Intel x86 Mac or Hackintosh x86; develop against **macOS 26 Tahoe** (last major Intel macOS). Preferred Arc host: **2019 Mac Pro (MacPro7,1) PCIe** or Intel TB3 enclosure. 2023 Mac Pro is **not** a graphics-card host ([101988](https://support.apple.com/en-us/101988)). 2019 Mac Pro has **no iGPU** ([101641](https://support.apple.com/en-us/101641)) — Arc must drive **its own** HDMI/DP. Modern iGPU on a Hackintosh **is** the boot display (package display engine + GOP).
+**Platform:** Intel x86 Mac or Hackintosh x86; develop/accept against **macOS 26** with **WhateverGreen absent** ([BUILD-RULES.md](BUILD-RULES.md)). Preferred Arc host: **2019 Mac Pro (MacPro7,1) PCIe** or Intel TB3 enclosure. 2023 Mac Pro is **not** a graphics-card host ([101988](https://support.apple.com/en-us/101988)). 2019 Mac Pro has **no iGPU** ([101641](https://support.apple.com/en-us/101641)) — Arc must drive **its own** HDMI/DP. Modern iGPU on a Hackintosh **is** the boot display (package display engine + GOP).
 
 ---
 
@@ -89,10 +89,10 @@ Also sold, **not** a first board: Xe-LP iGPU on Tiger/Alder/Raptor Lake (Iris Xe
 - PCI function is typically `00:02.0` (IGD), not a slot card. Still `IOPCIDevice` matching (`02` §2.1).
 - Stolen / DSM / stolen-size are **Linux i915 concepts**. Whether Tahoe WindowServer needs an analog is **UNKNOWN** — measure; do not invent `AAPL,ig-platform-id` (that is WhateverGreen, not this project).
 
-### 3.3 What is not in scope
+### 3.3 What is not in this Intel x86 folder
 
-- **Apple Silicon iGPU (AGX).** Different IP, ADT `gpu,t*`, DCP scanout. Do not read Asahi AGX as Intel bring-up (`02` §1.2).
-- **Spoofing `AppleIntelKBL*` / `AppleIntelICL*` onto Xe-LPG or Arc.** Those kexts are Gen9/11. WhateverGreen itself sets `gPlatformGraphicsSupported = false` at Rocket Lake+ ([`kern_igfx.cpp`](https://github.com/acidanthera/WhateverGreen/blob/008bfc3129e8e196beb44238437f325f2dd33e9d/WhateverGreen/kern_igfx.cpp)). Same lesson as WhateverRed on unshipped AMD: you cannot invent purged logic (`03` §5.1).
+- **Apple Silicon AGX as if it were Xe.** Different IP. AS display work goes to `ihv/apple-silicon/` — **in scope for the project**, out of *this* folder (`02` §1.2).  
+- **Spoofing `AppleIntelKBL*` / `AppleIntelICL*` onto Xe-LPG or Arc.** Those kexts are Gen9/11. WhateverGreen itself sets `gPlatformGraphicsSupported = false` at Rocket Lake+ ([`kern_igfx.cpp`](https://github.com/acidanthera/WhateverGreen/blob/008bfc3129e8e196beb44238437f325f2dd33e9d/WhateverGreen/kern_igfx.cpp)) — and **product has no WEG**. Same lesson as WhateverRed on unshipped AMD: you cannot invent purged logic (`03` §5.1).  
 - **Iris / UHD 630 as a *product* target.** Trace-only (§4.3).
 
 ---
@@ -277,14 +277,14 @@ Bundle IDs: project IDs, **not** `com.apple.*`, not `AppleIntel*`. Freeze in Pha
 2. **Do not spoof `AppleIntelKBL*` / `ICL*` / UHD 630 / Iris Plus personalities onto Xe-LPG, Xe2, or Arc.** New IHV backend.
 3. **Do not patch Apple kexts** (WhateverGreen / OCLP class). Trace only (`03` §4).
 4. **Do not claim `i915` / `xe` / Mesa ANV will load on XNU.** New IOKit driver (`02` §7).
-5. **Do not write SIP, OpenCore, AuxKC, 1TR, `ig-platform-id`, or unsigned-kext steps.** Loading is assumed solved. Failed attach → IORegistry → stop.
-6. **Do not confuse Intel iGPU with Apple Silicon AGX / DCP.**
-7. **Do not treat DG1 / Xe-LP “Iris Xe MAX” or datacenter Max as the first Arc board.**
-8. **Do not mix Alchemist and Battlemage firmware or iGPU and Arc blobs.**
-9. **Do not invent IOGPU selectors, GuC opcodes, or AIR opcodes.** UNKNOWN + cite.
-10. **Do not replace** `Metal.framework`, `IOGPU.framework`, WindowServer, or the AIR front-end.
-11. **Do not implement a DriverKit graphics family** Apple has not published.
-12. **Do not lie in `supportsFamily`.**
+5. **Do not write SIP, OpenCore, AuxKC, 1TR, `ig-platform-id`, or unsigned-kext steps.** Loading is assumed solved. Failed attach → IORegistry → stop. **WhateverGreen is absent** from the product stack.  
+6. **Do not confuse Intel iGPU with Apple Silicon AGX / DCP** — and do **not** cancel the AS display track; use `ihv/apple-silicon/`.  
+7. **Do not treat DG1 / Xe-LP “Iris Xe MAX” or datacenter Max as the first Arc board.**  
+8. **Do not mix Alchemist and Battlemage firmware or iGPU and Arc blobs.**  
+9. **Do not invent IOGPU selectors, GuC opcodes, or AIR opcodes.** UNKNOWN + cite.  
+10. **Do not replace** `Metal.framework`, `IOGPU.framework`, WindowServer, or the AIR front-end.  
+11. **Do not implement a DriverKit graphics family** Apple has not published.  
+12. **Do not lie in `supportsFamily`.**  
 13. If asked for an exploit, kext patch, or SIP bypass: refuse. Architecture only.
 
 ---

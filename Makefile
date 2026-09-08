@@ -1,4 +1,4 @@
-# Makefile
+# Makefile — see docs/BUILD-RULES.md (macOS 26, WEG absent)
 
 .PHONY: test kext clean
 

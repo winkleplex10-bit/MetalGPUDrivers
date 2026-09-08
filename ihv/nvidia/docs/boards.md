@@ -21,17 +21,18 @@ Measured 2026-09-06 from Sequoia dump. Traces: [`traces/sequoia-rtx5080/`](trace
 | Link | PCIe x16 (System Information) |
 | FB today | **`IONDRVFramebuffer`** child present; **no** Nvidia Metal / Resman kext |
 | System Information | Vendor NVIDIA `0x10de`, Device ID `0x2c02`, Rev `0xA1`, **No Kext Loaded** |
-| Host OS | macOS Sequoia **15.7.8 (24G824)** |
+| Host OS (dump) | macOS Sequoia **15.7.8 (24G824)** — historical |
+| Product OS | **macOS 26**, **WhateverGreen absent** |
 | SMBIOS | MacPro7,1 |
 | Co-GPU on same host | Raphael iGPU `1002:164E` @ `IGPU@0` (main 4K display) — see `ihv/amd-rdna2-igpu/` |
-| Lilu / WEG | Lilu 1.7.2; WhateverGreen 1.7.1d7 (laobamac) |
+| Lilu / WEG (dump only) | Lilu 1.7.2; WhateverGreen 1.7.1d7 (laobamac) — **not** product config |
 
 ### What this proves
 
 - Blackwell consumer DID **`0x2c02`** enumerates cleanly on Sequoia Hackintosh PCIe.
 - Card appears in System Information **without** a vendor Metal stack (expected).
 - Dual-GPU with AMD Raphael iGPU: both nubs live; iGPU owns main display; 5080 is secondary/PCI-only.
-- WhateverGreen loaded does not need to be removed for this card to remain visible.
+- Sequoia dump had WhateverGreen loaded; **product policy is WEG absent** on macOS 26 ([BUILD-RULES](../../../docs/BUILD-RULES.md)).
 
 ### What this does **not** prove
 

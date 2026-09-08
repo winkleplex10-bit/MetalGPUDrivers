@@ -5,9 +5,9 @@
 **This file:** AMD-only starter for **discrete RDNA3/4 + RDNA 3.5 iGPU**. Three backends here, **one host slot**. Do not rewrite `host/`.  
 **Sibling slot (NootedRed gap):** RDNA2 APU / Raphael (7950X3D) lives in [`ihv/amd-rdna2-igpu/`](../ihv/amd-rdna2-igpu/) — living plan [`CURSOR-START-AMD-RDNA2-IGPU.md`](CURSOR-START-AMD-RDNA2-IGPU.md). **Controller kext started (7 Sep 2026); GOP wrap is a second kext; not Metal.** Same host contracts and do-nots; do not spoof X6000 onto `0x164E`.  
 **Binding research (cite; do not invent APIs):** `CURSOR-IHV-DRIVER-SPEC.md`, `01-metal-userspace.md`, `02-kernel-boot-display.md`, `03-nvidia-prior-art.md`, `FINDINGS.md`.  
-**Date:** 29 Aug 2026 (RDNA2-iGPU sibling linked 3 Sep 2026; Raphael kext noted 7 Sep 2026). Research corpus: 27 Aug 2026.
+**Date:** 29 Aug 2026 (RDNA2-iGPU sibling linked 3 Sep 2026; Raphael kext noted 7 Sep 2026); **policy update:** 8 Sep 2026 ([BUILD-RULES.md](BUILD-RULES.md) — macOS 26, WEG absent, Apple Silicon track). Research corpus: 27 Aug 2026.
 
-**Hard rules.** Architecture and implementation plan only. No SIP / OpenCore / AuxKC / unsigned-kext recipes. No kext-patch recipes. No RX 6000 personality spoof onto 7000 / 9000 / 800M. If a selector, entitlement, bundle ID, IOGPU method, PM4 opcode, or firmware RPC is not in the research files or a public header you have actually opened, write **UNKNOWN** and stop that branch.
+**Hard rules.** Architecture and implementation plan only. No SIP / OpenCore / AuxKC / unsigned-kext recipes. No kext-patch recipes. No WhateverGreen. No RX 6000 personality spoof onto 7000 / 9000 / 800M. If a selector, entitlement, bundle ID, IOGPU method, PM4 opcode, or firmware RPC is not in the research files or a public header you have actually opened, write **UNKNOWN** and stop that branch.
 
 ---
 
@@ -28,7 +28,7 @@ Three backends share the same host contracts (`CURSOR-IHV-DRIVER-SPEC` §5):
 
 **Stance:** ridiculously difficult, **not** impossible. Easier than Nvidia because a **live** `AMDRadeonX6000` Metal stack exists to **TRACE** on the same OS. Still a **new IHV backend**: Apple’s discrete Metal kexts stop at RDNA2 (`01` §4.3; `03` §5.1). RDNA3 command set ≠ X6000. WhateverRed’s lesson: “adding support for non-existent logic is basically impossible” once the generation is purged ([WhateverRed](https://github.com/ainexur/WhateverRed)).
 
-**Apple Silicon:** AGX stays the system GPU. DCP owns scanout (`02` §1.2). These AMD parts are **Intel-Mac dGPU** or **AMD-Hackintosh APU** problems, not an Apple Silicon story. A Thunderbolt RX 7000/9000 on an M-series Mac is a compute sidecar (TinyGPU already occupies that niche) and cannot replace DCP for the built-in panel ([102363](https://support.apple.com/en-us/102363)).
+**Apple Silicon:** AGX/DCP challenges are real; the **ARM display-acceleration track** is still **in scope** under [`CURSOR-START-APPLE-SILICON.md`](CURSOR-START-APPLE-SILICON.md) / `ihv/apple-silicon/`. Do not block that track. These AMD `ihv/amd-*` trees remain the **x86** fill (Intel-Mac dGPU or AMD-Hackintosh APU). A Thunderbolt RX 7000/9000 on an M-series Mac uses AS platform glue + this vendor knowledge — external heads first ([102363](https://support.apple.com/en-us/102363)).
 
 ---
 
@@ -74,7 +74,7 @@ AMD’s 3 Nov 2022 unveil: first gaming GPU with a chiplet design. 5 nm GCD + 6 
 | RX 7800 XT / 7700 XT | `gfx1101` | Navi 32 chiplet | Smaller GCD + 4 MCD |
 | RX 7600 / 7600 XT | `gfx1102` | Navi 33 **monolithic** | Prefer this SKU for **first** 7000 bring-up |
 
-Host: Intel x86 Mac (2019 Mac Pro PCIe preferred) or Hackintosh x86. macOS 26 Tahoe pin (`CURSOR-IHV-DRIVER-SPEC` §4). Card’s own HDMI/DP for scanout. Thunderbolt needs `IOPCITunnelCompatible`. **2023 Mac Pro excluded** ([101988](https://support.apple.com/en-us/101988)).
+Host: Intel x86 Mac (2019 Mac Pro PCIe preferred) or Hackintosh x86. **macOS 26** pin; **WhateverGreen absent** ([BUILD-RULES.md](BUILD-RULES.md)). Card’s own HDMI/DP for scanout. Thunderbolt needs `IOPCITunnelCompatible`. **2023 Mac Pro excluded** ([101988](https://support.apple.com/en-us/101988)).
 
 Linux IP (living docs, not a port): Navi 31 is DCN **3.2.0**, GC **11.0.0**, VCN 4.0.0, SDMA 6.0.0, MP0/PSP **13.0.0** ([kernel amd-hardware-list](https://docs.kernel.org/gpu/amdgpu/amd-hardware-list-info.html)). Firmware names in linux-firmware: `psp_13_0_0_{sos,ta}.bin`, `smu_13_0_0.bin`, `gc_11_0_0_{pfp,me,mec,rlc,imu,mes*}.bin`, `dcn_3_2_0_dmcub.bin` ([linux-firmware Navi31](https://lists.ubuntu.com/archives/kernel-team/2022-December/135792.html)). macOS redistrib license = **UNKNOWN** until answered; linux-firmware ≠ a macOS grant.
 
@@ -260,11 +260,12 @@ macos-gpu-ihv/
 4. **Do not write SIP, OpenCore, AuxKC, 1TR, or unsigned-kext steps.** If a kext does not attach, collect IORegistry and stop.
 5. **Do not claim `amdgpu.ko` / RADV / TinyGPU HIP will load as Metal.** Hardware notes transfer; OS integration does not (`02` §7).
 6. **Do not replace Metal.framework, IOGPU.framework, WindowServer, or the AIR front-end.**
-7. **Do not start display/Metal on Apple Silicon AGX/DCP.** AGX stays system GPU.
-8. **Do not treat 2023 Mac Pro PCIe as a GPU host** ([101988](https://support.apple.com/en-us/101988)).
-9. **Do not flash unsigned PSP/SMU/GC firmware.** License UNKNOWN → stop.
-10. **Do not invent IOGPU selectors, `MetalPluginClassName` vtables, or AIR opcodes.** UNKNOWN + cite.
-11. **Never say impossible.** Say what is hard, why, and which phase attacks it.
+7. **Do not cancel Apple Silicon display work** — it lives in `ihv/apple-silicon/` ([CURSOR-START-APPLE-SILICON.md](CURSOR-START-APPLE-SILICON.md)); AGX/DCP hardness is documented, not a project stop.  
+8. **Do not treat 2023 Mac Pro PCIe as a GPU host** ([101988](https://support.apple.com/en-us/101988)).  
+9. **Do not flash unsigned PSP/SMU/GC firmware.** License UNKNOWN → stop.  
+10. **Do not invent IOGPU selectors, `MetalPluginClassName` vtables, or AIR opcodes.** UNKNOWN + cite.  
+11. **Never say impossible.** Say what is hard, why, and which phase attacks it.  
+12. **Do not install or depend on WhateverGreen** ([BUILD-RULES.md](BUILD-RULES.md) §2).
 
 ---
 

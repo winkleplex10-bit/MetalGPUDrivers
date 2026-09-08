@@ -22,12 +22,12 @@
 | APU display | **Main display** 3840×2160@HiDPI; System Information: VRAM 31 MB, **No Kext Loaded** (acceleration) |
 | Discrete GPU | **Nvidia RTX 5080** `10de:2c02` rev `0xA1`, subsystem `1462:5315` (MSI), nub **`GFX0@0`**, BDF `1:0:0`, Slot-1 — also filed under [`ihv/nvidia/docs/boards.md`](../../nvidia/docs/boards.md) |
 | dGPU ACPI | `_SB.PCI0.GPP0.VGA` |
-| Lilu | **1.7.2** (`as.vit9696.Lilu`) |
-| WhateverGreen | **1.7.1d7** (`as.vit9696.laobamac.WhateverGreen` — laobamac fork) |
+| Lilu | **1.7.2** (`as.vit9696.Lilu`) — historical Sequoia dump |
+| WhateverGreen | **1.7.1d7** in Sequoia dump — **product: WEG absent** ([BUILD-RULES](../../../docs/BUILD-RULES.md)) |
 | `-wegnoegpu` / iGPU disable | Not indicated; iGPU is main display |
 | Primary display policy | **Connector-driven** (product); currently APU owns main display |
-| Lab OS (this dump) | **macOS Sequoia 15.7.8 (24G824)** |
-| Product OS pin | macOS 26 Tahoe (re-verify; Sequoia is valid bring-up OS) |
+| Lab OS (this dump) | **macOS Sequoia 15.7.8 (24G824)** — historical |
+| Product OS pin | **macOS 26** (WEG absent; re-verify on box) |
 | X6000 oracle | **Still needed** — 5080 cannot provide AMD Metal ABI |
 | Firmware license | UNKNOWN — `gc_10_3_6_*` / `dcn_3_1_5_*` / `psp_13_0_5_*` (confirm names) |
 | First kext | `dev.metalgpudrivers.RaphaelIGPU` — enumerate + ATOM; GOP wrap is `RaphaelFB.kext` (needs IOGraphicsFamily in the same KC). See [BUILD.md](BUILD.md) |
@@ -54,11 +54,12 @@ IONameMatch        = display      (optional; both GPUs use IOName display — pr
 - [x] Exact DID/rev + IORegistry path captured
 - [x] Discrete companion identified (RTX 5080)
 - [x] Unaccelerated iGPU desktop observed (Sequoia + prior Monterey)
-- [x] WEG/Lilu versions recorded
+- [x] WEG/Lilu versions recorded **(historical Sequoia)**
+- [ ] **macOS 26 acceptance** with **WhateverGreen absent**
 - [ ] Physical APU port label (HDMI vs DP which motherboard connector) — VFCT has both HDMI-A and DP
 - [ ] On-box `RaphaelController` attach after Boot KC inject (7 Sep 2026 inject failed before match)
 - [ ] OpenCore DeviceProperties snippet for IGPU/GFX0 (redact serials)
-- [ ] X6000 IORegistry on **same OS major** as bring-up (Sequoia or Tahoe)
+- [ ] X6000 IORegistry on **macOS 26**
 - [ ] Firmware redistrib license checked
 
 ## Traces

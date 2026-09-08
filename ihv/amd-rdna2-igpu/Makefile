@@ -1,7 +1,8 @@
 # RaphaelIGPU.kext — AMD Raphael RDNA2 iGPU
 #
+# Product: macOS 26, WhateverGreen absent (see docs/BUILD-RULES.md).
 # Linux / this Cloud Agent: `make test` (ATOM / VFCT parser only).
-# Darwin + macOS SDK: `make kext` produces RaphaelIGPU.kext and RaphaelFB.kext.
+# Darwin + macOS 26 SDK: `make kext` produces RaphaelIGPU.kext and RaphaelFB.kext.
 
 IHV := .
 HOST := ../../host
@@ -35,7 +36,7 @@ all: test
 
 help:
 	@echo "make test  — ATOM / VFCT connector parser (portable)"
-	@echo "make kext  — Darwin only; RaphaelIGPU.kext + RaphaelFB.kext"
+	@echo "make kext  — Darwin + macOS 26 SDK; RaphaelIGPU.kext + RaphaelFB.kext"
 
 test:
 	mkdir -p $(BUILD)

@@ -3,14 +3,14 @@
 **Audience:** Cursor coding agents filling `ihv/nvidia/` in the unofficial IHV GPU stack.  
 **Host contract (binding; do not rewrite):** `CURSOR-IHV-DRIVER-SPEC.md`. This file is the **Nvidia IHV slot**. Matching, `IOFramebuffer` shell, IOGPU-speaking accelerator shell, `*MTLDriver.bundle` skeleton, AIR ingest, present glue, and power-helper shape live in `host/` and stay vendor-agnostic.  
 **Research corpus (cite; do not invent APIs):** `01-metal-userspace.md`, `02-kernel-boot-display.md`, `03-nvidia-prior-art.md`, `FINDINGS.md`.  
-**Date:** 29 Aug 2026. Host spec: 29 Aug 2026. Corpus: 27 Aug 2026.  
-**Hard rule:** architecture and implementation plan only. No SIP/OpenCore/unsigned-kext recipes (loading is assumed solved on the Intel x86 dev/Hackintosh host). No exploits. If a selector, entitlement, GSP RPC ID, class header name, or AIR opcode is not in the corpus, a public Apple/Nvidia header you have opened, or a URL cited here, write **UNKNOWN** and stop that branch.
+**Date:** 29 Aug 2026; **policy update:** 8 Sep 2026 ([BUILD-RULES.md](BUILD-RULES.md) — macOS 26, WEG absent, Apple Silicon track). Host spec: 29 Aug 2026. Corpus: 27 Aug 2026.  
+**Hard rule:** architecture and implementation plan only. No SIP/OpenCore/unsigned-kext recipes (loading is assumed solved on the lab host). No WhateverGreen. No exploits. If a selector, entitlement, GSP RPC ID, class header name, or AIR opcode is not in the corpus, a public Apple/Nvidia header you have opened, or a URL cited here, write **UNKNOWN** and stop that branch.
 
 ---
 
 ## 1. Goal
 
-Build a **usable unofficial display + Metal driver** for modern Nvidia so an Ampere-or-newer GSP-era card on an Intel x86 Mac / Hackintosh enumerates as an IHV GPU: WindowServer attaches to our `IOFramebuffer`, `MTLCopyAllDevices()` returns our `MTLDevice`, a stock `.metallib` compute app runs on **SASS**, and a Metal render app presents via `CAMetalLayer` onto the display we drive (`CURSOR-IHV-DRIVER-SPEC` §1, §3). This is **ridiculously difficult**, not a weekend port, and **not impossible**. Kepler/Pascal Web Drivers and CUDA 10.2 are **fossils**, not this tree (`03` §3). TinyGPU is a **compute-only dext probe**, not the product (`01` §1; [tinygrad TinyGPU](https://docs.tinygrad.org/tinygpu/)). Ada Lovelace and consumer Blackwell occupy the **same GSP + open-rm slot** once Ampere bring-up is real. Apple Silicon stays a later **compute sidecar**: AGX remains the only system `MTLDevice`; a Thunderbolt Nvidia card does not replace DCP (`02` §1.2; [102363](https://support.apple.com/en-us/102363)).
+Build a **usable unofficial display + Metal driver** for modern Nvidia so an Ampere-or-newer GSP-era card on an Intel x86 Mac / Hackintosh enumerates as an IHV GPU: WindowServer attaches to our `IOFramebuffer`, `MTLCopyAllDevices()` returns our `MTLDevice`, a stock `.metallib` compute app runs on **SASS**, and a Metal render app presents via `CAMetalLayer` onto the display we drive (`CURSOR-IHV-DRIVER-SPEC` §1, §3). This is **ridiculously difficult**, not a weekend port, and **not impossible**. Kepler/Pascal Web Drivers and CUDA 10.2 are **fossils**, not this tree (`03` §3). TinyGPU is a **compute-only dext probe**, not the product (`01` §1; [tinygrad TinyGPU](https://docs.tinygrad.org/tinygpu/)). Ada Lovelace and consumer Blackwell occupy the **same GSP + open-rm slot** once Ampere bring-up is real. **Apple Silicon display acceleration** is a **parallel track** under `ihv/apple-silicon/` ([CURSOR-START-APPLE-SILICON.md](CURSOR-START-APPLE-SILICON.md)) — DCP/AGX challenges are documented there and **do not block** that track; this file remains the x86 Nvidia IHV fill.
 
 ---
 
@@ -61,9 +61,9 @@ Generation diffs (QMD layout, surface kind, texture encoding) live in `ihv/nvidi
 | Hopper / datacenter (GH100, B200, …) | GSP-era compute. Display-engine + WindowServer story is **UNKNOWN**. Not a Phase 1 display card. |
 | Mobile MX / laptop dGPU in a non-Mac chassis | Out unless it is the exact frozen board. |
 
-**Host machine:** Intel x86 Mac or Hackintosh x86. Preferred: 2019 Mac Pro (MacPro7,1) PCIe or Intel TB3 eGPU. 2023 Mac Pro is **not** a graphics-card host ([101988](https://support.apple.com/en-us/101988)). macOS **26 Tahoe** pin (`CURSOR-IHV-DRIVER-SPEC` §4).
+**Host machine:** Intel x86 Mac or Hackintosh x86. Preferred: 2019 Mac Pro (MacPro7,1) PCIe or Intel TB3 eGPU. 2023 Mac Pro is **not** a graphics-card host ([101988](https://support.apple.com/en-us/101988)). **macOS 26** pin; **WhateverGreen absent** ([BUILD-RULES.md](BUILD-RULES.md)).
 
-**Apple Silicon:** AGX + DCP always own the built-in panel. A TB Nvidia card is a **compute sidecar** later (TinyGPU-class), labeled as such. It cannot become `CGDirectDisplayCopyCurrentMetalDevice` for the lid.
+**Apple Silicon:** display acceleration is **in scope** on the ARM track (`ihv/apple-silicon/`). AGX + DCP challenges (lid ownership, TinyGPU≠display, no Graphics DriverKit, etc.) are listed in [CURSOR-START-APPLE-SILICON.md](CURSOR-START-APPLE-SILICON.md) §3 and [BUILD-RULES.md](BUILD-RULES.md) §3.1 — **document and attack; do not block the project**. Prefer the card’s own HDMI/DP first; lid/DCP handoff is a later stretch. This `ihv/nvidia/` tree stays the vendor ISA/submit fill; AS match/display glue lives under `ihv/apple-silicon/`.
 
 **GSP is non-negotiable.** Open-rm maintainers: open modules **unconditionally require** GSP; `NVreg_EnableGpuFirmware=0` is a no-op there ([open-gpu-kernel-modules discussion #667](https://github.com/NVIDIA/open-gpu-kernel-modules/discussions/667); [#820](https://github.com/NVIDIA/open-gpu-kernel-modules/issues/820)). Do not plan a “bit-bang Ampere without firmware” path.
 
@@ -232,7 +232,7 @@ ihv/nvidia/
 ## 8. Do-nots
 
 1. **Do not load `nvidia.ko`** (or `nvidia-drm` / `nvidia-modeset` / Nouveau / Nova) on XNU. Wrong kernel, wrong UAPI (`02` §7). Port hardware programming into IOKit.  
-2. **Do not WhateverGreen-spoof** Kepler/Pascal/AMD IDs, AGDP board-ids, or Web Driver compat checks (`03` §4). That cannot create Ampere Metal.  
+2. **Do not WhateverGreen-spoof** Kepler/Pascal/AMD IDs, AGDP board-ids, or Web Driver compat checks (`03` §4). Product stack has **no WEG** ([BUILD-RULES](BUILD-RULES.md)). That cannot create Ampere Metal.  
 3. **Do not fork `IOGPU.framework`**, `Metal.framework`, WindowServer, or the AIR front-end. Speak user clients; ingest AIR; publish a FB.  
 4. **Do not write SIP / OpenCore / AuxKC / 1TR / unsigned-kext steps.** If the kext does not attach, collect IORegistry and stop.  
 5. **Do not revive Web Drivers, CUDA 10.2, `GeForce.kext`, or Kepler bundles** as product code.  
@@ -241,7 +241,7 @@ ihv/nvidia/
 8. **Do not bit-bang the 3D engine** to skip GSP.  
 9. **Do not treat NVDEC as display** or block scanout on video decode.  
 10. **Do not claim `nvidia.ko` will load**, that AIR→SASS already exists, or that TinyGPU is a Metal device.  
-11. **Do not start on Apple Silicon for display.** AGX stays the system GPU.  
+11. **Do not cancel Apple Silicon display work** because DCP/AGX are hard — that track lives in `ihv/apple-silicon/` and stays open ([CURSOR-START-APPLE-SILICON.md](CURSOR-START-APPLE-SILICON.md)).  
 12. **Do not invent IOGPU selectors, GSP RPC IDs, or `MetalPluginClassName` vtables.** UNKNOWN + trace.
 
 ---

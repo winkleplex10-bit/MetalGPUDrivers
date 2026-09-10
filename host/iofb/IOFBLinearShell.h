@@ -9,6 +9,7 @@ struct IOFBLinearMode {
 	UInt32 width;
 	UInt32 height;
 	UInt32 refreshHz;
+	UInt32 bytesPerRow; /* 0 = width * 4 */
 };
 
 class IOFBLinearShell : public IOFramebuffer {

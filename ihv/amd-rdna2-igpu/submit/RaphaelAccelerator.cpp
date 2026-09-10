@@ -31,9 +31,9 @@ bool RaphaelAccelerator::start(IOService *provider)
 	RaphaelController *controller = OSDynamicCast(RaphaelController, provider);
 	setName("RaphaelAccelerator");
 	setProperty("RaphaelAccelStatus",
-		    "gop-wrap; no GFX ring; MetalPluginName off unless raphael_metal=1");
-	setProperty("RaphaelPhase", "R2-gop-wrap");
-	setProperty("model", kRaphaelModelName);
+		    "enumerate-only; no GOP wrap in this kext; no GFX ring; MetalPluginName off unless raphael_metal=1");
+	setProperty("RaphaelPhase", "R1-enumerate");
+	setProperty("RaphaelModel", kRaphaelModelName);
 
 	if (controller && controller->metalEnabled()) {
 		/*

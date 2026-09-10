@@ -4,10 +4,16 @@
 
 extern "C" {
 
+kern_return_t RaphaelIGPU_start(kmod_info_t *ki, void *d);
+kern_return_t RaphaelIGPU_stop(kmod_info_t *ki, void *d);
+
+KMOD_EXPLICIT_DECL(dev_metalgpudrivers_RaphaelIGPU, "0.2.0", RaphaelIGPU_start, RaphaelIGPU_stop)
+
 kern_return_t RaphaelIGPU_start(kmod_info_t *ki, void *d)
 {
 	(void)d;
-	IOLog("RaphaelIGPU: kmod start %s\n", ki && ki->name ? ki->name : "dev.metalgpudrivers.RaphaelIGPU");
+	IOLog("RaphaelIGPU: kmod start %s\n",
+	      (ki != nullptr) ? ki->name : "dev.metalgpudrivers.RaphaelIGPU");
 	return KERN_SUCCESS;
 }
 

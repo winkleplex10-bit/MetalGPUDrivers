@@ -152,7 +152,7 @@ IOReturn IOFBLinearShell::getPixelInformation(IODisplayModeID displayMode, IOInd
 	if (!mode || !pixelInfo || depth != 0 || aperture != kIOFBSystemAperture)
 		return kIOReturnBadArgument;
 	bzero(pixelInfo, sizeof(*pixelInfo));
-	pixelInfo->bytesPerRow = mode->width * 4;
+	pixelInfo->bytesPerRow = mode->bytesPerRow ? mode->bytesPerRow : mode->width * 4;
 	pixelInfo->bytesPerPlane = 0;
 	pixelInfo->bitsPerPixel = 32;
 	pixelInfo->pixelType = kIORGBDirectPixels;

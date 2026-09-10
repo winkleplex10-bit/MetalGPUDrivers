@@ -107,7 +107,7 @@ void RaphaelController::parseConnectors()
 		}
 		IOLog("RaphaelController: ATOM parse failed, using HDMI+DP(+USB-C) fallback\n");
 	} else {
-		IOLog("RaphaelController: no VBIOS map, using HDMI+DP(+USB-C) fallback\n");
+		IOLog("RaphaelController: no PCI VBIOS map, using HDMI+DP(+USB-C) fallback\n");
 	}
 	AtomFallbackHdmiDpUsbc(&fConnectors);
 }
@@ -147,19 +147,29 @@ bool RaphaelController::start(IOService *provider)
 	dummy = 0;
 	if (PE_parse_boot_argn("raphael_metal", &dummy, sizeof(dummy)))
 		fMetal = dummy != 0;
+	dummy = 0;
+	const bool mapHw = PE_parse_boot_argn("raphael_map", &dummy, sizeof(dummy)) && dummy != 0;
 
-	fPci->setMemoryEnable(true);
-	fPci->setBusMasterEnable(true);
-	if (!mapBars()) {
-		IOLog("RaphaelController: BAR0 aperture missing\n");
-		return false;
+	/*
+	 * Default: do not touch PCI command or BARs. GOP / IONDRV already owns
+	 * this aperture; setMemoryEnable/mapDeviceMemory hung the 7 Sep 2026
+	 * v0.1.2 boot. Hardware map is opt-in via raphael_map=1.
+	 */
+	if (mapHw) {
+		fPci->setMemoryEnable(true);
+		fPci->setBusMasterEnable(true);
+		if (!mapBars())
+			IOLog("RaphaelController: raphael_map=1 but BAR0 missing, using fallback connectors\n");
+		parseConnectors();
+	} else {
+		AtomFallbackHdmiDpUsbc(&fConnectors);
 	}
-	parseConnectors();
 	setName("RaphaelController");
-	setProperty("vendor-id", (UInt32)kRaphaelVendorId, 32);
-	setProperty("device-id", (UInt32)kRaphaelDeviceId, 32);
-	setProperty("model", kRaphaelModelName);
-	setProperty("RaphaelPhase", "R2-gop-wrap");
+	setProperty("RaphaelVendorId", (UInt32)kRaphaelVendorId, 32);
+	setProperty("RaphaelDeviceId", (UInt32)kRaphaelDeviceId, 32);
+	setProperty("RaphaelModel", kRaphaelModelName);
+	setProperty("RaphaelPhase", "R1-enumerate");
+	setProperty("RaphaelMap", mapHw);
 	OSArray *names = OSArray::withCapacity(fConnectors.connectorCount);
 	for (uint32_t i = 0; i < fConnectors.connectorCount; i++) {
 		OSString *s = OSString::withCString(
@@ -170,13 +180,13 @@ bool RaphaelController::start(IOService *provider)
 			s->release();
 	}
 	if (names) {
-		setProperty("connectors", names);
+		setProperty("RaphaelConnectors", names);
 		names->release();
 	}
 	registerService();
 	publishExtras();
-	IOLog("RaphaelController: attached 1002:164e connectors=%u metal=%d force_all=%d\n",
-	      fConnectors.connectorCount, fMetal ? 1 : 0, fForceAll ? 1 : 0);
+	IOLog("RaphaelController: attached 1002:164e connectors=%u metal=%d force_all=%d map=%d\n",
+	      fConnectors.connectorCount, fMetal ? 1 : 0, fForceAll ? 1 : 0, mapHw ? 1 : 0);
 	return true;
 }
 

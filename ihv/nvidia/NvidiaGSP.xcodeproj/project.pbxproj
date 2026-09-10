@@ -12,12 +12,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B10000000000000000000003 /* NvidiaGSP.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NvidiaGSP.kext; sourceTree = BUILT_PRODUCTS_DIR; };
 		B11000000000000000000001 /* NvidiaController.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = NvidiaController.cpp; sourceTree = "<group>"; };
 		B11000000000000000000002 /* NvidiaController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NvidiaController.h; sourceTree = "<group>"; };
 		B11000000000000000000003 /* NvidiaGSP.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = NvidiaGSP.cpp; sourceTree = "<group>"; };
 		B11000000000000000000004 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B11000000000000000000005 /* NvidiaIds.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NvidiaIds.h; sourceTree = "<group>"; };
-		B10000000000000000000003 /* NvidiaGSP.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.kext; includeInIndex = 0; path = NvidiaGSP.kext; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -235,8 +235,11 @@
 		B1000000000000000000000A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 0.1.0;
-				GENERATE_INFOPLIST_FILE = NO;
+				DEVELOPMENT_TEAM = 28A3FV4XRB;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"KERNEL=1",
 					"KERNEL_PRIVATE=1",
@@ -244,6 +247,7 @@
 					"$(inherited)",
 				);
 				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
+				GENERATE_INFOPLIST_FILE = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/include",
 					"$(PROJECT_DIR)/match",
@@ -256,7 +260,7 @@
 				MODULE_STOP = NvidiaGSP_stop;
 				MODULE_VERSION = 0.1.0;
 				OTHER_CFLAGS = (
-					-mkernel,
+					"-mkernel",
 					"-fapple-kext",
 					"-fno-builtin",
 					"-fno-exceptions",
@@ -265,19 +269,20 @@
 				);
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
-					-nostdlib,
+					"-nostdlib",
 					"-Wl,-kext",
 					"-lkmodc++",
-					-lkmod,
+					"-lkmod",
 					"-lcc_kext",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = dev.metalgpudrivers.NvidiaGSP;
 				PRODUCT_NAME = NvidiaGSP;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SYSTEM_HEADER_SEARCH_PATHS = "$(SDKROOT)/System/Library/Frameworks/Kernel.framework/Headers";
 				WARNING_CFLAGS = (
-					-Wall,
-					-Wextra,
+					"-Wall",
+					"-Wextra",
 				);
 				WRAPPER_EXTENSION = kext;
 			};
@@ -286,8 +291,11 @@
 		B1000000000000000000000B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 0.1.0;
-				GENERATE_INFOPLIST_FILE = NO;
+				DEVELOPMENT_TEAM = 28A3FV4XRB;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"KERNEL=1",
 					"KERNEL_PRIVATE=1",
@@ -295,6 +303,7 @@
 					"$(inherited)",
 				);
 				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
+				GENERATE_INFOPLIST_FILE = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/include",
 					"$(PROJECT_DIR)/match",
@@ -307,7 +316,7 @@
 				MODULE_STOP = NvidiaGSP_stop;
 				MODULE_VERSION = 0.1.0;
 				OTHER_CFLAGS = (
-					-mkernel,
+					"-mkernel",
 					"-fapple-kext",
 					"-fno-builtin",
 					"-fno-exceptions",
@@ -316,19 +325,20 @@
 				);
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
-					-nostdlib,
+					"-nostdlib",
 					"-Wl,-kext",
 					"-lkmodc++",
-					-lkmod,
+					"-lkmod",
 					"-lcc_kext",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = dev.metalgpudrivers.NvidiaGSP;
 				PRODUCT_NAME = NvidiaGSP;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SYSTEM_HEADER_SEARCH_PATHS = "$(SDKROOT)/System/Library/Frameworks/Kernel.framework/Headers";
 				WARNING_CFLAGS = (
-					-Wall,
-					-Wextra,
+					"-Wall",
+					"-Wextra",
 				);
 				WRAPPER_EXTENSION = kext;
 			};

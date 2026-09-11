@@ -15,12 +15,17 @@ public:
 	virtual void stop(IOService *provider) APPLE_KEXT_OVERRIDE;
 	virtual bool isConsoleDevice(void) APPLE_KEXT_OVERRIDE;
 	virtual IOReturn enableController(void) APPLE_KEXT_OVERRIDE;
+	virtual IOReturn getPixelInformation(IODisplayModeID displayMode, IOIndex depth,
+					     IOPixelAperture aperture,
+					     IOPixelInformation *pixelInfo) APPLE_KEXT_OVERRIDE;
 	virtual IOReturn getAttributeForConnection(IOIndex connectIndex, IOSelect attribute,
 						   uintptr_t *value) APPLE_KEXT_OVERRIDE;
 	virtual IOReturn setAttributeForConnection(IOIndex connectIndex, IOSelect attribute,
 						   uintptr_t value) APPLE_KEXT_OVERRIDE;
 	virtual IOReturn connectFlags(IOIndex connectIndex, IODisplayModeID displayMode,
 				      IOOptionBits *flags) APPLE_KEXT_OVERRIDE;
+	virtual IOReturn setDisplayMode(IODisplayModeID displayMode, IOIndex depth)
+		APPLE_KEXT_OVERRIDE;
 	virtual bool hasDDCConnect(IOIndex connectIndex) APPLE_KEXT_OVERRIDE;
 
 protected:
@@ -28,7 +33,7 @@ protected:
 
 private:
 	bool attachController(IOService *provider);
-	bool captureGopAperture(void);
+	bool captureGopAperture(IOService *provider);
 	void applyGopMode(void);
 	void releaseController(void);
 	void releaseGopMemory(void);
@@ -38,6 +43,7 @@ private:
 	uint32_t fConnectorIndex;
 	RaphaelConnector fSpec;
 	bool fBootHead;
+	bool fSwapRB;
 	UInt32 fWidth;
 	UInt32 fHeight;
 	UInt32 fRowBytes;

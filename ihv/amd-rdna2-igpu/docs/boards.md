@@ -1,6 +1,6 @@
 # boards.md — Phase R0 board freeze
 
-**Status:** measured from Sequoia dump `docs/traces/sequoia-7950x3d/` (2026-09-06) plus OpenCore log + SysReport (2026-09-07). `RaphaelIGPU.kext` v0.1.0 **did not load** on that boot (`IOGraphicsFamily` missing from Boot KC). Controller-only kext is in tree; on-box attach still unproven. Remaining gaps listed at bottom. Living plan: [`docs/CURSOR-START-AMD-RDNA2-IGPU.md`](../../../docs/CURSOR-START-AMD-RDNA2-IGPU.md) §0.
+**Status:** PCI/ACPI identity from Sequoia dump `docs/traces/sequoia-7950x3d/` (2026-09-06). **Bring-up OS: macOS 26 Tahoe, WhateverGreen absent, build 25G83** ([BUILD-RULES.md](../../../docs/BUILD-RULES.md)). Sequoia traces are historical. Living plan: [`docs/CURSOR-START-AMD-RDNA2-IGPU.md`](../../../docs/CURSOR-START-AMD-RDNA2-IGPU.md) §0.
 
 | Field | Value |
 |---|---|
@@ -13,24 +13,25 @@
 | PCI revision | **`0xC9`** |
 | PCI BDF | **`12:0:0`** (`pcidebug`) |
 | Subsystem | **`1043:8877`** (ASUS) |
-| IOKit nub name | **`IGPU@0`** (`IOPCIDevice`) |
+| IOKit nub name | **Tahoe: `VGA@0`**. Sequoia dump: `IGPU@0`. Same DID; match is DID-only. |
 | ACPI path | **`_SB.PCI0.GP17.VGA`** (`IOACPIPlane:/_SB/PCI0@0/GP17@80001/VGA@0`) |
 | `compatible` | `pci1043,8877`, `pci1002,164e`, `pciclass,030000`, `VGA`, `IGPU` |
 | Parent bridge | `GP17@8,1` under `PCI0` |
-| Current FB | **`IONDRVFramebuffer`** (`.display_boot`) — unaccelerated NDRV/GOP path |
+| Current FB | **Tahoe 0.2.7:** `RaphaelFramebuffer` (`R2-gop-wrap`, `connector-kind=DP`) on `VGA@0`; controller `RaphaelPhase=R2-dcn-modeset`, `RaphaelDmubOk=Yes`. Pre-wrap / late load: `IONDRVFramebuffer` (`.Display_boot`). |
 | Also attached | **`AMDSupport`** (Apple, probe 65050, vendor-wide AMD VGA match) — not a Metal stack |
 | APU display | **Main display** 3840×2160@HiDPI; System Information: VRAM 31 MB, **No Kext Loaded** (acceleration) |
 | Discrete GPU | **Nvidia RTX 5080** `10de:2c02` rev `0xA1`, subsystem `1462:5315` (MSI), nub **`GFX0@0`**, BDF `1:0:0`, Slot-1 — also filed under [`ihv/nvidia/docs/boards.md`](../../nvidia/docs/boards.md) |
 | dGPU ACPI | `_SB.PCI0.GPP0.VGA` |
-| Lilu | **1.7.2** (`as.vit9696.Lilu`) — historical Sequoia dump |
-| WhateverGreen | **1.7.1d7** in Sequoia dump — **product: WEG absent** ([BUILD-RULES](../../../docs/BUILD-RULES.md)) |
-| `-wegnoegpu` / iGPU disable | Not indicated; iGPU is main display |
+| Lilu (Sequoia dump only) | **1.7.2** — historical; **not** assumed on Tahoe |
+| WhateverGreen | **Not loaded** on current Tahoe lab. Sequoia dump had 1.7.1d7 laobamac — historical |
+| `-wegnoegpu` / iGPU disable | Not used; iGPU is main display |
 | Primary display policy | **Connector-driven** (product); currently APU owns main display |
-| Lab OS (this dump) | **macOS Sequoia 15.7.8 (24G824)** — historical |
-| Product OS pin | **macOS 26** (WEG absent; re-verify on box) |
+| Lab OS (current) | **macOS 26 Tahoe**, Darwin 25.6.0, `OS Build Version` **25G83** |
+| Lab OS (historical dump) | macOS Sequoia 15.7.8 (24G824) |
+| Product OS pin | **macOS 26 Tahoe** |
 | X6000 oracle | **Still needed** — 5080 cannot provide AMD Metal ABI |
-| Firmware license | UNKNOWN — `gc_10_3_6_*` / `dcn_3_1_5_*` / `psp_13_0_5_*` (confirm names) |
-| First kext | `dev.metalgpudrivers.RaphaelIGPU` — enumerate + ATOM; GOP wrap is `RaphaelFB.kext` (needs IOGraphicsFamily in the same KC). See [BUILD.md](BUILD.md) |
+| Firmware license | **LICENSE.amdgpu** — binary redistrib, no RE; `dcn_3_1_5_dmcub.bin` + `psp_13_0_5_{toc,ta}` fetched at build (see [firmware/README.md](../firmware/README.md)) |
+| First kexts | `dev.metalgpudrivers.RaphaelIGPU` + `dev.metalgpudrivers.RaphaelFB` **0.2.7** — see [BUILD.md](BUILD.md). AuxKC from `/Library/Extensions` (lab fact). |
 
 ## Match personality (from dump)
 
@@ -44,24 +45,22 @@ IONameMatch        = display      (optional; both GPUs use IOName display — pr
 
 ## Lab evidence
 
-- Sequoia dump proves dual-GPU enumeration: Raphael iGPU + RTX 5080.
-- iGPU already drives a real 4K desktop via **IONDRVFramebuffer** (G2 baseline exists).
-- Apple **AMDSupport** attaches to the iGPU today; our kext must coexist or displace only our FB path carefully — do not fight AMDSupport globally.
-- No `AMDRadeonX6000*` / Metal plugin on either GPU.
+- Sequoia dump proved dual-GPU enumeration: Raphael iGPU + RTX 5080.
+- Tahoe **0.2.2** on-box: R1 `RaphaelController` (`map=0`, `R1-enumerate`) and R2 `RaphaelFramebuffer` (`R2-gop-wrap`, 4K, WindowServer `fb0`). iGPU NDRV gone; 5080 NDRV remains. AMDSupport sibling.
+- Console GOP geometry matches NDRV (`33177600` bytes). `getConsoleInfo` `v_baseAddr=0x10000000001` is not a physical — blue tint on 0.2.2. v0.2.3 uses PCI BAR (`phys=0x10000000000`). v0.2.4: VFCT HDMI+DP, not BuiltIn; **BAR5 probe on-box** (`phys=0xdd600000 size=524288 map=1`, HPD2 `raw=0x00000012`). v0.2.5: named HPD decode + OTG dump. **Physical 4K jack is DP** (user); VFCT path 0 HDMI-A disagrees. **0.2.7:** `dcn_modeset=1 boot_jack=DP`; `DP index 1 boot=1`; live OTG0 HPD2 SENSE; GPINT `0x05000649`; OTG reaffirm same GOP totals.
+- Apple **AMDSupport** still on the iGPU. Do not fight it globally.
 
 ## Acceptance (R0)
 
 - [x] Exact DID/rev + IORegistry path captured
 - [x] Discrete companion identified (RTX 5080)
-- [x] Unaccelerated iGPU desktop observed (Sequoia + prior Monterey)
-- [x] WEG/Lilu versions recorded **(historical Sequoia)**
-- [ ] **macOS 26 acceptance** with **WhateverGreen absent**
-- [ ] Physical APU port label (HDMI vs DP which motherboard connector) — VFCT has both HDMI-A and DP
-- [ ] On-box `RaphaelController` attach after Boot KC inject (7 Sep 2026 inject failed before match)
-- [ ] OpenCore DeviceProperties snippet for IGPU/GFX0 (redact serials)
-- [ ] X6000 IORegistry on **macOS 26**
-- [ ] Firmware redistrib license checked
+- [x] Unaccelerated iGPU desktop observed (Sequoia + Tahoe GOP wrap)
+- [x] Historical WEG/Lilu versions recorded (Sequoia). Tahoe lab: **no WEG**
+- [x] Tahoe `kextstat` + `ioreg` (R1/R2 0.2.2). Build **25G83**.
+- [x] Physical APU port: **DisplayPort** (user). VFCT still lists HDMI-A then DP.
+- [ ] X6000 IORegistry on **Tahoe** (same OS major as bring-up)
+- [x] Firmware redistrib license checked (`LICENSE.amdgpu` for DMCUB/PSP)
 
 ## Traces
 
-[`docs/traces/sequoia-7950x3d/`](traces/sequoia-7950x3d/) — `system_profiler.txt`, `kextstat-gpu.txt`, `ioreg-igpu-excerpt.txt`, `ioreg-gfx0-rtx5080-excerpt.txt`, `opencore-inject-2026-09-07.txt`, `gop-info.txt`, `pci-display.txt`, `vfct-atom-connectors.txt`
+Historical: [`docs/traces/sequoia-7950x3d/`](traces/sequoia-7950x3d/). Tahoe wrap was captured live (kextstat/ioreg/log); not yet filed as a trace dump in this folder.

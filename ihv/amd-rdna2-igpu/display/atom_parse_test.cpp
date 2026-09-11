@@ -120,9 +120,18 @@ int main(void)
 		return 1;
 	}
 
+	AtomFallbackHdmiDp(&result);
+	if (result.connectorCount != 2 || result.connectors[0].kind != kRaphaelConnectorHdmi ||
+	    result.connectors[1].kind != kRaphaelConnectorDp || !result.connectors[0].preferOnline ||
+	    !result.connectors[1].preferOnline || result.connectors[0].objectId != 0x320C ||
+	    result.connectors[1].objectId != 0x3113) {
+		fprintf(stderr, "HDMI+DP VFCT fallback mismatch count=%u\n", result.connectorCount);
+		return 1;
+	}
+
 	AtomFallbackHdmiDpUsbc(&result);
 	if (!ExpectHdmiDpUsbc(result)) {
-		fprintf(stderr, "fallback mismatch\n");
+		fprintf(stderr, "HDMI+DP+USB-C fallback mismatch\n");
 		return 1;
 	}
 

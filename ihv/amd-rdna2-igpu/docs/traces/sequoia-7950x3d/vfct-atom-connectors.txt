@@ -15,4 +15,4 @@ VFCT OEM: ALASKA / AMI. VBIOS image header: PCI 12:0:0, vendor 0x1002, device 0x
 
 Parser result used by the kext: **2 connectors, HDMI then DP, both preferOnline.** No USB-C and no eDP on this VBIOS. The HDMI+DP+USB-C fallback is only for a missing PCI ROM map, and over-enumerates USB-C on this board.
 
-Physical jack that carries the 4K GOP head is still UNKNOWN (HDMI-A vs DP).
+Physical jack that carries the 4K GOP head: **DisplayPort** (user, 10 Sep 2026). ATOM/VFCT still names path 0 HDMI-A; that name is not the cabled head.

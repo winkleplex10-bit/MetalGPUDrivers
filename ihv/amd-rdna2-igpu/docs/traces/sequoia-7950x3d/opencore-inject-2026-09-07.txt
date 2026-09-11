@@ -1,0 +1,26 @@
+OpenCore DBG-107-2026-03-20, boot timestamp 2026.09.07 01:58:42.
+Kernel version reported as 24.6.0. Lilu 1.7.2 and WhateverGreen 1.7.1d7 injected successfully.
+RaphaelIGPU.kext (v0.1.0, still linking IOGraphicsFamily) did not enter the kernel.
+
+Excerpt from opencore-2026-09-07-015842.txt:
+
+```
+15:711 00:018 OC: Prelinked injection WhateverGreen.kext (WhateverGreen.kext) - Success
+15:731 00:019 OC: Prelinked injection WhateverGreen.kext v1.7.1d7
+...
+16:248 00:019 OC: Prelinked injection NVMeFix.kext (NVMeFix.kext) - Success
+...
+16:301 00:016 OC: Prelinked injection SMCAMDProcessor.kext (SMCAMDProcessor.kext) - Success
+16:317 00:015 OC: Prelinked injection SMCAMDProcessor.kext v1
+16:334 00:016 OCAK: Dependency com.apple.iokit.IOGraphicsFamily was not found for kext dev.metalgpudrivers.RaphaelIGPU
+16:351 00:016 OC: Prelinked injection RaphaelIGPU.kext (RaphaelIGPU.kext) - Invalid Parameter
+16:367 00:016 OC: Prelinked injection RaphaelIGPU.kext v0.1.0
+...
+16:631 00:090 OC: Prelinked status - Success
+```
+
+Earlier in the same log, `OCPE: PeCoff has no SecDir - Invalid Parameter` appears while loading unsigned EFI drivers (apfs_aligned.efi and others). That is not the RaphaelIGPU failure.
+
+IOPCIFamily was already in the prelink (`Patching invalid size 35000 with 178B000 for com.apple.iokit.IOPCIFamily`). The controller-only kext depends on that family, not IOGraphicsFamily.
+
+GOP console before ExitBootServices (same log): native mode 3840×2160; current FB briefly 1024×768 while enumerating modes. SysReport GOPInfo after that is 3840×2160 (gop-info.txt).

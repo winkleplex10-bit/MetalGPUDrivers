@@ -170,6 +170,29 @@ static void ApplyPriority(AtomParseResult *out)
 	out->connectors[0].preferOnline = true;
 }
 
+void AtomFallbackHdmiDp(AtomParseResult *out)
+{
+	if (!out)
+		return;
+	memset(out, 0, sizeof(*out));
+	/*
+	 * VFCT displayObjectInfo v1.4 on sequoia-7950x3d: path0 HDMI-A 0x320C
+	 * (DFP2), path2 DP 0x3113 (DFP1). No USB-C 0x17, no eDP 0x14.
+	 * See docs/traces/sequoia-7950x3d/vfct-atom-connectors.txt
+	 */
+	out->connectorCount = 2;
+	out->connectors[0].kind = kRaphaelConnectorHdmi;
+	out->connectors[0].enumId = 2;
+	out->connectors[0].deviceTag = 0x0080;
+	out->connectors[0].objectId = 0x320C;
+	out->connectors[0].preferOnline = true;
+	out->connectors[1].kind = kRaphaelConnectorDp;
+	out->connectors[1].enumId = 1;
+	out->connectors[1].deviceTag = 0x0008;
+	out->connectors[1].objectId = 0x3113;
+	out->connectors[1].preferOnline = true;
+}
+
 void AtomFallbackHdmiDpUsbc(AtomParseResult *out)
 {
 	if (!out)

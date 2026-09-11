@@ -7,7 +7,7 @@ extern "C" {
 kern_return_t RaphaelFB_start(kmod_info_t *ki, void *d);
 kern_return_t RaphaelFB_stop(kmod_info_t *ki, void *d);
 
-KMOD_EXPLICIT_DECL(dev_metalgpudrivers_RaphaelFB, "0.2.0", RaphaelFB_start, RaphaelFB_stop)
+KMOD_EXPLICIT_DECL(dev_metalgpudrivers_RaphaelFB, "0.2.7", RaphaelFB_start, RaphaelFB_stop)
 
 kern_return_t RaphaelFB_start(kmod_info_t *ki, void *d)
 {

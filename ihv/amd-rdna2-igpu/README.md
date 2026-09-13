@@ -4,7 +4,7 @@ UMA APU backend for AMD RDNA2 integrated GPUs that **NootedRed does not support*
 
 **Binding specs:**
 - [docs/BUILD-RULES.md](../../docs/BUILD-RULES.md) — **macOS 26**, **WhateverGreen absent**, Apple Silicon track is elsewhere
-- [docs/CURSOR-START-AMD-RDNA2-IGPU.md](../../docs/CURSOR-START-AMD-RDNA2-IGPU.md) — living plan (updated 10 Sep 2026, **0.2.7** on-box)
+- [docs/CURSOR-START-AMD-RDNA2-IGPU.md](../../docs/CURSOR-START-AMD-RDNA2-IGPU.md) — living plan (updated 13 Sep 2026, **0.2.10** recoverability; **0.2.8** on-box blank/unblank; 0.2.9 V_TOTAL+1 was the black screen)
 - [docs/CURSOR-START-AMD.md](../../docs/CURSOR-START-AMD.md) — shared AMD host contracts / do-nots
 
 ## Why this slot exists
@@ -21,7 +21,7 @@ UMA APU backend for AMD RDNA2 integrated GPUs that **NootedRed does not support*
 - **Named first SKU / lab board:** Ryzen 9 **7950X3D**, DID `1002:164E` rev `C9`. Tahoe nub **`VGA@0`** under `GP17@8,1` (`pci1002,164e`). Sequoia dump used `IGPU@0` (historical, `docs/traces/sequoia-7950x3d/`). **Current OS is Tahoe, WhateverGreen absent.**
 - **Later sibling:** Rembrandt (Ryzen 6000 mobile RDNA2, `gfx1035`) — same backend shape, separate Phase 0 freeze
 - **Coexistence (product):** **macOS 26**, **WhateverGreen absent**; **discrete GPUs** may stay enabled (DID-only match). Primary display is **connector-driven**. See [docs/coexistence.md](docs/coexistence.md), plan §2.1, and [docs/BUILD-RULES.md](../../docs/BUILD-RULES.md).
-- **Lab evidence:** Tahoe 26 (build **25G83**), no WEG. AuxKC from `/Library/Extensions` (runtime `kmutil load` is too late vs IONDRV). R1 attach + R2 GOP wrap on `VGA@0` (0.2.3 colors honest). BAR5 `phys=0xdd600000 size=524288 map=1`. Live jack **DP** (user; VFCT HDMI-A `0x320C` path 0 vs DP `0x3113` path 2 — names disagree with silkscreen). **0.2.7:** `raphael_dcn_modeset=1` GPINT (`GET_FW_VERSION=0x05000649`) + OTG0 4K reaffirm on live HPD2/OTG0; `RaphaelDmubOk=Yes`. 5080 IONDRV untouched. Sequoia traces remain historical. Details in [docs/boards.md](docs/boards.md).
+- **Lab evidence:** Tahoe 26 (build **25G83**), no WEG. AuxKC from `/Library/Extensions` (runtime `kmutil load` is too late vs IONDRV). R1 attach + R2 GOP wrap on `VGA@0` (0.2.3 colors honest). BAR5 `phys=0xdd600000 size=524288 map=1`. Live jack **DP** (user; VFCT HDMI-A `0x320C` path 0 vs DP `0x3113` path 2 — names disagree with silkscreen). **0.2.8 on-box boot:** `raphael_dcn_modeset=1` one GPINT (`GET_FW_VERSION=0x05000649`) + OTG0 4K reaffirm + HUBP blank/unblank; `RaphaelDmubOk=Yes`. **0.2.9:** same path then `V_TOTAL+1` left live — **screen black, never recovered** (not Metal). **0.2.10:** lab modeset is 0.2.8 again; V_TOTAL probe is `raphael_dcn_vtotal=1` and restores GOP before unblank. **Sleep/shutdown/restart parked.** 5080 IONDRV untouched. Sequoia traces remain historical. Details in [docs/boards.md](docs/boards.md).
 - **Not:** Vega Raven / Cezanne / 7x30 (use NootedRed or leave alone)
 - **Not:** Hawk Point 700M / Phoenix (`gfx1103` RDNA3) — closer to `ihv/amd-rdna3*` / future `amd-rdna3-igpu`
 - **Not:** Strix Point 800M RDNA 3.5 — `ihv/amd-rdna35-igpu/`
@@ -33,7 +33,7 @@ UMA APU backend for AMD RDNA2 integrated GPUs that **NootedRed does not support*
 ```
 kext/         RaphaelIGPU Info.plist + kmod; RaphaelFB-Info.plist (GOP wrap, separate kext)
 match/        RaphaelController — DID 0x164E only; category RaphaelHW (beside AMDSupport)
-display/      ATOM/VFCT parser, GOP-wrap IOFramebuffer, extra connector nubs, DCN regs / DMUB / OTG reaffirm
+display/      ATOM/VFCT parser, GOP-wrap IOFramebuffer, extra connector nubs, DCN regs / DMUB / OTG reaffirm + HUBP blank/unblank
 submit/       RaphaelAccelerator stub (no IOAccel user clients; Metal plugin off by default)
 metal/        RaphaelMTLDriver.bundle plist stub — do not enable raphael_metal=1
 firmware/     PSP/GC/DCN names + LICENSE.amdgpu; blobs not in git
@@ -48,10 +48,10 @@ Build / load notes (no OpenCore or SIP recipes): [docs/BUILD.md](docs/BUILD.md).
 |---|---|
 | R0 board freeze | PCI identity from Sequoia dump; **bring-up Tahoe, WEG absent**. Open: board SKU, X6000 oracle. Physical jack **DP** (user). Tahoe `ioreg`/`kextstat` captured for R1/R2. |
 | R1 enumerate | **On-box.** `RaphaelController` on `VGA@0` `1002:164e`, `RaphaelMap=No`. **0.2.4:** connectors=2 (HDMI, DP). AMDSupport sibling. 0.2.6+ bundles DMCUB/PSP at build time. |
-| R2 dumb FB | **On-box wrap (0.2.3 colors honest).** WindowServer `fb0=/RaphaelFramebuffer`. **0.2.7:** boot head **DP** index 1; controller `RaphaelPhase=R2-dcn-modeset`; FB still `R2-gop-wrap` + `connector-kind=DP`. Handshake + 4K reaffirm, not a new timing. **Next:** first changing modeset ([plan §11](../../docs/CURSOR-START-AMD-RDNA2-IGPU.md)). |
+| R2 dumb FB | **On-box wrap (0.2.3 colors honest).** WindowServer `fb0=/RaphaelFramebuffer`. **0.2.8 on-box boot:** boot head **DP** index 1; HUBP blank/unblank (picture came back). **0.2.9:** `V_TOTAL+1` live on DP blacked the console. **0.2.10:** lab `raphael_dcn_modeset=1` = 0.2.8 pipe; FB still `R2-gop-wrap` + `connector-kind=DP`. **Sleep/shutdown/restart parked.** **Next:** cited DP MSA/DIG, not a second head ([plan §11](../../docs/CURSOR-START-AMD-RDNA2-IGPU.md)). |
 | R3–R6 compute / Metal / present | Not started |
 
-**Honest Tahoe outcome (0.2.7):** WindowServer owns our `IOFramebuffer` on the GOP head when the kexts are in AuxKC **before** IONDRV claims `IOFramebuffer`. That is **not** video acceleration. GOP phys is a PCI BAR (`0x10000000000`). 0.2.7 GPINTs GOP DMCUB (`dal_fw=0` is not abort) and reaffirms live OTG0 4K (`H_TOTAL=0xf9f V_TOTAL=0x8ad`, CTL unchanged). Metal/QE still needs IOGPU user clients + AIR→gfx1036. Do not re-gate GPINT on `dal_fw`.
+**Honest Tahoe outcome (0.2.8 on-box boot; 0.2.10 is that pipe):** WindowServer owns our `IOFramebuffer` on the GOP head when the kexts are in AuxKC **before** IONDRV claims `IOFramebuffer`. That is **not** video acceleration. GOP phys is a PCI BAR (`0x10000000000`). 0.2.8 GPINTs GOP DMCUB once (`dal_fw=0` is not abort), reaffirms live OTG0 4K (`H_TOTAL=0xf9f V_TOTAL=0x8ad`, CTL unchanged), and blanks/unblanks via cited `HUBP_BLANK_EN` (`OTG_BLANK_CONTROL` is not in the DCN 3.1.5 header). **0.2.9** left `V_TOTAL+1` live on that DP pipe — black screen that never recovered (MMIO success ≠ picture). Sleep/shutdown/restart **parked**. Metal/QE still needs IOGPU user clients + AIR→gfx1036. Do not re-gate GPINT on `dal_fw`.
 
 ## Relation to NootedRed (style vs method)
 

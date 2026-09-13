@@ -6,6 +6,7 @@
 #include "../submit/RaphaelAccelerator.h"
 
 #include <IOKit/IODeviceMemory.h>
+#include <IOKit/IOLocks.h>
 #include <IOKit/IOMemoryDescriptor.h>
 #include <IOKit/IOLib.h>
 #include <libkern/OSByteOrder.h>
@@ -30,9 +31,11 @@ bool RaphaelController::init(OSDictionary *dictionary)
 	fDcnProbe = false;
 	fDcnDump = false;
 	fDcnModeset = false;
+	fDcnVtotal = false;
 	fDmubOk = false;
 	fHwModesetIssued = false;
 	fBar5Map = nullptr;
+	fDcnLock = IOLockAlloc();
 	for (int i = 0; i < 3; i++)
 		fBarMaps[i] = nullptr;
 	for (uint32_t i = 0; i < kRaphaelMaxConnectors; i++)
@@ -163,6 +166,31 @@ bool RaphaelController::mapBar5()
 		return false;
 	}
 	return true;
+}
+
+void RaphaelController::unmapBar5(const char *why)
+{
+	if (!fBar5Map)
+		return;
+	fBar5Map->release();
+	fBar5Map = nullptr;
+	IOLog("RaphaelController: BAR5 unmapped (%s)\n", why ? why : "power-off");
+}
+
+void RaphaelController::logLiveHpdSense(const char *when)
+{
+	if (!fBar5Map || fLiveHpd < 0 ||
+	    (unsigned)fLiveHpd >= sizeof(kRaphaelHpdIntStatusReg) / sizeof(kRaphaelHpdIntStatusReg[0]))
+		return;
+	uint32_t raw = 0;
+	const uint32_t dwordOff = kRaphaelDcnSeg2 + kRaphaelHpdIntStatusReg[fLiveHpd];
+	if (!raphaelDcnRead32(fBar5Map, dwordOff, &raw)) {
+		IOLog("RaphaelController: HPD%u unread (%s)\n", fLiveHpd, when ? when : "dcn");
+		return;
+	}
+	IOLog("RaphaelController: HPD%u %s raw=0x%08x SENSE=%u (DP jack; MMIO success is not "
+	      "a picture)\n",
+	      fLiveHpd, when ? when : "dcn", raw, (raw & kRaphaelHpdSenseMask) ? 1 : 0);
 }
 
 void RaphaelController::discoverLivePipe()
@@ -356,12 +384,20 @@ bool RaphaelController::runHwModesetIfRequested()
 {
 	if (!fDcnModeset)
 		return false;
-	if (fHwModesetIssued)
-		return fDmubOk;
+	if (fDcnLock)
+		IOLockLock(fDcnLock);
+	if (fHwModesetIssued) {
+		const bool ok = fDmubOk;
+		if (fDcnLock)
+			IOLockUnlock(fDcnLock);
+		return ok;
+	}
 
 	if (!mapBar5()) {
 		IOLog("RaphaelController: DCN modeset aborted: BAR5 map failed; GOP wrap\n");
 		fHwModesetIssued = true;
+		if (fDcnLock)
+			IOLockUnlock(fDcnLock);
 		return false;
 	}
 	fHwModesetIssued = true;
@@ -373,6 +409,8 @@ bool RaphaelController::runHwModesetIfRequested()
 	if (!fDmubOk) {
 		IOLog("RaphaelController: DCN modeset aborted: %s; GOP wrap kept\n",
 		      dmub.failReason ? dmub.failReason : "DMUB handshake failed");
+		if (fDcnLock)
+			IOLockUnlock(fDcnLock);
 		return false;
 	}
 
@@ -382,10 +420,35 @@ bool RaphaelController::runHwModesetIfRequested()
 	      otg, fLiveHpd);
 	if (!RaphaelDcnReaffirmLiveGop4k(fBar5Map, otg)) {
 		IOLog("RaphaelController: DCN modeset writes failed; GOP wrap kept\n");
+		if (fDcnLock)
+			IOLockUnlock(fDcnLock);
 		return false;
 	}
+
+	/*
+	 * Default boot (lab: raphael_dcn_modeset=1): HUBP blank/unblank only.
+	 * 0.2.8 recovered on-box. 0.2.9 left V_TOTAL+1 live on DP; MMIO can
+	 * succeed while the sink stays black. Do not do that on this arg.
+	 */
+	bool pipeOk = false;
+	if (fDcnVtotal) {
+		IOLog("RaphaelController: raphael_dcn_vtotal=1 — OTG-only V_TOTAL probe; "
+		      "DP MSA/DIG/PHY not programmed; GOP totals restored before unblank\n");
+		pipeOk = RaphaelDcnProbeLiveGopVTotalPlusOne(fBar5Map, otg);
+		setProperty("RaphaelVtotalProbe", pipeOk);
+		if (!pipeOk)
+			IOLog("RaphaelController: V_TOTAL+1 probe failed; GOP 4K restore path used\n");
+	} else {
+		pipeOk = RaphaelDcnBlankUnblankLiveGop4k(fBar5Map, otg);
+		if (!pipeOk)
+			IOLog("RaphaelController: HUBP blank/unblank failed; GOP wrap kept\n");
+	}
+	logLiveHpdSense(pipeOk ? "after modeset" : "after modeset fail");
 	setProperty("RaphaelPhase", "R2-dcn-modeset");
-	IOLog("RaphaelController: DCN modeset writes issued on live GOP pipe\n");
+	IOLog("RaphaelController: DCN modeset writes issued on live GOP pipe (reaffirm + %s)\n",
+	      fDcnVtotal ? "V_TOTAL+1 probe" : "HUBP blank/unblank");
+	if (fDcnLock)
+		IOLockUnlock(fDcnLock);
 	return true;
 }
 
@@ -436,6 +499,8 @@ bool RaphaelController::start(IOService *provider)
 		    fDcnDump;
 	dummy = 0;
 	fDcnModeset = PE_parse_boot_argn("raphael_dcn_modeset", &dummy, sizeof(dummy)) && dummy != 0;
+	dummy = 0;
+	fDcnVtotal = PE_parse_boot_argn("raphael_dcn_vtotal", &dummy, sizeof(dummy)) && dummy != 0;
 
 	/*
 	 * Default: do not touch PCI command or BARs. GOP / IONDRV already owns
@@ -443,6 +508,8 @@ bool RaphaelController::start(IOService *provider)
 	 * v0.1.2 boot. Hardware map is opt-in via raphael_map=1 (leave off).
 	 * BAR5 probe is separate (raphael_dcn_probe=1 or raphael_dcn_dump=1).
 	 * raphael_dcn_modeset=1 maps BAR5 after GOP wrap and may write OTG0.
+	 * Sleep/shutdown PM is parked: do not join the PCI power plane or
+	 * blank HUBP from setPowerState (that blacks the console).
 	 */
 	if (mapHw) {
 		fPci->setMemoryEnable(true);
@@ -460,6 +527,7 @@ bool RaphaelController::start(IOService *provider)
 	setProperty("RaphaelDcnProbe", fDcnProbe);
 	setProperty("RaphaelDcnDump", fDcnDump);
 	setProperty("RaphaelDcnModeset", fDcnModeset);
+	setProperty("RaphaelDcnVtotal", fDcnVtotal);
 	setProperty("RaphaelLiveJack", "DP");
 	OSArray *names = OSArray::withCapacity(fConnectors.connectorCount);
 	for (uint32_t i = 0; i < fConnectors.connectorCount; i++) {
@@ -477,17 +545,24 @@ bool RaphaelController::start(IOService *provider)
 	registerService();
 	publishExtras();
 	IOLog("RaphaelController: attached 1002:164e connectors=%u metal=%d force_all=%d map=%d "
-	      "dcn_probe=%d dcn_dump=%d dcn_modeset=%d boot_jack=DP\n",
+	      "dcn_probe=%d dcn_dump=%d dcn_modeset=%d dcn_vtotal=%d boot_jack=DP\n",
 	      fConnectors.connectorCount, fMetal ? 1 : 0, fForceAll ? 1 : 0, mapHw ? 1 : 0,
-	      fDcnProbe ? 1 : 0, fDcnDump ? 1 : 0, fDcnModeset ? 1 : 0);
+	      fDcnProbe ? 1 : 0, fDcnDump ? 1 : 0, fDcnModeset ? 1 : 0, fDcnVtotal ? 1 : 0);
 	if (fDcnModeset)
 		IOLog("RaphaelController: raphael_dcn_modeset=1 — DMUB+OTG writes after GOP wrap "
-		      "(not license UNKNOWN)\n");
+		      "(not license UNKNOWN); default is reaffirm+HUBP blank/unblank, not V_TOTAL+1\n");
+	if (fDcnVtotal && !fDcnModeset)
+		IOLog("RaphaelController: raphael_dcn_vtotal=1 ignored without raphael_dcn_modeset=1\n");
 	return true;
 }
 
 void RaphaelController::stop(IOService *provider)
 {
+	if (fDcnLock)
+		IOLockLock(fDcnLock);
+	unmapBar5("stop");
+	if (fDcnLock)
+		IOLockUnlock(fDcnLock);
 	for (uint32_t i = 0; i < fNubCount; i++) {
 		if (fNubs[i]) {
 			fNubs[i]->terminate();
@@ -500,10 +575,6 @@ void RaphaelController::stop(IOService *provider)
 		fAccel->terminate();
 		fAccel->release();
 		fAccel = nullptr;
-	}
-	if (fBar5Map) {
-		fBar5Map->release();
-		fBar5Map = nullptr;
 	}
 	for (int i = 0; i < 3; i++) {
 		if (fBarMaps[i]) {
@@ -518,6 +589,10 @@ void RaphaelController::stop(IOService *provider)
 	if (fMmio) {
 		fMmio->release();
 		fMmio = nullptr;
+	}
+	if (fDcnLock) {
+		IOLockFree(fDcnLock);
+		fDcnLock = nullptr;
 	}
 	super::stop(provider);
 }

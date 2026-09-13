@@ -37,6 +37,19 @@ static const uint32_t kRaphaelOtgBlankEndShift = 16;
 static const uint32_t kRaphaelOptcClkEnMask = 0x00000002;
 static const uint32_t kRaphaelOptcClkOnMask = 0x00000004;
 
+/*
+ * OTG_BLANK_CONTROL / OTG_BLANK_DATA_EN are not in dcn_3_1_5_offset.h
+ * (OTG_CONTROL 0x1b41 then INTERLACE 0x1b44; do not invent 0x1b42).
+ * Closest cited pipe blank (not timing, not MASTER_EN, not PHY/PLL):
+ * HUBP DCHUBP_CNTL.HUBP_BLANK_EN.
+ */
+static const uint32_t kRaphaelHubpCntlReg[] = { 0x05f3, 0x06cf, 0x07ab, 0x0887 };
+static const uint32_t kRaphaelHubpBlankEnMask = 0x00000001;
+static const uint32_t kRaphaelHubpInBlankMask = 0x00000008;
+static const uint32_t kRaphaelHubpVtgSelMask = 0x000000F0;
+static const uint32_t kRaphaelHubpVtgSelShift = 4;
+static const unsigned kRaphaelHubpCount = 4;
+
 /* DMCUB — dcn_3_1_5_offset.h BASE_IDX 2 (same SEG2 as HPD/OTG). */
 static const uint32_t kRaphaelDmcubInbox1Base = 0x01d4;
 static const uint32_t kRaphaelDmcubInbox1Size = 0x01d5;

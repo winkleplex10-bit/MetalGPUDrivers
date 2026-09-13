@@ -3,6 +3,7 @@
 #include "RaphaelIds.h"
 #include "atom_parse.h"
 
+#include <IOKit/IOLocks.h>
 #include <IOKit/IOService.h>
 #include <IOKit/pci/IOPCIDevice.h>
 
@@ -41,10 +42,12 @@ private:
 	bool claimRaphael(IOPCIDevice *pci);
 	bool mapBars();
 	bool mapBar5();
+	void unmapBar5(const char *why);
 	void applyConnectorFallback();
 	void publishExtras();
 	void dumpDcnLivePipe();
 	void discoverLivePipe();
+	void logLiveHpdSense(const char *when);
 
 	IOPCIDevice *fPci;
 	IOMemoryMap *fBarMaps[3];
@@ -62,6 +65,8 @@ private:
 	bool fDcnProbe;
 	bool fDcnDump;
 	bool fDcnModeset;
+	bool fDcnVtotal;
 	bool fDmubOk;
 	bool fHwModesetIssued;
+	IOLock *fDcnLock;
 };

@@ -13,7 +13,7 @@
 | WhateverGreen | **Not loaded** |
 | Lilu | Loaded on Tahoe (1.7.2) — not a dependency of this IHV |
 | Discrete GPU | **RTX 5080** `10de:2c02` (MSI `1462:5315`) — PCI inventory; no Metal. Nvidia-slot notes: [`ihv/nvidia/docs/boards.md`](../../nvidia/docs/boards.md) |
-| iGPU | Raphael `1002:164E` rev C9 — nub **`VGA@0`**. **0.2.7:** `RaphaelFramebuffer` boot FB (`connector-kind=DP`); AMDSupport sibling; controller `R2-dcn-modeset` / `RaphaelDmubOk=Yes`. 5080 IONDRV untouched. |
+| iGPU | Raphael `1002:164E` rev C9 — nub **`VGA@0`**. **0.2.10:** `RaphaelFramebuffer` boot FB (`connector-kind=DP`); AMDSupport sibling; controller `R2-dcn-modeset` / `RaphaelDmubOk=Yes`. 5080 IONDRV untouched. |
 | `-wegnoegpu` | Not used |
 
 Without WEG there are no WEG AGDP/connector patches. Display is our GOP wrap (or IONDRV if we are not in the kernel in time) plus Apple `AMDSupport`. The 5080 is still **do not match**.
@@ -44,7 +44,7 @@ Without WEG there are no WEG AGDP/connector patches. Display is our GOP wrap (or
 - [x] WEG loaded with iGPU as main display (**Sequoia only** — not current lab)
 - [x] Tahoe without WEG: R1/R2 on `VGA@0`; 5080 IONDRV untouched
 - [x] After match attaches: only `1002:164E`, not the 5080
-- [x] After FB attaches: APU 4K desktop (0.2.3 BAR wrap); 5080 path undisturbed. 0.2.4: not advertised as Internal. 0.2.7: GPINT + live DP 4K reaffirm; not dual heads, not Metal.
+- [x] After FB attaches: APU 4K desktop (0.2.3 BAR wrap); 5080 path undisturbed. 0.2.4: not advertised as Internal. 0.2.7: GPINT + live DP 4K reaffirm. 0.2.8: HUBP blank/unblank recovered. 0.2.9: V_TOTAL+1 live on DP blacked the console. 0.2.10: lab modeset is 0.2.8. Not dual heads, not Metal.
 - [ ] `MTLCopyAllDevices` dual listing with AMD dGPU (not applicable with 5080 alone)
 
 ## Non-goals

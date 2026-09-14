@@ -34,5 +34,12 @@ bool AtomExtractVbiosFromVfct(const uint8_t *vfct, size_t vfctLen, uint32_t imag
 			      uint16_t *deviceId);
 bool AtomParseConnectorsFromVfct(const uint8_t *vfct, size_t vfctLen, AtomParseResult *out);
 
-/* HDMI + DP online, USB-C enumerated but not preferred — used when VBIOS is unmapped. */
+/*
+ * Default when PCI VBIOS is not mapped: HDMI-A then DP, both preferOnline.
+ * Matches locked VFCT on the 7950X3D lab (no USB-C / eDP):
+ *   ihv/amd-rdna2-igpu/docs/traces/sequoia-7950x3d/vfct-atom-connectors.txt
+ */
+void AtomFallbackHdmiDp(AtomParseResult *out);
+
+/* HDMI+DP+USB-C. Only for raphael_force_all=1 — this SKU’s VFCT has no USB-C. */
 void AtomFallbackHdmiDpUsbc(AtomParseResult *out);

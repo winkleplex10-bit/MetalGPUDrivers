@@ -33,7 +33,7 @@ bool RaphaelAccelerator::start(IOService *provider)
 	setProperty("RaphaelAccelStatus",
 		    "enumerate-only; no GOP wrap in this kext; no GFX ring; MetalPluginName off unless raphael_metal=1");
 	setProperty("RaphaelPhase", "R1-enumerate");
-	setProperty("model", kRaphaelModelName);
+	setProperty("RaphaelModel", kRaphaelModelName);
 
 	if (controller && controller->metalEnabled()) {
 		/*
